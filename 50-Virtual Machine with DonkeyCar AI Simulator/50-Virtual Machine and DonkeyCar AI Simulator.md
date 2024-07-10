@@ -16,6 +16,8 @@ Virtual machines (VMs) are essentially computers running on computers &mdash; yo
   * If your system only has 8 GB of RAM, set the ammount of memory allocated to 5120 MB (5 GB)
   * If your system has at least 16 GB of RAM, enter the VM settings for the image and increase the RAM alloted to 8 GB; the VM must not be running to do so
 
+![alt text](image-19.png)
+
 ## VMware setup
 
 When you install the VMware Player, you will be prompted on options for the install. As you go through the install wizard be sure that you:
