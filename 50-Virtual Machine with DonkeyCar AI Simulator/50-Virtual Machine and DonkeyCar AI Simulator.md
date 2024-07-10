@@ -17,6 +17,8 @@ Virtual machines (VMs) are essentially computers running on computers &mdash; yo
 
 ## VMware setup
 
+When you install the VMware Player, you will be prompted on options for the install. As you go through the install wizard be sure that you:
+
 * Open VMware Player and select *Open a Virtual Machine*
   * You will be prompted to select an image to be added &mdash; select the image you downloaded with the ```.vmx```
  extension
@@ -467,3 +469,5 @@ You can see the car on the livestream on
 https://www.twitch.tv/roboticists or https://www.twitch.tv/roboticists2
 
 The car should appear momentarily after you run the same command to start the car if you have configured the host properly.
+
+## ROS 2
