@@ -6,7 +6,7 @@ Virtual machines (VMs) are essentially computers running on computers &mdash; yo
 
 * Unzipping software (7Zip, Winrar) 
 
-* Download the VMware Player installer (depending on your machine's OS, this file is for **WINDOWS**)
+* Download the VMware Player installer (depending on your machine's OS, this file is for **WINDOWS**; check [this document](https://docs.google.com/document/d/1OqC7QgtA3oHgbrH-4vJEtEJvEg3qTFuE0Jl154a9kqc/edit) for information for other OS)
   * https://drive.google.com/file/d/1h8nNZnlbZT5MN0D3sYRS0CRfspewogTQ/view?usp=drive_link
 
 * Download the Ubuntu VM image &mdash; make sure you have enough space on your disk   (~40 GB zipped, ~50 GB unzipped)
