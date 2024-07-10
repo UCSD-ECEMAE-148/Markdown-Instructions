@@ -12,7 +12,8 @@ Virtual machines (VMs) are essentially computers running on computers &mdash; yo
 * Download the Ubuntu VM image &mdash; make sure you have enough space on your disk   (~40 GB zipped, ~50 GB unzipped)
   * https://drive.google.com/file/d/1aGVPzoEPYW0GxUnVGjzkiNsqqJFgZ7hb/view?usp=sharing
 
-* Minimum 8 GB system RAM on host machine (by default the VM uses 5 GB)
+* Minimum 8 GB system RAM on host machine
+  * If your system only has 8 GB of RAM, set the ammount of memory allocated to 5120 MB (5 GB)
   * If your system has at least 16 GB of RAM, enter the VM settings for the image and increase the RAM alloted to 8 GB; the VM must not be running to do so
 
 ## VMware setup
