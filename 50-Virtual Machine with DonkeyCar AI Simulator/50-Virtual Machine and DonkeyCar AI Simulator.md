@@ -19,15 +19,20 @@ Virtual machines (VMs) are essentially computers running on computers &mdash; yo
 
 When you install the VMware Player, you will be prompted on options for the install. As you go through the install wizard be sure that you:
 
-* Open VMware Player and select *Open a Virtual Machine*
-  * You will be prompted to select an image to be added &mdash; select the image you downloaded with the ```.vmx```
+* Don't enable enhanced keyboard
+* Set a custom file path for the Player (if you desire)
+* Select whether or not you want to opt into the diagnostics agreement
+* Select where you want you your shortcuts to be
+
+ Open VMware Player and select *Open a Virtual Machine*
+You will be prompted to select an image to be added &mdash; select the image you downloaded with the ```.vmx```
  extension
 
-* It should now appear in the list on the left of the VMware Player window &mdash; single-click the image and select *Edit Virtual Machine Settings*
+It should now appear in the list on the left of the VMware Player window &mdash; single-click the image and select *Edit Virtual Machine Settings*
 
-* Here you can edit the memory settings and any other settings required to run the VM
+Here you can edit the memory settings and any other settings required to run the VM
 
-* If you experience an error with respect to *Intel-VT* or *AMD-V*, disable the virualization engine in the *Processors* tab 
+If you experience an error with respect to *Intel-VT* or *AMD-V*, disable the virualization engine in the *Processors* tab 
 
 ![alt text](image-9.png)
 
@@ -35,9 +40,7 @@ When you install the VMware Player, you will be prompted on options for the inst
 
 ## Initial Boot up of VM
 
-* If necessary, enable virtualization in your BIOS/UEFI
-
-* When you are ready, start the virtual machine
+If necessary, enable virtualization in your BIOS/UEFI. When you are ready, start the virtual machine.
 
 * Login Credentials
   * User: ucsd
