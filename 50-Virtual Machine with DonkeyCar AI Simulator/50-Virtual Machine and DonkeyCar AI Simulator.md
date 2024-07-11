@@ -21,10 +21,13 @@ Virtual machines (VMs) are essentially computers running on computers &mdash; yo
 
 When you install the VMware Player, you will be prompted on options for the install. As you go through the install wizard be sure that you:
 
+* Accept the license agreement
+* Install the WHP automatically
 * Don't enable enhanced keyboard
 * Set a custom file path for the Player (if you desire)
 * Select whether or not you want to opt into the diagnostics agreement
 * Select where you want you your shortcuts to be
+* Then press ```Install```
 
  Open VMware Player and select *Open a Virtual Machine*
 You will be prompted to select an image to be added &mdash; select the image you downloaded with the ```.vmx```

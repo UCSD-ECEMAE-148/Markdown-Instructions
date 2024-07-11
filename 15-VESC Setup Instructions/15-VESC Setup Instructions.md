@@ -29,4 +29,6 @@ or
 
 ![alt text](image-2.png)
 
-**Note:** When you connect the VESC to VESC Tools, it may warn you that 
+**Note:** When you connect the VESC to VESC Tools, it may warn you that there is a newer firmware version for the VESC.
+
+Feel free to update it on VESC 6.x versions. Do not upgrade VESC 4.x versions 
