@@ -1,6 +1,6 @@
 # Jetson Nano Configuration
 
-This document will take you through the process of setting up your Jetson Nano. 
+This document will take you through the process of setting up your Jetson Nano. This document is a re-written version of this document, which may have some useful information if you are ever stuck: https://docs.google.com/document/d/1TF1uGAFeDARNwbPkgg9xg4NvWPJvrsHW2I_IN9dWQH0/edit
 
 ### Flashing Image
 
