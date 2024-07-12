@@ -10,7 +10,16 @@ A Jetson Nano runs off of a externally mounted microSD card, which will first ne
 
 1) Using an adapter, plug your mircoSD card into a computer with the zipped image file downloaded
 2) Open Etcher, select the zipped file under "Flash from file" and the microSD card under "Select target", and click "Flash!" to write the image to the microSD card
-3) After flashing is complete, eject the microSD card from your computer and plug it into the back of the Jetson Nano. NOTE: this is a push-in-to-lock and push-in-to-unlock the uSD card. Please do not pull the uSD card out of the slot before unlocking it, otherwise you may damage your JTN and or uSD card
+3) After flashing is complete, eject the microSD card from your computer and plug it into the back of the Jetson Nano. NOTE: this is a push-in-to-lock and push-in-to-unlock the uSD card. Please do not pull the uSD card out of the slot before unlocking it, otherwise you may damage your JTN and or the uSD card
+
+### MobaXterm Installation
+
+A good tool for windows machines when doing embedded programming is MobaXterm, which offers more robust ssh communication with single board computers. [Here](https://mobaxterm.mobatek.net/download-home-edition.html) you can find the download link.
+
+1) Click on the green "MobaXterm Home Edition v24.2 (Installer Edition)" to download a zip file
+2) Extract the zip file and launch the installer from the file explorer (not the .dat file)
+3) Follow the instructions in the installer
+4) When installation is complete, launch MobaXterm and select "Start new terminal" to be placed on the command line
 
 ### Powering Jetson Nano
 
@@ -73,7 +82,7 @@ To make the SSH process easier and more secure, we should set a unique static ho
 
 ### Fan Configuration
 
-Our Jetson Nano's are outfitted with a heat sink and fan for cooling. However, we have to configure some files to get it operating
+Our Jetson Nano's are outfitted with a heat sink and fan for cooling. The image should come pre-loaded with the fan drivers, but if the fan is not spinning here are the steps to download the drivers.
 
 1) Enter the projects directory from the home directory ```cd ~/projects```. If a projects folder doesn't exist, make one in the home directory: ```cd``` to go to the home directory, then ```mkdir projects``` to create a directory named "projects", then enter the new directory ```cd projects```. 
 2) In ~/projects, enter ```git clone https://github.com/Pyrestone/jetson-fan-ctl.git```. This clones the github repository "jetson-fan-ctl" into your projects directory.
