@@ -398,10 +398,6 @@ cd ~/projects
 donkey createcar --path d4_sim
 cd d4_sim
 ```
-To transfer the ```myconfig.py``` file to the remote session, execute:
-```
-rsync -avr -e ssh myconfig.py <user_name>@dsmlp-login.ucsd.edu:projects/d4_sim/
-```
 
 
 To transfer data collected in the local session to the remote session:
@@ -420,6 +416,8 @@ The tubs should now appear in the remote session.
 
 The ```rsync``` command syncs directories remotely from one system to another. That means it will only copy the differences between the two directories to save time and reduce load. Since the data does not exist initially on the remote system, the first use of ```rsync``` will copy the whole folder over to the remote system.
 
+Once the data is transferred, close the CPU pod (and verify that it is closed) and open a GPU pod to train on the data.
+
 ### Training on Data
 
 Once the data is transferred to the remote session, training a model on it is the same as on a local session.
@@ -428,11 +426,11 @@ In the **Remote Session**
 
 You can train multiple tubs at the same time with (the paths to the tubs must be separated by commas, **no spaces**).
 ```
-python manage.py train --tub data/tub1,data/tub2 --model models/MODEL_NAME.h5
+python manage.py train --tub data/tub1,data/tub2 --model models/MODEL_NAME.h5 --type=linear
 ```
 This should also has the same effect:
 ```
-python train.py --tub data/tub1 --model models/MODEL_NAME.h5
+python train.py --tub data/tub1 --model models/MODEL_NAME.h5 --type=linear
 ```
 To alter a previous model with new data:
 ```
@@ -443,6 +441,8 @@ python train.py --tub data/tub1 --model models/NEW_MODEL_NAME.h5 --transfer mode
 ```
 pip install imgaug
 ```
+Once your model training has completed, close the GPU pod (verifying that it has closed) and open a CPU pod to transfer the data back to your local machine.
+
 
 ### Transferring Data back to Local Session
 
