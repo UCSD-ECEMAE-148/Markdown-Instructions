@@ -1,8 +1,10 @@
-# VMware Player Installation
+# Virtual Machine with DonkeyCar/DonkeySim AI Simulator
+
+## VMware Player Installation
 
 Virtual machines (VMs) are essentially computers running on computers &mdash; you can simulate a different operating system than the one native to your computer.
 
-## Prerequisites
+### Prerequisites
 
 * Download the VMware Player installer depending on your OS; check [this document](https://docs.google.com/document/d/1OqC7QgtA3oHgbrH-4vJEtEJvEg3qTFuE0Jl154a9kqc/edit) for information for additional information if necessary
   * [**Windows**](https://drive.google.com/file/d/1h8nNZnlbZT5MN0D3sYRS0CRfspewogTQ/view?usp=drive_link)
@@ -17,7 +19,7 @@ Virtual machines (VMs) are essentially computers running on computers &mdash; yo
 
 ![alt text](image-19.png)
 
-## VMware setup
+### VMware setup
 
 When you install the VMware Player, you will be prompted on options for the install. As you go through the install wizard be sure that you:
 
@@ -43,7 +45,7 @@ If you experience an error with respect to *Intel-VT* or *AMD-V*, disable the vi
 
 ![alt text](image-10.png)
 
-## Initial Boot up of VM
+### Initial Boot up of VM
 
 If necessary, enable virtualization in your BIOS/UEFI. When you are ready, start the virtual machine.
 
@@ -51,7 +53,7 @@ If necessary, enable virtualization in your BIOS/UEFI. When you are ready, start
   * User: ucsd
   * Password: UcsdStudent 
 
-### Cutting and Pasting
+#### Cutting and Pasting
 
 * If cutting and pasting is not working from the host to the VM, open a terminal in the VM and run the following commands:
 
@@ -60,7 +62,7 @@ If necessary, enable virtualization in your BIOS/UEFI. When you are ready, start
     sudo apt-get install open-vm-tools-desktop
     sudo reboot now
 ```
-## Connecting Game Controller
+### Connecting Game Controller
 
 Connecting a game controller is useful in order to control the car used in the simulations you will be running and other projects (these can include Playstation or Xbox controllers, or the Logitech controller likely included in your kit).
 
@@ -72,7 +74,7 @@ When connecting a controller, the VM should ask if the input device will be conn
 
 ![alt text](image-1.png)
 
-### Verify Controller connection
+#### Verify Controller connection
 
 The controller will be identified as js0 (or js# if there are multiple joysticks connected to the system)
 
@@ -94,7 +96,7 @@ To test the joystick controls, run in a terminal:
 
 Then interact with the controller to see the values printed to the terminal change (analog inputs should change smoothly, while digital inputs like button presses change between on and off)
 
-### Custom Controller 
+#### Custom Controller 
 
 If your controller is not behaving correctly, or you need to generate new controller mappings, you can generate custom controllers. 
 
@@ -315,7 +317,7 @@ Tubs are subsections of the data folder that you may create to separate training
 
 #### Slow FPS Locally
 
-## UCSD GPU Cluster Instructions
+### UCSD GPU Cluster Instructions
 
 **Do not use the cluster until you are told the GPU cluster is ready to use.**
 
@@ -377,7 +379,7 @@ If there is a pod, delete it with:
 ```
 kubectl delete pod <POD_NAME>
 ```
-### Transfering Data
+#### Transfering Data
 
 In the **Remote Session**, prepare DonkeyCar.
 
@@ -418,7 +420,7 @@ The ```rsync``` command syncs directories remotely from one system to another. T
 
 Once the data is transferred, close the CPU pod (and verify that it is closed) and open a GPU pod to train on the data.
 
-### Training on Data
+#### Training on Data
 
 Once the data is transferred to the remote session, training a model on it is the same as on a local session.
 
@@ -444,7 +446,7 @@ pip install imgaug
 Once your model training has completed, close the GPU pod (verifying that it has closed) and open a CPU pod to transfer the data back to your local machine.
 
 
-### Transferring Data back to Local Session
+#### Transferring Data back to Local Session
 
 This is done similarly using the ```rsync``` command, but the source and destination are flipped since the data is going from the remote session to the local session.
 
@@ -456,7 +458,7 @@ rsync -avr -e ssh <user_name>@dsmlp-login.ucsd.edu:projects/d4_sim/models/<model
 
 Now you can test the car in the local session as before.
 
-## Using a Remote Server for the Simulator
+### Using a Remote Server for the Simulator
 
 The simulator for DonkeyCar (that you found in  ```~/projects/DonkeySimLinux/``` and executed with the file ```donkey_sim.x86_64```) can be run from a remote server instead of locally on your machine.
 
