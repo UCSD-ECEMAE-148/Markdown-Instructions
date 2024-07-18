@@ -400,11 +400,14 @@ cd ~/projects
 donkey createcar --path d4_sim
 cd d4_sim
 ```
+In the **Local Session**
 
-
+To copy over your ```myconfig.py``` file:
+```
+rsync -avr -e ssh myconfig.py <user_name>@dsmlp-login.ucsd.edu:projects/d4_sim/
+```
 To transfer data collected in the local session to the remote session:
 
-In the **Local Session**
 ```
 rsync -avr -e ssh data/<tub_name> <user_name>@dsmlp-login.ucsd.edu:projects/d4_sim/data/
 ```
