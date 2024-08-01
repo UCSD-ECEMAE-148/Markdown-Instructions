@@ -355,6 +355,10 @@ build_ros2
 
 ## 7. Node Configuration
 
+This quick section shows how to select the nodes/launch files that are on your robot. There are differences between ROS1 and ROS2 on how this configuration works so please read accordingly. This configuration is only necessary for the UCSD Robocar Image and NOT UCSD Robocar Simple ROS Image.
+
+### 7.2 ROS2
+
 ## 8. Sensor Visualization
 
 ## 9. Manual Control of Robot with Joystick
