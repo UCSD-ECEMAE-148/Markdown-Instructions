@@ -211,7 +211,7 @@ Link to image on Docker Hub: [Docker Image](https://hub.docker.com/r/djnighti/uc
 
 To pull the image from a terminal:
 ```
-docker pull djnighti/ucsd_robocar:latest
+docker pull djnighti/ucsd_robocar:devel
 ```
 
 ### 4.2 Docker Setup
@@ -241,6 +241,10 @@ xeyes
 ```
 
 If some googly eyes pop up, X_11 is ready to go. IF X_11 PORT FORWARDING IS NOT SETUP, follow steps [here](https://gitlab.com/djnighti/ucsd_robo_car_simple_ros/-/blob/master/x11_forwarding_steps.txt) to get it set up. Then come back here to continue the steps below.
+
+#### X-Forwarding Without the Virtual Machine
+On windows, I recommend downloading moba xterm, which should have x11-forwarding set up by default https://mobaxterm.mobatek.net/  
+On mac, you can download xquartz from xquartz.org. Here is a link describing how to set it up: https://drive.google.com/file/d/1ozFIgeIVAWg04S_bMru95JwThPDrq6Fk/view?usp=sharing  
 
 #### 4.2.2 Update Docker Daemon
 
