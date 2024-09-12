@@ -8,9 +8,9 @@ A Jetson Nano runs off of a externally mounted microSD card, which will first ne
 
 #### Using Etcher to Write UCSD Image
 
-1) Using an adapter, plug your mircoSD card into a computer with the zipped image file downloaded
-2) Open Etcher, select the zipped file under "Flash from file" and the microSD card under "Select target", and click "Flash!" to write the image to the microSD card
-3) After flashing is complete, eject the microSD card from your computer and plug it into the back of the Jetson Nano. NOTE: this is a push-in-to-lock and push-in-to-unlock the uSD card. Please do not pull the uSD card out of the slot before unlocking it, otherwise you may damage your JTN and or the uSD card
+1) Using an adapter, plug your mircoSD card into a computer with the zipped image file downloaded  
+2) Open Etcher, select the zipped file under "Flash from file" and the microSD card under "Select target", and click "Flash!" to write the image to the microSD card  
+3) After flashing is complete, eject the microSD card from your computer and plug it into the back of the Jetson Nano. NOTE: this is a push-in-to-lock and push-in-to-unlock the uSD card. Please do not pull the uSD card out of the slot before unlocking it, otherwise you may damage your JTN and or the uSD card  
 
 ### MobaXterm Installation
 
