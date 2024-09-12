@@ -12,14 +12,14 @@ A Jetson Nano runs off of a externally mounted microSD card, which will first ne
 2) Open Etcher, select the zipped file under "Flash from file" and the microSD card under "Select target", and click "Flash!" to write the image to the microSD card  
 3) After flashing is complete, eject the microSD card from your computer and plug it into the back of the Jetson Nano. NOTE: this is a push-in-to-lock and push-in-to-unlock the uSD card. Please do not pull the uSD card out of the slot before unlocking it, otherwise you may damage your JTN and or the uSD card  
 
-### MobaXterm Installation
+## MobaXterm Installation
 
-A good tool for windows machines when doing embedded programming is MobaXterm, which offers more robust ssh communication with single board computers. [Here](https://mobaxterm.mobatek.net/download-home-edition.html) you can find the download link.
+A good tool for Windows machines when doing embedded programming is MobaXterm, which offers more robust SSH communication with single board computers. [Here](https://mobaxterm.mobatek.net/download-home-edition.html) you can find the download link.
 
-1) Click on the green "MobaXterm Home Edition v24.2 (Installer Edition)" to download a zip file
-2) Extract the zip file and launch the installer from the file explorer (not the .dat file)
-3) Follow the instructions in the installer
-4) When installation is complete, launch MobaXterm and select "Start new terminal" to be placed on the command line
+1. Click on the green "MobaXterm Home Edition v24.2 (Installer Edition)" to download a zip file.
+2. Extract the zip file and launch the installer from the file explorer (not the .dat file).
+3. Follow the instructions in the installer.
+4. When installation is complete, launch MobaXterm and select "Start new terminal" to be placed on the command line.
 
 ### Powering Jetson Nano
 
