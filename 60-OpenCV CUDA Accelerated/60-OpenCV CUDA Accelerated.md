@@ -11,30 +11,13 @@ Department of Mechanical and Aerospace Engineering
 University of California, San Diego  
 9500 Gilman Dr, La Jolla, CA 92093
 
-	![][image1]  
-	![][image2]  
-	![][image3]  
-		
 
 \# Installing an Open Source Computer Vision (OpenCV) package  with CUDA Support  
 \# As of Jan 2020, NVIDIA is not providing OpenCV optimized to use CUDA (GPU acceleration).  
 \# Search the web if you are curious why.  
 \# [https://forums.developer.nvidia.com/t/opencv-cuda-python-with-jetson-nano/72902](https://forums.developer.nvidia.com/t/opencv-cuda-python-with-jetson-nano/72902)
 
-“  
-*Hi,*
-
-*Replied your question inline:*
-
-*Jetson Nano GPU does not support OpenCV acceleration (through opencl) with Python*
-
-*Our default OpenCV does support GPU acceleration.*
-
-*The common issue is there are some features that have not been enabled.*
-
-*(This feature often requires third-party library installation)*
-
-“  
+Interesting youtube video:
 [https://www.youtube.com/watch?v=art0-99fFa8](https://www.youtube.com/watch?v=art0-99fFa8)
 
 # Checking openCV build information
@@ -44,11 +27,12 @@ University of California, San Diego
 \# if not,  we build OpenCV from source to use CUDA Acceleration
 
 \# From a terminal:  
+```
 python  
 \>\>import cv2  
 \>\>print cv2.getBuildInformation()   
-\>\>exit ()  
-   
+\>\>exit ()
+```
 \# ex:
 
     NVIDIA CUDA:                   YES (ver 10.2, CUFFT CUBLAS FAST\_MATH)  
