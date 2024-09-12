@@ -429,17 +429,17 @@ Once the data is transferred to the remote session, training a model on it is th
 
 In the **Remote Session**
 
-You can train multiple tubs at the same time with (the paths to the tubs must be separated by commas, **no spaces**).
+If you didn't use any tubs and just have your data in the data folder, this command should do the trick:
 ```
-python manage.py train --tub data/tub1,data/tub2 --model models/MODEL_NAME.h5 --type=linear
+python train.py --model=models/yourmodelname.h5 --type=linear --tubs=data/
+```   
+You can train multiple tubs at the same time with (the paths to the tubs must be separated by commas, **no spaces**). 
 ```
-This should also has the same effect:
-```
-python train.py --tub data/tub1 --model models/MODEL_NAME.h5 --type=linear
+python train.py --tub=data/tub1,data/tub2 --model=models/MODEL_NAME.h5 --type=linear
 ```
 To alter a previous model with new data:
 ```
-python train.py --tub data/tub1 --model models/NEW_MODEL_NAME.h5 --transfer models/OLD_MODEL_NAME.h5
+python train.py --tub=data/tub1 --model=models/NEW_MODEL_NAME.h5 --transfer=models/OLD_MODEL_NAME.h5
 ```
 
 **Note** : If "imgaug" is not availible and Donkeysim generates an error, run 
@@ -483,4 +483,3 @@ https://www.twitch.tv/roboticists or https://www.twitch.tv/roboticists2
 
 The car should appear momentarily after you run the same command to start the car if you have configured the host properly.
 
-## ROS 2
