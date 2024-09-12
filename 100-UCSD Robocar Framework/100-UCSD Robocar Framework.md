@@ -603,6 +603,47 @@ The basics package was created to give a jump start on accessing sensor data and
 
 
 ## 11. Navigation
+This chapter is dedicated to the various methods for the robot to navigate autonomously.
+
+### 11.1 Lane Detection 
+Goal: Be able to identify road lines with opencv and ROS to be able to autonomously navigate around any given track. 
+
+To achieve this, the hardware on the robot must be calibrated for the track environment which is explained in detail below. Once the calibration is complete, launch the robot in an autonomous state and tune the calibration parameters as needed.
+
+### 11.1.1 Calibration Process
+This section is a guide for calibrating the camera to detect road lines as well as for steering and speed control.
+While inside docker container, run the calibration script per the instructions found at 
+UCSD Robocar ROS Image: [ucsd_robocar_nav1_pkg] (https://gitlab.com/ucsd_robocar/ucsd_robocar_nav1_pkg#work-flow-to-use-this-repository) (ROS1) or [ucsd_robocar_nav2_pkg] (https://gitlab.com/ucsd_robocar2/ucsd_robocar_nav2_pkg#work-flow-to-use-this-repository) (ROS2)
+
+### 11.1.1.1 ROS1 
+Place the robot on the class provided stand. The wheels of the robot should be clear to spin.
+From the terminal
+```
+roslaunch ucsd_robocar_nav1_pkg camera_nav_calibration_launch.launch
+```
+
+11.1.1.2 ROS2
+Place the robot on the class provided stand. The wheels of the robot should be clear to spin.
+From the terminal
+```
+source_ros2
+```
+Modify the hardware config file to turn on the vesc_without_odom and the camera you have equipped
+```
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/car_config.yaml
+```
+Then modify the node config file to activate only all_components and camera_nav_calibration launch files
+```
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/node_config.yaml
+```
+Then rebuild and launch 
+```
+build_ros2
+```
+```
+ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
+```
+
 
 ## 12. Data Collection
 
