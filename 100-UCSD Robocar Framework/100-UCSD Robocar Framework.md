@@ -1,6 +1,46 @@
 # UCSD Robocar Framework
 
 ## 1. Introduction
+The UCSD Robocar framework is primarily maintained and developed by Dominic Nightingale right here at UC San Diego.  
+
+UCSD Robocar uses ROS and ROS2 for controlling our scaled robot cars which can vary from traditional programming or machine learning to achieve an objective. The framework works with a vast selection of sensors and actuation methods in our inventory making it a robust framework to use across various platforms. Has been tested on 1/16, 1/10, 1/5 scaled robot cars and soon our go-karts.  
+
+### 1.1 About
+This framework was originally developed as one of Dominic’s senior capstone projects as an undergraduate and has been under constant development throughout his graduate program. The framework provides the ability to easily control a car-like robot as well as performing autonomous tasks. It is currently being used to support his thesis in learning-model predictive control (LMPC).  
+
+The framework is also being used to teach undergraduates the fundamentals of using gitlab, docker, python, openCV and ROS. The students are given the task to use the framework with their robots to perform autonomous laps on a track by first going through a calibration process that's embedded into the framework. The students then have to come up with their own final projects for the class that can be supported by the framework, which can vary from car following, SLAM applications, path planning, city driving behaviors, Human-machine-interfacing and so much more.  
+
+### 1.2 What's Being Used
+#### 1.2.1 Embedded Computers
+There are 3 main computers that have been used to develop and test this framework which belong to the NVIDIA Jetson family.  
+Jetson Nano  
+Jetson Xavier Nx  
+Jetson AGX Xavier  
+#### 1.2.2 Ubuntu
+The host OS on all the Jetson computers use Ubuntu18 which is flashed through NVIDIA's Jetpack image. However, the docker image uses Ubuntu20 in order to use ROS2 without worrying about package installation issues  
+#### 1.2.3 Gitlab
+This is where all the code for the entire framework is managed and developed. Gitlab provides a service similar to google drive but for programs! It's especially convenient in terms of deploying code into embedded computers.  
+#### 1.2.4 Docker
+This tool is being used to expedite the setup process on the computers. To get the docker image working, the Jetson just needs to be flashed with the Jetpack 4.6 image provided by NVIDIA and then simply pull the UCSD Robocar docker image from docker hub onto the Jetson. This allows for plug-n-play capabilities as long as all the hardware is connected to the Jetson properly.  
+#### 1.2.5 ROS
+The framework allows for both ROS-Noetic and ROS2-Foxy to work together through the ROS bridge or independently depending on the application.  
+
+### 1.3 Recommendations
+#### 1.3.1 VS Code IDE
+Microsoft Visual Studio IDE is an excellent development tool for coding especially because of all the free plug-ins that can be added.  
+Plug-ins recommended:  
+Python  
+Docker  
+Remote - SSH  
+#### 1.3.2 Virtual Machines
+If having software related issues, a virtual machine can possibly solve the issues and also provide a linux based interface to use with the jetson which is usually much smoother than with windows or mac.  
+Below are some links to install Virtual machine software and a virtual machine image that runs Ubuntu20.04, has VS code (with all plug-ins mentioned above), docker and the UCSDrobocar docker image installed already.  
+VMware Software  
+UCSD Robocar VM image for VMware  
+Hostname: ucsdrobocar-vm  
+Username: robocar  
+Password: ucsdrobocar  
+
 
 ## 2. UCSD Robocar Framework Breakdown
 
