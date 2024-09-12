@@ -403,7 +403,45 @@ This quick section shows how to select the nodes/launch files that are on your r
 
 ### 7.2 ROS2
 
-## 8. Sensor Visualization
+## 8. Sensor Visualization  
+After selecting the hardware that's equipped on the robot, let's visually verify that the sensors are working. The current config file that is launched will display laser scan and image data. If you have more sensors you want to visualize, feel free to add them through rviz.  
+
+### 8.1 ROS1 
+Here is the list of available launch files for all the sensors in the sensor1_pkg
+
+Place the robot on the class provided stand. The wheels of the robot should be clear to spin.
+From terminal
+```
+source_ros1
+```
+```
+roslaunch ucsd_robocar_nav1_pkg sensor_visualization.launch
+```
+### 8.2 ROS2
+Here is the list of available launch files for all the sensors in the sensor2_pkg
+
+Place the robot on the class provided stand. The wheels of the robot should be clear to spin.
+From the terminal
+```
+source_ros2
+```
+Modify the hardware config file to turn on the sensors you have plugged in and want to visualize.
+```
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/car_config.yaml
+```
+Then modify the node config file to activate all_components and sensor_visualization launch files
+```
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/node_config.yaml
+```
+
+Then rebuild and launch 
+```
+build_ros2
+```
+```
+ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
+```
+NOTE: If image data does not show up automatically, un-check and check its box in the display panel in rviz.
 
 ## 9. Manual Control of Robot with Joystick
 
