@@ -426,7 +426,7 @@ build_ros2
 After selecting the hardware that's equipped on the robot, let's visually verify that the sensors are working. The current config file that is launched will display laser scan and image data. If you have more sensors you want to visualize, feel free to add them through rviz.  
 
 ### 8.1 ROS1 
-Here is the list of available launch files for all the sensors in the sensor1_pkg
+Here is the list of available launch files for all the sensors in the [sensor1_pkg](https://gitlab.com/ucsd_robocar/ucsd_robocar_sensor1_pkg/-/tree/master/launch)
 
 Place the robot on the class provided stand. The wheels of the robot should be clear to spin.
 From terminal
@@ -437,7 +437,7 @@ source_ros1
 roslaunch ucsd_robocar_nav1_pkg sensor_visualization.launch
 ```
 ### 8.2 ROS2
-Here is the list of available launch files for all the sensors in the sensor2_pkg
+Here is the list of available launch files for all the sensors in the [sensor2_pkg](https://gitlab.com/ucsd_robocar2/ucsd_robocar_sensor2_pkg/-/tree/master/launch)
 
 Place the robot on the class provided stand. The wheels of the robot should be clear to spin.
 From the terminal
@@ -613,7 +613,7 @@ To achieve this, the hardware on the robot must be calibrated for the track envi
 ### 11.1.1 Calibration Process
 This section is a guide for calibrating the camera to detect road lines as well as for steering and speed control.
 While inside docker container, run the calibration script per the instructions found at 
-UCSD Robocar ROS Image: [ucsd_robocar_nav1_pkg] (https://gitlab.com/ucsd_robocar/ucsd_robocar_nav1_pkg#work-flow-to-use-this-repository) (ROS1) or [ucsd_robocar_nav2_pkg] (https://gitlab.com/ucsd_robocar2/ucsd_robocar_nav2_pkg#work-flow-to-use-this-repository) (ROS2)
+UCSD Robocar ROS Image: [ucsd_robocar_nav1_pkg](https://gitlab.com/ucsd_robocar/ucsd_robocar_nav1_pkg#work-flow-to-use-this-repository) (ROS1) or [ucsd_robocar_nav2_pkg](https://gitlab.com/ucsd_robocar2/ucsd_robocar_nav2_pkg#work-flow-to-use-this-repository) (ROS2)
 
 ### 11.1.1.1 ROS1 
 Place the robot on the class provided stand. The wheels of the robot should be clear to spin.
