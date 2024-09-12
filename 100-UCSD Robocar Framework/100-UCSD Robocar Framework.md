@@ -606,6 +606,8 @@ The basics package was created to give a jump start on accessing sensor data and
 This chapter is dedicated to the various methods for the robot to navigate autonomously.
 
 ### 11.1 Lane Detection 
+https://gitlab.com/ucsd_robocar2/ucsd_robocar_lane_detection2_pkg/-/blob/master/README.md?ref_type=heads 
+Above is a great description of how the lane detection node works.
 Goal: Be able to identify road lines with opencv and ROS to be able to autonomously navigate around any given track. 
 
 To achieve this, the hardware on the robot must be calibrated for the track environment which is explained in detail below. Once the calibration is complete, launch the robot in an autonomous state and tune the calibration parameters as needed.
@@ -643,6 +645,7 @@ build_ros2
 ```
 ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
 ```
+
 
 
 ## 12. Data Collection
