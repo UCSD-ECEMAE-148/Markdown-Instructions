@@ -402,6 +402,25 @@ build_ros2
 This quick section shows how to select the nodes/launch files that are on your robot. There are differences between ROS1 and ROS2 on how this configuration works so please read accordingly. This configuration is only necessary for the UCSD Robocar Image and NOT UCSD Robocar Simple ROS Image.
 
 ### 7.2 ROS2
+This quick section shows how to select the nodes/launch files that are on your robot. There are differences between ROS1 and ROS2 on how this configuration works so please read accordingly. This configuration is only necessary for the UCSD Robocar Image and NOT UCSD Robocar Simple ROS Image.
+
+#### 7.1 ROS1 
+In ROS1, the launch files for the various capabilities of the robot are written and called individually and can be found in the launch directory in the ucsd_robocar_nav1_pkg.
+
+#### 7.2 ROS2
+Similar to the hardware configuration in ROS2, a dynamically built launch file is used to launch all the different nodes/launch files for various purposes such as data collection, navigation algorithms and controllers. This new way of creating launch files has now been simplified by just adding an entry to a yaml file of where the launch file is and a separate yaml file to indicate to use that launch file or not. There is only one file to modify and all that needs to be changed is either putting a “0” or a “1” next to the list of nodes/launch files. To select the nodes that you want to use, put a “1” next to it otherwise put a “0” which means it will not activate.
+
+Modify and save the node config to launch the algorithm(s) of your choice and then recompile.
+From the terminal
+```
+source_ros2
+```
+```
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/node_config.yaml
+```
+```
+build_ros2
+```
 
 ## 8. Sensor Visualization  
 After selecting the hardware that's equipped on the robot, let's visually verify that the sensors are working. The current config file that is launched will display laser scan and image data. If you have more sensors you want to visualize, feel free to add them through rviz.  
@@ -444,8 +463,144 @@ ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
 NOTE: If image data does not show up automatically, un-check and check its box in the display panel in rviz.
 
 ## 9. Manual Control of Robot with Joystick
+This feature is only supported in the UCSD Robocar Image and NOT UCSD Robocar Simple ROS Image
+If using Adafruit and not VESC, anywhere below that says vesc you can replace with adafruit
+
+A deadman switch is also enabled which means you must be pressing the button (LB on logitech) down in order for you to send commands to your robots motors.
+
+The joysticks on the controller are what control the robot to move forwards/backwards and turn.
+
+Place the robot on the class provided stand. The wheels of the robot should be clear to spin.
+
+### 9.1 ROS1 
+Place the robot on the class provided stand. The wheels of the robot should be clear to spin.
+From the terminal
+```
+source_ros1
+```
+```
+roslaunch ucsd_robocar_nav1_pkg teleop_joy_vesc.launch
+```
+### 9.2 ROS2
+Place the robot on the class provided stand. The wheels of the robot should be clear to spin.
+From the terminal
+```
+source_ros2
+```
+Modify the hardware config file to turn on the vesc_with_odom
+```
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/car_config.yaml
+```
+
+Then modify the node config file to activate all_components and f1tenth_vesc_joy_launch launch files
+```
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/node_config.yaml
+```
+
+Then rebuild and launch
+```
+build_ros2
+```
+```
+ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
+```
 
 ## 10. Integrating New Packages/Code into the Framework
+Integrating a new package can be done many ways so do not take this approach as the best or only method but simply a method for integration. The example below will be in ROS2 but the general procedure is the same in ROS1.
+ 
+### 10.1 Integrating a ROS Package
+While in the docker container source ros2 and move in to the src directory of the ros2_ws
+```
+source_ros2
+```
+```
+cd src/
+```
+
+Now lets create a new node by using an example node from the ros2 guidebook which gives all the code for the node, setup.py and launch files as well as step-by-step terminal commands to create everything including the package itself. 
+Package name: counter_package
+Node name: counter_publisher.py
+Launch file name: counter_package_launch_file.launch.py
+
+After completing step 2, notice the “counter_package” package in the same directory as “ucsd_robocar_hub2” package
+```
+ls src/
+```
+
+Adding your package to the nav2 node configuration and node package location lists. To do this, all we need is the name of the package that we want to integrate and the name of the launch file we want to use from that package. In the example node above, the package name is “counter_package” and its launch file is called “counter_package_launch_file.launch.py”. Lets add them to “node_pkg_locations_ucsd.yaml” and to “node_config.yaml” which are both in the NAV2 package 
+```
+source_ros2
+```
+```
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/node_pkg_locations_ucsd.yaml
+```
+```
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/node_config.yaml
+```
+Once added, make sure that the “counter_package_launch_file.launch.py” file is set to “1” in the “node_config.yaml” to make sure it's activated as well as any other nodes that are desired to be run.
+
+Rebuild the workspace
+```
+build_ros2
+```
+Now launch!
+```
+ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
+```
+Verify the node is running (which is called “counter_publisher”) and echo the topic (which is called “/counter”)
+```
+ros2 node list
+```
+```
+ros2 topic echo /counter
+```
+
+That's it! A new package has just been integrated into the framework and now can be easily called with any of the framework's launch files.
+
+10.2 Integrating supporting files
+Supporting files can range from yaml files, data sets, machine learning models and general source code that has nothing to do with ROS but may be required for the node to run properly. Once these files are integrated into the ROS framework, they are used the same exact way as they would be when ROS was not being used, which basically means we need to tell ROS where to locate these files so it can access them. Below is a simple example of a ROS package structure.
+```
+ros2_ws
+	src
+		example_package_name
+			config
+			launch
+			example_package_name
+				example_node.py
+			setup.py
+```
+Now let's say our node “example_node.py” requires an external class or method from a pure python file called “python_only.py”, Lets create a new directory or submodule in “example_package_name” and call it “example_submodule_name” and then put the pure python file there
+```
+ros2_ws
+	src
+		example_package_name
+			config
+			launch
+			example_package_name
+				example_submodule_name
+					python_only.py
+				example_node.py
+			setup.py
+```
+This is the general idea however the submodule placement is arbitrary as long as you are consistent in the code where things are located. For example, maybe the node requires a pre-trained machine learning model for it to run successfully and makes more sense to have a models folder adjacent to the launch and config directories as shown below
+```
+ros2_ws
+	src
+		example_package_name
+			config
+			launch
+			models
+				example_model.pt
+			example_package_name
+				example_node.py
+			setup.py
+```
+Again, this placement is arbitrary but it's good to form a convention so others can understand more easily. After the new external files have been added to the package, both the “setup.py” and “example_node.py” files need to be updated/modified so they can access the supporting files. See this example of modifying these files in the ROS2 guidebook.
+
+10.3 Integrating new algorithms into the basics package
+The basics package was created to give a jump start on accessing sensor data and controlling the actuators on the robot without having to focus too much on the ROS implementation. The pre-created nodes have all the ROS-functionality completed and only require the algorithms to process the sensor data and/or control signals for moving the robot. Each node in the package (nodes described in the readme.md link above) has a callback function which provides the starting point for the user to implement their algorithms with ease.
+
+
 
 ## 11. Navigation
 
