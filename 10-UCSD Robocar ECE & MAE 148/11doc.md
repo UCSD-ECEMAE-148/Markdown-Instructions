@@ -1,7 +1,7 @@
-**GPS Path Following**
+# GPS Path Following
 
 
-# GNSS Configuration:
+## GNSS Configuration:
 
 ## How to Plug PointOneNav to Donkeycar
 
