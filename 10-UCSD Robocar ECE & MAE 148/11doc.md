@@ -175,8 +175,8 @@ for anything.
 
     d.  Erase the path in memory (which will also reset the origin).
 
-        i.  Make sure to reset the origin!!! If you didn't need to erase
-            the path in memory you can just
+        Note:  Make sure to reset the origin!!! If you didn't need to erase
+            the path in memory you can just go ahead with toggling recording
 
     e.  Toggle recording on.
 
