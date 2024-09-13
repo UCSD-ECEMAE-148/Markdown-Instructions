@@ -20,7 +20,7 @@ University of California, San Diego
 
 ![](./10images/media/image45.png)
 
-![](./10images/media/image21.png){
+![](./10images/media/image21.png)
 
 # Table of Contents
 
@@ -128,7 +128,7 @@ Setup](#single-board-computer-sbc-basic-setup) 5**
 This document was derived from the DIY RoboCar - Donkey Car Framework
 
 Reference information can be found at
-[[http://docs.donkeycar.com]{.underline}](http://docs.donkeycar.com)
+[http://docs.donkeycar.com](http://docs.donkeycar.com)
 
 At UC San Diego's Introduction to Autonomous Vehicles class (ECE
 MAE148), we use an AI Framework called Donkey Car which is based on Deep
@@ -174,30 +174,26 @@ then follow the related instructions.
 # Single Board Computer (SBC) Basic Setup
 
 We will be using the Ubuntu Linux distribution. In the class you have
-access to a virtual
-
-machine image file with Ubuntu.
+access to a virtual machine image file with Ubuntu.
 
 We won't install ROS2 directly into the SBC, we will be using Docker
 images and containers.
 
 You will install OpenCV from source as part of your learning on
-compiling and building
-
-software from source.
+compiling and building software from source.
 
 ## Jetson Nano (JTN) Configuration
 
-[[Instructions to configure the Jetson
-Nano]{.underline}](https://docs.google.com/document/d/1TF1uGAFeDARNwbPkgg9xg4NvWPJvrsHW2I_IN9dWQH0/edit?usp=sharing)
+[Instructions to configure the Jetson
+Nano](https://docs.google.com/document/d/1TF1uGAFeDARNwbPkgg9xg4NvWPJvrsHW2I_IN9dWQH0/edit?usp=sharing)
 
 ## Jetson Xavier NX (JNX) Configuration
 
-[[Instructions to Configure the Jetson Xaviver
-NX]{.underline}](https://docs.google.com/document/d/1mXgN9DcAj30HAsbfrHNCP-YEYqKWPTbcUssRI1Xab1A/edit?usp=sharing)
+[Instructions to Configure the Jetson Xaviver
+NX](https://docs.google.com/document/d/1mXgN9DcAj30HAsbfrHNCP-YEYqKWPTbcUssRI1Xab1A/edit?usp=sharing)
 
-[[Archive location to previous JetPack
-versions]{.underline}](https://developer.nvidia.com/embedded/jetpack-archive)
+[Archive location to previous JetPack
+versions](https://developer.nvidia.com/embedded/jetpack-archive)
 
 ## Editing Remotely with Jupyter Notebooks
 
@@ -209,12 +205,12 @@ Install Jupyter notebook on your Jetson:
 
   -----------------------------------------------------------------------
 
-[[https://ljvmiranda921.github.io/notebook/2018/01/31/running-a-jupyter-notebook/]{.underline}](https://ljvmiranda921.github.io/notebook/2018/01/31/running-a-jupyter-notebook/)
+[https://ljvmiranda921.github.io/notebook/2018/01/31/running-a-jupyter-notebook/](https://ljvmiranda921.github.io/notebook/2018/01/31/running-a-jupyter-notebook/)
 
 Help document for editing using Jupyter notebook:
 
-[[Conifguring Jupyter Notebook on
-SSH]{.underline}](https://docs.google.com/document/d/1ZNACJvKmQNnN7QNMwgqnzjrs9JDdFbiqVFHAuhgillQ/edit?usp=sharing)
+[Conifguring Jupyter Notebook on
+SSH(https://docs.google.com/document/d/1ZNACJvKmQNnN7QNMwgqnzjrs9JDdFbiqVFHAuhgillQ/edit?usp=sharing)
 
 # Hardware Setup 
 
@@ -222,9 +218,9 @@ You should consider breaking the work on building the robots per team
 member:
 
 a)  Someone could start to build OpenCV GPU accelerated in parallel
-    while you build the robot. [[It will take several hours building
+    while you build the robot. [It will take several hours building
     OpenCV from
-    source]{.underline}](https://docs.google.com/document/d/1HX2zmjbVsyLnliEQ8wp97Y453g5qNAYHWtFQiKQ0elA/edit?usp=sharing).
+    source](https://docs.google.com/document/d/1HX2zmjbVsyLnliEQ8wp97Y453g5qNAYHWtFQiKQ0elA/edit?usp=sharing).
     Try to divide the work by team members ...
 
 b)  Start designing, 3D Printing, Laser Cutting the parts
@@ -248,10 +244,10 @@ based on the sensors on brushless motors (sensored) or to some extent,
 specially using the latest VESCs and firmware, it is also available with
 brushless motors without sensors (sensorless).
 
-[[https://vesc-project.com/]{.underline}](https://vesc-project.com/)
+[https://vesc-project.com/(https://vesc-project.com/)
 
-[[VESC Setup
-Instructions]{.underline}](https://docs.google.com/document/d/1Y5DdvWdtFjbeyGIVJyWAb8Wrq6M1MkCkMPiDgT4LoQY/edit?usp=sharing)
+[VESC Setup
+Instructions](https://docs.google.com/document/d/1Y5DdvWdtFjbeyGIVJyWAb8Wrq6M1MkCkMPiDgT4LoQY/edit?usp=sharing)
 
 ## Logitech F710 controller 
 
