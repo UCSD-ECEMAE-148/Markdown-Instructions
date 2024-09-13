@@ -1,31 +1,6 @@
-Version 1.8 - 26Nov2022
 
-Prepared by
 
-Dr. Jack Silberman
-
-Department of Electrical and Computer Engineering
-
-and
-
-Dominic Nightingale
-
-Department of Mechanical and Aerospace Engineering
-
-University of California, San Diego
-
-9500 Gilman Dr, La Jolla, CA 92093
-
-![](./60images/media/image17.png){width="3.1313626421697287in"
-height="0.7398272090988627in"}
-
-![](./60images/media/image2.png){width="1.4010422134733158in"
-height="1.4010422134733158in"}
-
-![](./60images/media/image10.png){width="3.1548917322834646in"
-height="0.6718755468066492in"}
-
-\# Installing an Open Source Computer Vision (OpenCV) package with CUDA
+# Installing an Open Source Computer Vision (OpenCV) package with CUDA
 Support
 
 \# As of Jan 2020, NVIDIA is not providing OpenCV optimized to use CUDA
@@ -36,37 +11,20 @@ Support
 \#
 [[https://forums.developer.nvidia.com/t/opencv-cuda-python-with-jetson-nano/72902]{.underline}](https://forums.developer.nvidia.com/t/opencv-cuda-python-with-jetson-nano/72902)
 
-"
-
-*Hi,*
-
-*Replied your question inline:*
-
-*Jetson Nano GPU does not support OpenCV acceleration (through opencl)
-with Python*
-
-*Our default OpenCV does support GPU acceleration.*
-
-*The common issue is there are some features that have not been
-enabled.*
-
-*(This feature often requires third-party library installation)*
-
-"
-
-[[https://www.youtube.com/watch?v=art0-99fFa8]{.underline}](https://www.youtube.com/watch?v=art0-99fFa8)
+Youtube Video about the process:
+[https://www.youtube.com/watch?v=art0-99fFa8](https://www.youtube.com/watch?v=art0-99fFa8)
 
 # Checking openCV build information
 
-\# ssh to the Single Board Computer (SBC)
+ ssh to the Single Board Computer (SBC)
 
-\# Check to see if OpenCV for CUDA is available, search on the terminal
+ Check to see if OpenCV for CUDA is available, search on the terminal
 output for CUDA),
 
-\# if not, we build OpenCV from source to use CUDA Acceleration
+if not, we build OpenCV from source to use CUDA Acceleration
 
-\# From a terminal:
-
+From a terminal:
+```
 python
 
 \>\>import cv2
@@ -74,8 +32,8 @@ python
 \>\>print cv2.getBuildInformation()
 
 \>\>exit ()
-
-\# ex:
+```
+ex:
 
 NVIDIA CUDA: YES (ver 10.2, CUFFT CUBLAS FAST_MATH)
 
@@ -430,12 +388,8 @@ using
 > #ModuleNotFoundError: No module named \'cv2\'
 
 \# If you don't see the version of the OpenCV that you built listed, it
-is because you forgot to delete the previous
-
-\# OpenCV version that was installed, go back to this document "Removing
-old version of OpenCV" and then
-
-\# build and install OpenCV again.
+might be because you forgot to delete the previous OpenCV version that was installed, go back to this document "Removing
+old version of OpenCV" and then build and install OpenCV again. If OpenCV shows up in jtop then disregard this, there is some other issue preventing it from showing up.
 
 \# What version of python3 do you have?
 
@@ -499,7 +453,7 @@ ln -s /usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.so
 cv2.so
 
 Checking install for python3
-
+```
 python3
 
 import cv2
@@ -507,7 +461,7 @@ import cv2
 cv2.\_\_version\_\_
 
 exit ()
-
+```
 \# Resulting on something similar to this
 
 **jetson@ucsdrobocar-xxx-yy**:**\~**\$ python3
@@ -545,9 +499,9 @@ information.
 > \>\>\> exit ()
 
 \# Here is quicker way to test cv2 on Python 3
-
+```
 python3 -c \'import cv2 as cv; print(cv.\_\_version\_\_)\'
-
+```
 > 4.6.0
 >
 > \# or
