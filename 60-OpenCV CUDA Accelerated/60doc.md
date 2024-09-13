@@ -55,9 +55,7 @@ jtop
 
 6
 
-![](./60images/media/image15.png){width="4.536458880139983in"
-height="2.590980971128609in"}
-
+![](./60images/media/image15.png)
 \# If OpenCV is not using CUDA acceleration, let\'s build and install
 the latest OpenCV optimized
 
@@ -82,14 +80,10 @@ a SBC such as the**
 hours to complete.**
 
 **\# For the JTN, please make sure the fan is installed including
-software to enable high**
-
-**\# CPU power mode**
+software to enable high CPU power mode**
 
 \# Better do it overnight. Be patient, please keep in mind that you are
-using a low power
-
-\# single board computer (SBC)
+using a low power single board computer (SBC)
 
 \# Make sure you are using the external power supply to power the
 jetson, not a USB cable.
@@ -110,13 +104,12 @@ jetson password
 
 \# Reconnecting on the same ssh session is not trivial
 
-![](./60images/media/image11.png){width="6.5in"
-height="1.7222222222222223in"}
+![](./60images/media/image11.png)
 
 ## \# Using a Linux Host? Use Screen
 
 \# You should consider using
-[[screen]{.underline}](https://ma.ttias.be/screen-a-must-for-ssh/) to
+[screen](https://ma.ttias.be/screen-a-must-for-ssh/) to
 enable you to reconnect to a previous ssh session.
 
 \# Do you need to install screen?
@@ -192,7 +185,7 @@ You can pick up a previous screen-session, by typing*
 \#
 
 \# Besides htop or top, there is another cool utility called
-[[jetson_stats]{.underline}](https://github.com/rbonghi/jetson_stats)
+[jetson_stats](https://github.com/rbonghi/jetson_stats)
 
 sudo apt-get install python3-pip
 
@@ -211,13 +204,11 @@ jtop
 You can use jtop to add more swap space using the left and right keys
 and clicking the plus button
 
-![](./60images/media/image8.png){width="4.005208880139983in"
-height="1.776890857392826in"}
+![](./60images/media/image8.png)
 
 Add 4G of swap and press \<S\> to enable it.
 
-![](./60images/media/image5.png){width="3.0156255468066493in"
-height="2.161738845144357in"}
+![](./60images/media/image5.png)
 
 ## Removing old version of OpenCV 
 
@@ -242,7 +233,7 @@ cd projects
 \# For Jetson Nano
 
 git clone
-[[https://github.com/mdegans/nano_build_opencv.git]{.underline}](https://github.com/mdegans/nano_build_opencv.git)
+[https://github.com/mdegans/nano_build_opencv.git](https://github.com/mdegans/nano_build_opencv.git)
 
 cd nano_build_opencv
 
@@ -255,12 +246,9 @@ cores.
 
 \# First see what you have installed using jtop use option INFO press 7
 
-![](./60images/media/image13.png){width="4.294622703412074in"
-height="3.0062357830271216in"}
+![](./60images/media/image13.png)
 
-![](./60images/media/image4.png){width="4.84745406824147in"
-height="3.2258858267716537in"}
-
+![](./60images/media/image4.png)
 #Remove the 8.7 from the CUDA_ARCH_BIN version, it causes a
 compatibility issue
 
@@ -279,12 +267,11 @@ JOBS=2
 \# save the file / exit nano
 
 \#
-[[https://opencv.org/releases/]{.underline}](https://opencv.org/releases/)
+[https://opencv.org/releases/](https://opencv.org/releases/)
 
 \# look for the latest version
 
-![](./60images/media/image3.png){width="3.8030096237970255in"
-height="2.6568252405949258in"}
+![](./60images/media/image3.png)
 
 \# As of 24Nov23, **4.8.0** is the latest version
 
@@ -295,8 +282,7 @@ performance of the Jetson
 
 \# To make it enabled at boot too, press e
 
-![](./60images/media/image14.png){width="3.965906605424322in"
-height="2.9303641732283463in"}
+![](./60images/media/image14.png)
 
 \# From a terminal
 
@@ -330,8 +316,7 @@ window then
 
 \# ex:
 
-![](./60images/media/image7.png){width="3.9427088801399823in"
-height="2.58424321959755in"}
+![](./60images/media/image7.png)
 
 \# After a few hours you see that you need to enter a little information
 to finish the build. That is when we have
@@ -369,10 +354,9 @@ jtop
 
 \# look for the OpenCV version and that it was compiled with CUDA
 
-![](./60images/media/image12.png){width="4.613286307961505in"
-height="3.35744750656168in"}
+![](./60images/media/image12.png)
 
-![](./60images/media/image9.png){width="7.5in" height="0.375in"}
+![](./60images/media/image9.png){
 
 ## \# Let's make sure Python3 finds OpenCV (CV2)
 
@@ -405,53 +389,61 @@ information.
 \>\>\> exit()
 
 ex:
-
+```
 cd /usr/local/lib/python3.6/site-packages/cv2/python-3.6
-
+```
 \# or
-
+```
 cd /usr/local/lib/python3.8/site-packages/cv2/python-3.8
-
+```
 \# remove the previous cv2.so in case it is still there.
-
+```
 sudo rm -rf cv2.so
-
-> \# mv cv2.cpython-36m-[xxx]{.mark}-linux-gnu.so cv2.so
-
+```
+```
+mv cv2.cpython-36m-[xxx]-linux-gnu.so cv2.so
+```
+```
 ls cv2.\*
-
-\# cv2.cpython-38-aarch64-linux-gnu.so
-
+```
+```
+cv2.cpython-38-aarch64-linux-gnu.so
+```
+```
 ln -s
 /usr/local/lib/python3.8/site-packages/cv2/python-3.8cv2.cpython-38-aarch64-linux-gnu.so
 cv2.so cv2.so
-
+```
+```
 sudo cp cv2.cpython-36m-aarch64-linux-gnu.so cv2.so
-
+```
 \# or
-
+```
 sudo cp cv2.cpython-38-aarch64-linux-gnu.so cv2.so
-
+```
 \# Alternatively you could just rename the file
-
-\# sudo mv cv2.cpython-36m-aarch64-linux-gnu.so cv2.so
-
-\# sudo cp cv2.cpython-38-aarch64-linux-gnu.so cv2.so
-
+```
+sudo mv cv2.cpython-36m-aarch64-linux-gnu.so cv2.so
+```
+```
+sudo cp cv2.cpython-38-aarch64-linux-gnu.so cv2.so
+```
 \# Lets create a link at the home directory for cv2
-
+```
 cd \~
-
+```
+```
 sudo rm -rf cv2.so
-
+```
+```
 ln -s /usr/local/lib/python3.6/site-packages/cv2/python-3.6/cv2.so
 cv2.so
-
+```
 \# or
-
+```
 ln -s /usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.so
 cv2.so
-
+```
 Checking install for python3
 ```
 python3
