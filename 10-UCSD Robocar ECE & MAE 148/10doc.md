@@ -139,12 +139,8 @@ DonkeyCar can be seen as the "hello world" of affordable scaled
 autonomous cars
 
 We have added other features into our UCSD scale robot cars that are not
-found
-
-at the Default Donkey car build such as a wireless emergency off switch.
-Therefore, please follow
-
-the instructions found in this document vs. the default Donkey built.
+found at the Default Donkey car build such as a wireless emergency off switch.
+Therefore, please follow the instructions found in this document vs. the default Donkey built.
 
 Another framework we use called UCSD Robocar is primarily maintained and
 developed by Dominic Nightingale right here at UC San Diego. UCSD
@@ -156,18 +152,10 @@ across various platforms. Has been tested on 1/16, 1/10, 1/5 scaled
 robot cars and soon our go-karts.
 
 As August 2019 we transitioned from the single board computer (SBC)
-called Raspberry PI to the
+called Raspberry PI to the Nvidia Jetson Nano. If you are using a Raspberry PI, then search in this
+document for Raspberry PI (RPI or PI) Configuration.
 
-Nvidia Jetson Nano. If you are using a Raspberry PI, then search in this
-document for
-
-Raspberry PI (RPI or PI) Configuration.
-
-On 28Aug19, we updated the instructions to include Raspberry PI 4B
-
-Depending on your Single Board Computer, Jetson Xavier NX, Jetson Nano,
-
-then follow the related instructions.
+On 28Aug19, we updated the instructions to include Raspberry PI 4B Depending on your Single Board Computer, Jetson Xavier NX, Jetson Nano, then follow the related instructions.
 
 #  
 
@@ -230,9 +218,7 @@ As of Spring 2022, we upgraded all the ECE MAE 148 robots to use VESCs.
 ## VESC
 
 VESC is a super cool Electronic Speed Controller (ESC) that runs open
-source code with
-
-significantly more capabilities than a regular RC Car ESC.
+source code with significantly more capabilities than a regular RC Car ESC.
 
 VESCs are very popular for electrical skateboards, DIY electrical
 scooters, and robotics.
@@ -330,30 +316,30 @@ available as a system
 wide package.
 
 Remember that when you are compiling and building software from source,
-it may take a few
-
-hours \...
+it may take a few hours \...
 
 SSH into the Single Board Computer (SBC) e.g., RPI, JTN, JNX, etc.
 
-\# Install some packaged, some may be already installed
-
+\ Install some packaged, some may be already installed
+```
 sudo apt update -y
 
 sudo apt upgrade -y
 
 sudo usermod -aG dialout jetson
+```
 
-> #If packages are being held back
->
-> sudo apt-get \--with-new-pkgs upgrade
-
+ #If packages are being held back
+```
+ sudo apt-get \--with-new-pkgs upgrade
+```
+```
 sudo apt-get install -y build-essential python3 python3-dev python3-pip
 libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev
 liblapack-dev libblas-dev gfortran libxslt1-dev libxml2-dev libffi-dev
 libcurl4-openssl-dev libssl-dev libpng-dev libopenblas-dev openmpi-doc
 openmpi-bin libopenmpi-dev libopenblas-dev git nano
-
+```
 Install RPi.GPIO clone for Jetson Nano
 
 [[https://github.com/NVIDIA/jetson-gpio]{.underline}](https://github.com/NVIDIA/jetson-gpio)
@@ -1080,31 +1066,8 @@ Make sure the DonkeyCar is version 4.5.1. The latest version of the
 DonkeyCar (5.x) does not work at the Jetson Nano yet.
 
 You spent several hours on this configuration right?! Please make a
-backup of your uSD card - "[[Backup of the uSD
-Card]{.underline}](https://docs.google.com/document/d/1TF1uGAFeDARNwbPkgg9xg4NvWPJvrsHW2I_IN9dWQH0/edit#heading=h.mwv009fkh5ax)"
-
-#  
-
-# If you are using a PWM board with a ESC vs. a VESC
-
-### **Starting on FALL'22, we use a VESC for controlling the BLDC motor. Skip setting the PWM board. We left here for people that may want to use it on their own robot**
-
-### Again, if you using an ESC skip the PWM board setup
-
-### #Modifying PWM board configuration
-
-> #Now we need to edit the myconfig.py to change the default bus number
-> for the PWM board
->
-> #(PCA9685)
->
-> #nano myconfig.py
->
-> #Jetson Nano: set PCA9685_I2C_BUSNUM = 1
->
-> #Remove the comment from the line; "" and add "1" to the BUSNUM
->
-> #PCA9685_I2C_BUSNUM = 1 None ...
+backup of your uSD card - "[Backup of the uSD
+Card](https://docs.google.com/document/d/1TF1uGAFeDARNwbPkgg9xg4NvWPJvrsHW2I_IN9dWQH0/edit#heading=h.mwv009fkh5ax)"
 
 ### Modifying Camera 
 
@@ -1123,17 +1086,6 @@ CAMERA_TYPE = \"MOCK\" (PICAM\|WEBCAM\|CVCAM\|CSIC\|V4L\|MOCK)
 
 USE_JOYSTICK_AS_DEFAULT = False
 
-In summary you change these 3 lines in the myconfig.py to be able to
-test your Donkey installation
-
-\# if using the PWM board the PWM board and ESC vs. VESC
-
-> PCA9685_I2C_BUSNUM = 1
-
-CAMERA_TYPE = \"MOCK\"
-
-USE_JOYSTICK_AS_DEFAULT = False
-
 ###  
 
 ### Quick Test
@@ -1141,22 +1093,6 @@ USE_JOYSTICK_AS_DEFAULT = False
 Lets test the Donkey AI framework install
 
 python manage.py drive
-
-> Adding part PWMSteering.
->
-> Adding part PWMThrottle.
->
-> Tub does NOT exist. Creating a new tub\...
->
-> New tub created at: /home/jetson/projects/d3/data/tub_1_19-08-05
->
-> Adding part TubWriter.
->
-> You can now go to \<your pi ip address\>:8887 to drive your car.
->
-> Starting vehicle\...
->
-> 8887
 
 Lets connect to the JTN by using a web browser from your PC
 
