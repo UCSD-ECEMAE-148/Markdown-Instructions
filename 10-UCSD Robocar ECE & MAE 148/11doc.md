@@ -1,29 +1,7 @@
 **GPS Path Following**
 
-Prepared by
 
-Dr. Jack Silberman
-
-Department of Electrical and Computer Engineering
-
-and
-
-Dominic Nightingale
-
-Department of Mechanical and Aerospace Engineering
-
-University of California, San Diego
-
-9500 Gilman Dr, La Jolla, CA 92093
-
-![](./10images/media/image45.png){width="3.3984372265966756in"
-height="0.8055555555555556in"}
-
-![](./10images/media/image21.png){width="1.4427088801399826in"
-height="1.4427088801399826in"}
-
-
-## GNSS Configuration:
+# GNSS Configuration:
 
 ## How to Plug PointOneNav to Donkeycar
 
