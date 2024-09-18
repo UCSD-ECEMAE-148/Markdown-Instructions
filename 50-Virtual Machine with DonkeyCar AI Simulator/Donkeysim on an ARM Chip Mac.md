@@ -8,22 +8,26 @@ We also have lab computers with donkeysim set up available to use, if you run in
 These instructions are new for Fall 2024, and the donkey_sim app was just compiled for ARM macs by me (Alexander). Please let me know about any issues/improvements!  
 
 Download the donkeysim video game from here:  
-[https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing](https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing) 
-Note that the arm64 compiled simulator does have a known bug where there are a few invisible cones outside the track that your car can collide with. I am working on fixing it!
+[https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing](https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing)  
+To run the app, you may need to go to your security settings and click "run anyway," although it is not from an identified developer.    
+Note that the arm64 compiled simulator does have a known bug where there are a few invisible cones outside the track that your car can collide with. I am working on fixing it!  
 
-[https://docs.donkeycar.com/guide/deep_learning/simulator/](https://docs.donkeycar.com/guide/deep_learning/simulator/) contains everything you need to set up donkeycar on your computer. For your convenience I will write out the steps here:
+[https://docs.donkeycar.com/guide/deep_learning/simulator/](https://docs.donkeycar.com/guide/deep_learning/simulator/) is what I referenced when writing this document. For your convenience I will write out the steps here:
 
 1. Download miniconda from [https://conda-forge.org/download/](https://conda-forge.org/download/), and run the bash script to install it. You can open your terminal app, and ```cd Downloads``` and then ```bash Miniforge3-MACOSX-arm64.sh```
-2. ```conda create -n donkey python=3.11```  
-3. ```conda activate donkey```  
-4. ```pip install donkeycar\[pc\]```
-5. ```pip install git+https://github.com/tawnkramer/gym-donkeycar```
-6. ```donkey createcar --path ./mycar```
-7. ```cd mysim```
-8. ```nano myconfig.py```
-9. ```python manage.py drive```
-10. ```cd mycar``` then ```open myconfig.py```
-11. Edit myconfig.py to add in the lines
+2. Follow all the prompts the script provides
+3. Once the script is installed, it will ask if you want to automatically start conda by default. I suggest putting no, but then note you will have to run the command ```eval "$(/Users/Alexander/miniforge3/bin/conda shell.zsh hook)"``` every time you start the terminal.
+4. Restart your computer to get the install to complete. Then open the terminal, and start conda with the command above.   
+6. ```conda create -n donkey python=3.11```  
+7. ```conda activate donkey```  
+8. ```pip install donkeycar\[pc\]```
+9. ```pip install git+https://github.com/tawnkramer/gym-donkeycar```
+10. ```donkey createcar --path ./mycar```
+11. ```cd mysim```
+12. ```nano myconfig.py```
+13. ```python manage.py drive```
+14. ```cd mycar``` then ```open myconfig.py```
+15. Edit myconfig.py to add in the lines
     ```DONKEY_GYM = True  ```
     
 ```DONKEY_SIM_PATH = "remote"  ```
