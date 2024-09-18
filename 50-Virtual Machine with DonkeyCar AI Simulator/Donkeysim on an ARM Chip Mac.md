@@ -6,7 +6,7 @@ We also have lab computers with donkeysim set up available to use, if you run in
 These instructions are new for Fall 2024, and the donkey_sim app was just compiled for ARM macs by me (Alexander). Please let me know about any issues/vague things/improvements!  
 
 Download the donkeysim video game from here:  
-https://drive.google.com/drive/folders/1YXqe7P0KRaNPgek0P2zOaJ18j_N_Gp8p?usp=sharing  
+https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing 
 Note that the arm64 compiled simulator does have a known bug where there are a few invisible cones outside the track that your car can collide with. I am working on fixing it!
 
 https://docs.donkeycar.com/guide/deep_learning/simulator/ contains everything you need to set up donkeycar on your computer. For your convenience I will write out the steps here:
