@@ -14,7 +14,7 @@ Download the donkeysim video game from here:
 2. ```conda create -n donkey python=3.11```  
 3. ```conda activate donkey```  
 4. ```pip install donkeycar\[pc\]```
-5. ```pip install gym_donkeycar```
+5. ```pip install git+https://github.com/tawnkramer/gym-donkeycar```
 6. ```donkey createcar --path ./mycar```
 7. ```cd mysim```
 8. ```nano myconfig.py```
