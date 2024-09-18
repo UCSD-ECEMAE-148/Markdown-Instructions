@@ -1,6 +1,6 @@
 # Setting up DonkeySim on a Mac M1 or newer (ARM Based)
-The class virtual machine will not run on ARM based macs, but you can install the software natively instead.
-If you are on a linux or windows machine but are having issues with the virtual machine, following these instructions with the appropriate platform edits could work for you too. Installing donkeysim/donkeycar natively is more work, but it will run faster and use less space than the virtual machine.  
+The class virtual machine will not run on ARM based macs, but you can install the software natively instead.  
+If you are on a linux or windows machine but are having issues with the virtual machine, following these instructions with the appropriate platform edits could work for you too. Installing donkeysim/donkeycar natively is more work, but it will run faster and use less space than the virtual machine.   
 We also have lab computers with donkeysim set up available to use, if you run into difficulties with setting up donkeysim on your computer don't hesitate to use the lab computers. We also have joysticks in the lab which make driving much more convenient.  
 
 These instructions are new for Fall 2024, and the donkey_sim app was just compiled for ARM macs by me (Alexander). Please let me know about any issues/vague things/improvements!  
