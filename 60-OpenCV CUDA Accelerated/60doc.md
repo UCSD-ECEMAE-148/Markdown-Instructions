@@ -286,7 +286,7 @@ performance of the Jetson
 
 \# From a terminal
 ```
-./build_opencv.sh **4.8.0**
+./build_opencv.sh 4.8.0
 ```
 \# Again, this will take a good while. You may consider doing this at
 night before you go to bed. It is really boring
