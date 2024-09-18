@@ -20,7 +20,8 @@ Download the donkeysim video game from here:
 8. ```nano myconfig.py```
 9. ```python manage.py drive```
 10. ```cd mycar``` then ```open myconfig.py```
-11. Edit myconfig.py to add in the lines ```DONKEY_GYM = True  ```
+11. Edit myconfig.py to add in the lines
+    ```DONKEY_GYM = True  ```
     
 ```DONKEY_SIM_PATH = "remote"  ```
 
@@ -37,5 +38,6 @@ Download the donkeysim video game from here:
 ```GYM_CONF["bio"] = "pls work"  ```
 
 And then save and exit
-13. Start the donkey_sim app, and then run ```python3 manage.py drive```
-14. You should be able to go to [http://localhost:8887] to control the car. Note, it will be easier to control the car if you hook up a joystick. Instructions to do that are in the other virtual machine document.
+
+12. Start the donkey_sim app, and then run ```python3 manage.py drive```
+13. You should be able to go to [http://localhost:8887] to control the car. Note, it will be easier to control the car if you hook up a joystick. Instructions to do that are in the other virtual machine document.
