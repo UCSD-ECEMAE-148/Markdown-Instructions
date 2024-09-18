@@ -42,3 +42,4 @@ And then save and exit
 
 12. Start the donkey_sim app, and then run ```python3 manage.py drive```
 13. You should be able to go to http://localhost:8887 to control the car. Note, it will be easier to control the car if you hook up a joystick. Instructions to do that are in the other virtual machine document.
+14. Follow the other document for the rest of the instructions. For here on everything should work the same.
