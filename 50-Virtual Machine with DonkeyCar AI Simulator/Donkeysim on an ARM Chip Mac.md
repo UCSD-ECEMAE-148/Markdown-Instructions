@@ -20,14 +20,14 @@ Download the donkeysim video game from here:
 8. ```nano myconfig.py```
 9. ```python manage.py drive```
 10. ```cd mycar``` then ```open myconfig.py```
-11. Edit myconfig.py to add in the lines ```DONKEY_GYM = True
-DONKEY_SIM_PATH = "remote"
+11. Edit myconfig.py to add in the lines ```DONKEY_GYM = True  
+DONKEY_SIM_PATH = "remote"  
 DONKEY_GYM_ENV_NAME = "donkey-warren-track-v0"
-SIM_HOST = "127.0.0.1"
-GYM_CONF = { "body_style" : "car01", "body_rgb" : (255, 205, 0), "car_name" : "UCSD-148-YourName", "font_size" : 30} # body style(donkey|bare|car01) body rgb 0-255
-GYM_CONF["racer_name"] = "UCSD-148-YourName"
-GYM_CONF["country"] = "USA"
-GYM_CONF["bio"] = "pls work"```
+SIM_HOST = "127.0.0.1"  
+GYM_CONF = { "body_style" : "car01", "body_rgb" : (255, 205, 0), "car_name" : "UCSD-148-YourName", "font_size" : 30} # body style(donkey|bare|car01) body rgb 0-255  
+GYM_CONF["racer_name"] = "UCSD-148-YourName"  
+GYM_CONF["country"] = "USA"  
+GYM_CONF["bio"] = "pls work"  ```
 And then save and exit
 12. Start the donkey_sim app, and then run ```python3 manage.py drive```
 13. You should be able to go to [http://localhost:8887] to control the car. Note, it will be easier to control the car if you hook up a joystick. Instructions to do that are in the other virtual machine document.
