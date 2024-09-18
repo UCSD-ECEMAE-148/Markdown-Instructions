@@ -15,9 +15,10 @@ Note that the arm64 compiled simulator does have a known bug where there are a f
 [https://docs.donkeycar.com/guide/deep_learning/simulator/](https://docs.donkeycar.com/guide/deep_learning/simulator/) is what I referenced when writing this document. For your convenience I will write out the steps here:
 
 1. Download miniconda from [https://conda-forge.org/download/](https://conda-forge.org/download/), and run the bash script to install it. You can open your terminal app, and ```cd Downloads``` and then ```bash Miniforge3-MACOSX-arm64.sh```
-2. Follow all the prompts the script provides
-3. Once the script is installed, it will ask if you want to automatically start conda by default. I suggest putting no, but then note you will have to run the command ```eval "$(/Users/YOUR_USER/miniforge3/bin/conda shell.zsh hook)"``` to start conda every time you start the terminal. The terminal should tell you the proper path.
-4. Restart your computer to get the install to complete. Then open the terminal, and start conda with the command above.   
+Note: If you get prompted asking to change your shell to zsh by the terminal, please change the shell to zsh with the suggested command.
+3. Follow all the prompts the script provides
+4. Once the script is installed, it will ask if you want to automatically start conda by default. I suggest putting no, but then note you will have to run the command ```eval "$(/Users/YOUR_USER/miniforge3/bin/conda shell.zsh hook)"``` to start conda every time you start the terminal. The terminal should tell you the proper path.
+5. Restart your computer to get the install to complete. Then open the terminal, and start conda with the command above.   
 6. ```conda create -n donkey python=3.11```  
 7. ```conda activate donkey```  
 8. ```pip install donkeycar\[pc\]```
