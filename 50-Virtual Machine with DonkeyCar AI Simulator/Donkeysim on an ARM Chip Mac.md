@@ -9,9 +9,9 @@ Download the donkeysim video game from here:
 https://drive.google.com/drive/folders/1YXqe7P0KRaNPgek0P2zOaJ18j_N_Gp8p?usp=sharing  
 Note that the arm64 compiled simulator does have a known bug where there are a few invisible cones outside the track that your car can collide with. I am working on fixing it!
 
-[https://docs.donkeycar.com/guide/deep_learning/simulator/] contains everything you need to set up donkeycar on your computer. For your convenience I will write out the steps here:
+https://docs.donkeycar.com/guide/deep_learning/simulator/ contains everything you need to set up donkeycar on your computer. For your convenience I will write out the steps here:
 
-1. Download miniconda from [https://conda-forge.org/download/], and run the bash script to install it. You can open your terminal app, and ```cd Downloads``` and then ```bash Miniforge3-MACOSX-arm64.sh```
+1. Download miniconda from https://conda-forge.org/download/, and run the bash script to install it. You can open your terminal app, and ```cd Downloads``` and then ```bash Miniforge3-MACOSX-arm64.sh```
 2. ```conda create -n donkey python=3.11```  
 3. ```conda activate donkey```  
 4. ```pip install donkeycar\[pc\]```
