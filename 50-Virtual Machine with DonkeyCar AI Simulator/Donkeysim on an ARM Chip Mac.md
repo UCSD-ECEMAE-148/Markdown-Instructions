@@ -170,7 +170,7 @@ To do so, run this command from the ```d4_sim``` folder.
 ```
 python3 train.py --model=models/YOUR_MODEL_NAME.h5 --type=linear --tubs=data/
 ```
-To test the model, run:
+This ran incredibly fast on my mac m1. It finished in about 10 minutes (albeit with a relatively small dataset). This command has been known to take up to 3 hours to finish on weaker computers with large datasets, so I am really impressed by the performance.
 ```
 python3 manage.py drive --model=models/YOUR_MODEL_NAME.h5 --type=linear
 ```
