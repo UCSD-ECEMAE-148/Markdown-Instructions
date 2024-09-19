@@ -40,7 +40,7 @@ From a terminal, run ```open myconfig.py``` from the ```~/d4_sim/``` directory.
 
 Within the ```myconfig.py``` file, change the:
 
-* car_name
+* car_name - note, you can only choose between 'donkey', 'cybertruck', 'sports_car', 'jeep', 'f1_car', or 'monster_truck' by default the sports car is used
 * racer_name
 * your country location (under "country")
 * a fun fact (under "bio")
@@ -48,8 +48,9 @@ Within the ```myconfig.py``` file, change the:
 
 ![alt text](image-14.png)
 
-#### Example Config File - make sure to uncomment the lines you want applied
+#### Example Config File - make sure to uncomment the lines you want applied. You only should uncomment those lines,
 #### Note that you can just copy-paste this file into the top of the myconfig.py and it will work
+
 ```
 # 04Jan22
 # UCSD mods to make easier for the UCSD students to use the Donkey-Sim
@@ -165,11 +166,11 @@ Using the data in the ```data``` folder, we can train a model and give it a name
 
 To do so, run this command from the ```d4_sim``` folder.
 ```
-python train.py --model=models/YOUR_MODEL_NAME.h5 --type=linear --tubs=data/
+python3 train.py --model=models/YOUR_MODEL_NAME.h5 --type=linear --tubs=data/
 ```
 To test the model, run:
 ```
-python manage.py drive --model=models/YOUR_MODEL_NAME.h5 --type=linear
+python3 manage.py drive --model=models/YOUR_MODEL_NAME.h5 --type=linear
 ```
 Enabling the model is done by pressing the change operation mode button twice. The terminal should state that the car is in AI mode.
 
@@ -185,7 +186,7 @@ If you increase the number of samples recorded after training a model, you can t
 
 To train data from a specific tub and transfer to a previous model:
 ```
-python train.py --tub ~/projects/d4_sim/data/TUB_NAME  --transfer=models/PREVIOUS_MODEL.h5  --model=models/NEW_MODEL.h5
+python3 train.py --tub ~/projects/d4_sim/data/TUB_NAME  --transfer=models/PREVIOUS_MODEL.h5  --model=models/NEW_MODEL.h5
 ```
 Tubs are subsections of the data folder that you may create to separate training data. To use all the data in the ```data``` folder, do not include a tub name after ```~/projects/d4_sim/data/``` in the tub argument.
 
