@@ -138,7 +138,7 @@ When using a controller, the face buttons can have useful functions:
 
 Otherwise you may have to determine the function of each button from the terminal outputs when they are pressed.
 
-**~14000 images is recommended for an initial dataset. This should take about 10 minutes to record**
+**~14000 images is recommended for an initial dataset. This should take about 10 minutes to record. I have seen functional (but unreliable) models with only 4500 images**
 
 
 **To stop the DonkeyCar framework, use CTRL + C in the terminal**
