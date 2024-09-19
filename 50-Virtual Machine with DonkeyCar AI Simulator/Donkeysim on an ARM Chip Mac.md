@@ -49,6 +49,7 @@ Within the ```myconfig.py``` file, change the:
 ![alt text](image-14.png)
 
 #### Example Config File - make sure to uncomment the lines you want applied
+#### Note that you can just copy-paste this file into the top of the myconfig.py and it will work
 ```
 # 04Jan22
 # UCSD mods to make easier for the UCSD students to use the Donkey-Sim
