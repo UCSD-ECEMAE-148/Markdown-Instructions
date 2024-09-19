@@ -32,6 +32,8 @@ From here on the guide is pretty much the same as with the virtual machine, the 
 
 Connecting a game controller is useful in order to control the car used in the simulations you will be running and other projects (these can include Playstation or Xbox controllers, or the Logitech controller likely included in your kit).
 
+You can also control the car from the web browser if you don't have access to a joystick.
+
 These should be connected using via a USB cable, Bluetooth, or a USB dongle.
 
 When connecting a controller, the VM should ask if the input device will be connected to the host system or the virtual machine &mdash; connect it to the VM by selecting the name of the VM.
