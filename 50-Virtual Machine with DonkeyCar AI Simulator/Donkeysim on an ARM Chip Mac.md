@@ -107,7 +107,7 @@ Replace the value of ```SIM_ARTIFICIAL_LATENCY``` with the average ping delay (e
 Start the donkey_sim_m1.app app in the gui by clicking the icon, and then run ```python3 manage.py drive``` in the terminal
 You should be able to go to [http://localhost:8887](http://localhost:8887) to control the car. 
 Make sure to start recording! It should show that x records were recorded.
-For driving, I recommend having the web url and the donkeysim app side-by-side on your computer. Turning down the max speed for the joystick can be helpful.
+For driving, I recommend having the web url and the donkeysim app side-by-side on your computer. Turning down the max speed for the car in the browser can be helpful (I drove it at only 10% max throttle)
 
 
 
