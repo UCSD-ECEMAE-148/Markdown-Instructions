@@ -40,7 +40,7 @@ From a terminal, run ```open myconfig.py``` from the ```~/d4_sim/``` directory.
 
 Within the ```myconfig.py``` file, change the:
 
-* car_name - note, you can only choose between 'donkey', 'cybertruck', 'sports_car', 'jeep', 'f1_car', or 'monster_truck' by default the sports car is used
+* body style - note, you can choose between 'donkey', 'cybertruck', or 'car01', or 'bare'. By default car01 which is a sports car is selected. 
 * racer_name
 * your country location (under "country")
 * a fun fact (under "bio")
