@@ -138,7 +138,7 @@ When using a controller, the face buttons can have useful functions:
 
 Otherwise you may have to determine the function of each button from the terminal outputs when they are pressed.
 
-**~14000 images is recommended for an initial dataset. This should take about 10 minutes to record. I have seen functional (but unreliable) models with only 4500 images**
+**I recommend driving at least 15 laps or so, which corresponds to 11000 images. This should take about 10 minutes to record.**
 
 
 **To stop the DonkeyCar framework, use CTRL + C in the terminal**
@@ -164,13 +164,14 @@ mkdir data
 
 Using the data in the ```data``` folder, we can train a model and give it a name (e.g. 8july24_sim_160x120_20_1.h5)
 
-**20 laps is recommended for an initial dataset.**
+**15 laps is recommended for an initial dataset.**
 
 To do so, run this command from the ```d4_sim``` folder.
 ```
 python3 train.py --model=models/YOUR_MODEL_NAME.h5 --type=linear --tubs=data/
 ```
 This ran incredibly fast on my mac m1. It finished in about 10 minutes (albeit with a relatively small dataset). This command has been known to take up to 3 hours to finish on weaker computers with large datasets, so I am really impressed by the performance.
+Note that this training generates a graph of epochs vs loss that you can view in the models directory. This graph should go more steeply down at first and gradually flatten out. If it has a different shape you likely need more data. The program should also train for a minimum of ~20 epochs or so but possibly up to 70 epochs if you have a lot of data.
 ```
 python3 manage.py drive --model=models/YOUR_MODEL_NAME.h5 --type=linear
 ```
