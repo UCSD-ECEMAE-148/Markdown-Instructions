@@ -9,7 +9,7 @@ These instructions are new for Fall 2024, and the donkey_sim app was just compil
 
 Download the donkeysim video game from here:  
 [https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing](https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing)  
-To run the app, you may need to go to your security settings and click "run anyway," although it is not from an identified developer.    
+To run the app, you may need to go to your settings->security&privacy->general and click "run anyway," although it is not from an identified developer.    
 Note that the arm64 compiled simulator does have a known bug where there are a few invisible cones outside the track that your car can collide with. I am working on fixing it!  
 Note: If you're using this guide to install on linux, windows, or an intel mac download the simulator from here:
 [https://github.com/tawnkramer/gym-donkeycar/releases](https://github.com/tawnkramer/gym-donkeycar/releases)
@@ -20,7 +20,7 @@ Note: If you're using this guide to install on linux, windows, or an intel mac d
 Note: If you get prompted asking to change your shell to zsh by the terminal, please change the shell to zsh with the suggested command.
 3. Follow all the prompts the script provides
 4. Once the script is installed, it will ask if you want to automatically start conda by default. I suggest putting no, but then note you will have to run the command ```eval "$(/Users/YOUR_USER/miniforge3/bin/conda shell.zsh hook)"``` to start conda every time you start the terminal. The terminal should tell you the proper path.
-5. Restart your terminal to get the install to complete. Then start conda with the command above.   
+5. Restart your terminal to get the install to complete. Then start conda with ```eval "$(/Users/YOUR_USER/miniforge3/bin/conda shell.zsh hook)"```   
 6. ```conda create -n donkey python=3.11```  
 7. ```conda activate donkey```  
 8. ```pip install donkeycar\[macos\]```
