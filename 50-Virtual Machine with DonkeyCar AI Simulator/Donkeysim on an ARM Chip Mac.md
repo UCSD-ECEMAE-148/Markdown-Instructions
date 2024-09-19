@@ -98,7 +98,7 @@ Depending on the track to be raced on, you need to change the track to train on;
 
 ### Customizing Virtual Car
 
-From a terminal, run ```atom myconfig.py``` from the ```~/projects/d4_sim/``` directory.
+From a terminal, run ```open myconfig.py``` from the ```~/projects/d4_sim/``` directory.
 
 Within the ```myconfig.py``` file, change the:
 
