@@ -171,7 +171,7 @@ To do so, run this command from the ```d4_sim``` folder.
 ```
 python3 train.py --model=models/YOUR_MODEL_NAME.h5 --type=linear --tubs=data/
 ```
-This ran incredibly fast on my mac m1. It finished in about 10 minutes (albeit with a relatively small dataset). This command has been known to take up to 3 hours to finish on weaker computers with large datasets, so I am really impressed by the performance.
+This ran incredibly fast on my mac m1. When I compared it to the GPU cluster on the same data set, the GPU cluster took about 17 seconds per epoch (with 89 steps), and the mac took  about 25 seconds per epoch. The training finished in about 9 minutes, whereas it has been known to take over an hour on other computers. I am really impressed by the performance.
 Note that this training generates a graph of epochs vs loss that you can view in the models directory. This graph should go more steeply down at first and gradually flatten out. If it has a different shape you likely need more data. The program should also train for a minimum of ~20 epochs or so but possibly up to 70 epochs if you have a lot of data.
 ```
 python3 manage.py drive --model=models/YOUR_MODEL_NAME.h5 --type=linear
