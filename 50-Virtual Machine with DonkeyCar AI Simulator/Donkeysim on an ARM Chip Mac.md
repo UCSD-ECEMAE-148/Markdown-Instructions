@@ -7,6 +7,11 @@ We also have lab computers with donkeysim set up available to use, if you run in
 
 These instructions are new for Fall 2024, and the donkey_sim app was just compiled for ARM macs by me (Alexander). Please let me know about any issues/improvements!  
 
+For this process to run, you'll need the xcode developer tools installed. I recommend installing them through homebrew, which is a super convenient package manager for mac.
+Copy paste this command in the terminal to get homebrew and the developer tools
+```/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"```
+However, you can also use ```xcode-select --install``` to get the developer tools.
+
 Download the donkeysim video game from here:  
 [https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing](https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing)  
 To run the app, you may need to go to your settings->security&privacy->general and click "run anyway," although it is not from an identified developer.    
@@ -25,82 +30,13 @@ Note: If you get prompted asking to change your shell to zsh by the terminal, pl
 7. ```conda activate donkey```  
 8. ```pip install donkeycar\[macos\]```
 9. ```pip install git+https://github.com/tawnkramer/gym-donkeycar```
+10. ```donkey createcar --path ./d4_sim```
+11. ```cd d4_sim```
 
-From here on the guide is pretty much the same as with the virtual machine, the only difference is that you should manually start the simulator app before running manage.py drive, and you should specify the sim path as "remote," in myconfig.py
-
-### Connecting Game Controller
-
-Connecting a game controller is useful in order to control the car used in the simulations you will be running and other projects (these can include Playstation or Xbox controllers, or the Logitech controller likely included in your kit).
-
-You can also control the car from the web browser if you don't have access to a joystick.
-
-These should be connected using via a USB cable, Bluetooth, or a USB dongle.
-
-When connecting a controller, the VM should ask if the input device will be connected to the host system or the virtual machine &mdash; connect it to the VM by selecting the name of the VM.
-
-![alt text](image.png) 
-
-![alt text](image-1.png)
-
-#### Verify Controller connection
-
-The controller will be identified as js0 (or js# if there are multiple joysticks connected to the system)
-
-Run the following command in a VM terminal:
-
-    ls /dev/input
-
-If the controller is connected, it should appear as js0 in the terminal output.
-
-![alt text](image-11.png)
-
-To test the joystick controls, run in a terminal:
-
-    sudo apt-get update
-    sudo apt-get install -y jstest-gtk
-    jstest /dev/input/js0
-
-![alt text](image-12.png)
-
-Then interact with the controller to see the values printed to the terminal change (analog inputs should change smoothly, while digital inputs like button presses change between on and off)
-
-#### Custom Controller 
-
-If your controller is not behaving correctly, or you need to generate new controller mappings, you can generate custom controllers. 
-
-See https://docs.donkeycar.com/parts/controllers/ for controller support; custom mapping is linked at the bottom of the page.
-
-To setup a new controller or modify input mappings, you can use the Joystick Wizard (described here: https://docs.donkeycar.com/utility/donkey/#joystick-wizard)
-
-The joystick wizard creates a custom controller named "my_joystick.py" in the ```mycar``` folder. To enable it, in the ```myconfig.py``` file, set ```CONTROLLER_TYPE="custom"``` 
-    
-To run the wizard, from a terminal in the PATH/TO/mycar directory, run 
-
-    donkey createjs
-
-To determine if the system can see the input device, jstest can be used. If it is not installed, run ``` sudo apt install joystick```
-
-## DonkeyCar AI Framework
-
-This software allows you to train an AI model to run simulated or even physical vehicles using computer vision (either virtually or in reality).
-
-### Launching the Simulator
-
-Using the file explorer in the VM, navigate to ```~/projects/DonkeySimLinux/``` and execute the file ```donkey_sim.x86_64```
-
-![alt text](image-13.png)
-
-### Track Names
-
-Depending on the track to be raced on, you need to change the track to train on; those include:
-
-* donkey-circuit-launch-track-v0
-* donkey-warren-track-v0
-* donkey-mountain-track-v0
 
 ### Customizing Virtual Car
 
-From a terminal, run ```open myconfig.py``` from the ```~/projects/d4_sim/``` directory.
+From a terminal, run ```open myconfig.py``` from the ```~/d4_sim/``` directory.
 
 Within the ```myconfig.py``` file, change the:
 
@@ -163,40 +99,13 @@ Since this computer is on the same network as the server, the delay is much lowe
 
 Replace the value of ```SIM_ARTIFICIAL_LATENCY``` with the average ping delay (e.g. ```SIM_ARTIFICIAL_LATENCY=30```)
 
-### Collecting Data
-
-The AI model works via behavioral cloning. In order to collect data for it, we need to drive the car in the virtual environment.
-
-From a terminal, enter the donkey virtual environment with the command:
-```
-conda activate donkey
-```
-(donkey) should now appear at the beginning of the terminal prompt.
-
-![alt text](image-3.png)
-
-Enter the donkeycar directory
-```
-cd ~/projects/d4_sim
-```
-
-To drive the car in order to collect data, run
-```
-python manage.py drive
-```
-![alt text](image-4.png)
-
-Open a web browser and go to ```http://localhost:8887 ```
 
 #### Driving using Mouse and Keyboard
 
-From the web address above, you can control the car using a virtual joystick.
+Start the donkey_sim_m1.app app in the gui by clicking the icon, and then run ```python3 manage.py drive``` in the terminal
+You should be able to go to [http://localhost:8887](http://localhost:8887) to control the car. 
 
-![alt text](image-15.png)
 
-**20 laps is recommended for an initial dataset.**
-
-**To stop the DonkeyCar framework, use CTRL + C in the terminal**
 
 #### Driving using a Gamepad
 
@@ -225,7 +134,8 @@ When using a controller, the face buttons can have useful functions:
 
 Otherwise you may have to determine the function of each button from the terminal outputs when they are pressed.
 
-**20 laps is recommended for an initial dataset.**
+**~14000 images is recommended for an initial dataset. This should take about 10 minutes to record**
+
 
 **To stop the DonkeyCar framework, use CTRL + C in the terminal**
 
@@ -279,19 +189,12 @@ python train.py --tub ~/projects/d4_sim/data/TUB_NAME  --transfer=models/PREVIOU
 Tubs are subsections of the data folder that you may create to separate training data. To use all the data in the ```data``` folder, do not include a tub name after ```~/projects/d4_sim/data/``` in the tub argument.
 
 
-### Upgrading to the latest Donkey-Sim and Donkey-Gym (if needed)
-
-### Common Issues
-
-#### Slow FPS Locally
 
 ### UCSD GPU Cluster Instructions
 
 **Do not use the cluster until you are told the GPU cluster is ready to use.**
 
 **Do not train on the cluster until you have demonstrated model training on your local machine.**
-
-[Instructions from UCSD IT](https://docs.google.com/document/u/1/d/e/2PACX-1vTe9sehl7izNJJNypsDNABD4wg-F-AClAi0cYV3pIIRGpCknD7SEWQPEGqy_5DBRmFQtkulLkHkLxEm/pub)
 
 To train our models faster, we can use more powerful GPUs with higher throughputs.
 
