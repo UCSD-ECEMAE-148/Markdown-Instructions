@@ -1,7 +1,7 @@
 # Setting up DonkeySim on a Mac M1 or newer (ARM Based)
 The class virtual machine will not run on ARM based macs, but you can install the software natively instead.
 
-If you are on a linux or windows machine but are having issues with the virtual machine, following these instructions with a few changes for your platform could work for you too. Installing donkeysim/donkeycar natively is more work, but it will run faster and use less space than the virtual machine.   
+If you are on a linux or windows machine but are having issues with the virtual machine, following these instructions with a few changes for your platform could work for you too. Installing donkeysim/donkeycar natively is more work, but it will run faster and use less space than running it through the virtual machine.   
 
 We also have lab computers with donkeysim set up available to use, if you run into difficulties with setting up donkeysim on your computer don't hesitate to use the lab computers. We also have joysticks in the lab which make driving much more convenient.  
 
@@ -33,6 +33,7 @@ Note: If you get prompted asking to change your shell to zsh by the terminal, pl
 10. ```donkey createcar --path ./d4_sim```
 11. ```cd d4_sim```
 
+From here on the instructions are pretty much the same between the two versions.
 
 ### Customizing Virtual Car
 
@@ -360,7 +361,3 @@ https://www.twitch.tv/roboticists or https://www.twitch.tv/roboticists2
 The car should appear momentarily after you run the same command to start the car if you have configured the host properly.
 
 And then save and exit
-
-12. Start the donkey_sim app, and then run ```python3 manage.py drive```
-13. You should be able to go to http://localhost:8887 to control the car. Note, it will be easier to control the car if you hook up a joystick. Instructions to do that are in the other virtual machine document.
-14. Follow the other document for the rest of the instructions. For here on everything should work the same.
