@@ -1,16 +1,16 @@
 # Setting up DonkeySim on a Mac M1 or newer (ARM Based)
-The class virtual machine will not run on ARM based macs, but you can install the software natively instead.
+The class virtual machine will not run on ARM based macs, but you can install donkeycar/donkeysim directly on the computer instead.
 
-If you are on a linux or windows machine but are having issues with the virtual machine, following these instructions with a few changes for your platform could work for you too. Installing donkeysim/donkeycar natively is more work, but it will run faster and use less space than running it through the virtual machine.   
+If you are on a linux or windowscomputer but are having issues with the virtual machine, following these instructions with a few changes for your platform could work for you too. Installing donkeysim/donkeycar natively is more work, but it will run faster and use less space than running it through the virtual machine.   
 
 We also have lab computers with donkeysim set up available to use, if you run into difficulties with setting up donkeysim on your computer don't hesitate to use the lab computers. We also have joysticks in the lab which make driving much more convenient.  
 
 These instructions are new for Fall 2024, and the donkey_sim app was just compiled for ARM macs by me (Alexander). Please let me know about any issues/improvements!  
 
-For this process to run, you'll need the xcode developer tools installed. I recommend installing them through homebrew, which is a super convenient package manager for mac.
+For this process to run, you'll need the xcode developer tools installed. I recommend installing them through homebrew, which is a super convenient package manager for mac. 
 Copy paste this command in the terminal to get homebrew and the developer tools
 ```/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"```
-However, you can also use ```xcode-select --install``` to get the developer tools.
+However, you can also use ```xcode-select --install``` to get the developer tools. If you are low on storage space, you may be able to just install python 3.10 on your mac, but I have not had the chance to test this myself.
 
 Download the donkeysim video game from here:  
 [https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing](https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing)  
