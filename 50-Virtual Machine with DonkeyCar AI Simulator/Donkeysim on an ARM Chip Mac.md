@@ -7,10 +7,7 @@ We also have lab computers with donkeysim set up available to use, if you run in
 
 These instructions are new for Fall 2024, and the donkey_sim app was just compiled for ARM macs by me (Alexander). Please let me know about any issues/improvements!  
 
-For this process to run, you'll need the xcode developer tools installed. I recommend installing them through homebrew, which is a super convenient package manager for mac. 
-Copy paste this command in the terminal to get homebrew and the developer tools
-```/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"```
-However, you can also use ```xcode-select --install``` to get the developer tools. If you are low on storage space, you may be able to just install python 3.10 on your mac, but I have not had the chance to test this myself.
+For this process to run, you'll need the xcode developer tools installed. You can use ```xcode-select --install``` to get the developer tools. If you are low on storage space, you may be able to just install python 3.10 on your mac, but I have not had the chance to test this myself.
 
 Download the donkeysim video game from here:  
 [https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing](https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing)  
