@@ -37,7 +37,7 @@ From here on the instructions are pretty much the same between the two versions.
 
 ### Customizing Virtual Car
 
-From a terminal, run ```open myconfig.py``` from the ```~/d4_sim/``` directory.
+From a terminal, run ```nano myconfig.py``` from the ```~/d4_sim/``` directory.
 
 Within the ```myconfig.py``` file, change the:
 
