@@ -645,14 +645,276 @@ build_ros2
 ```
 ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
 ```
+## 11.2 Tube/Wall Following (coming soon) 
 
+## 11.3 SLAM
 
+Simultaneous Localization and Mapping (SLAM) has been completely
+integrated with our Docker image but is only currently available in ROS1
+and **NOT** ROS2. Below is a short tutorial of getting SLAM working on
+the robot using ROS-Bridge.
 
-## 12. Data Collection
+### 11.3.1 Requirements 
 
-## 13. F1 Tenth Simulator
+Make sure that the following hardware is plugged in and operational
+before launching the docker container
 
-## 14. Troubleshooting
+-   Lidar
 
-## 15. Frequently Used Linux Commands
+-   Logitech controller (for manual control while mapping)
+
+-   VESC or Adafruit PWM board
+
+## 
+
+### 11.3.2 Starting SLAM
+
+We will need 3 terminals to get SLAM working, 1 for the [[Hector-SLAM
+algorithm in ROS1]{.underline}](http://wiki.ros.org/hector_slam),
+another for ROS-Bridge and the last one for sensors/hardware and
+control/path planning algorithms.
+
+From terminal 1
+
+source_ros2
+
+Modify the hardware config file to turn on the **vesc_with_odom** and
+the **lidar** you have equipped
+
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/car_config.yaml
+
+Then modify the node config file to activate only **all_components,**
+**sensor_visualization and f1tenth_vesc_joy_launch** launch files
+
+gedit
+src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/node_config.yaml
+
+Then rebuild
+
+build_ros2
+
+From terminal 1
+
+source_ros1
+
+roslaunch ucsd_robocar_nav1_pkg ros_racer_mapping_launch.launch
+
+From terminal 2
+
+source_ros_bridge
+
+From terminal 3
+
+ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
+
+Notice RVIZ is launched automatically with a pre-configured setup file
+to show a URDF of your robot doing SLAM!
+
+Now depending on what the robot is trying to achieve with slam, modify
+the all_nodes.yaml file to turn on which navigation/control algorithms
+for the robot to use. If unsure, or specifically trying to create a map
+it\'s suggested to turn on all_components ([[where a lidar and actuator
+type has been selected]{.underline}](#ros2)), manual_joy_control_launch
+to have manual control of the robot while creating the map.
+
+#### 11.3.2.1 Saving the map
+
+There are a few options to do this step. The first option is from the
+map_server node and the other is from the hector_mapping node. Each
+provides different output map formats so it could be useful knowing both
+commands depending on what projects you'll be working on.
+
+##### 11.3.2.1.1 map_server
+
+For this method, the map files are created in your current working
+directory so keep that in mind. There is a maps folder in the
+ucsd_robocar_nav1_pkg that can be used to store all your maps.
+
+From another terminal
+
+source_ros1
+
+rosrun map_server map_saver -f ms_map_test
+
+##### 11.3.2.1.2 hector_mapping
+
+For this method, the maps generated are saved automatically to the maps
+directory in ucsd_robocar_nav1_pkg with a generic name with some time
+stamp.
+
+From another terminal
+
+source_ros1
+
+rostopic pub syscommand std_msgs/String \"savegeotiff\"
+
+### 
+
+### 11.3.3 Localization in a pre-made map 
+
+This will only load maps that were created with the map_server node! You
+will also need to modify the car_type in this launch file just as done
+previously.
+
+From terminal
+
+source_ros1
+
+roslaunch ucsd_robocar_nav1_pkg ros_racer_nav_launch.launch
+
+Notice RVIZ is launched automatically with a pre-configured setup file
+to show a URDF of your robot, your saved map and it localizing itself!
+
+# 12. Data Collection
+
+To collect data being broadcasted over the topics that are actively
+being published, turn on whichever nodes needed to publish that topic
+information but make sure that the **rosbag_launch** option in the
+[[node_config]{.underline}](#ros2-1) is also turned on which is the
+switch for data collection. This will record ALL topics to the "rosbag"
+which is a unique file type to ROS. Then a package called
+[[bagpy]{.underline}](https://jmscslgroup.github.io/bagpy/index.html) is
+used to convert the data into csv format which is useful for
+viewing/analysis.
+
+Modify the hardware config file to turn on any sensors you have equipped
+and need for data collection/moving
+
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/car_config.yaml
+
+Then modify the node config file to activate only **all_components,
+rosbag_launch** launch files and any other launch file you need to move
+the robot around **(i.e. manual control, camera_nav etc.)**
+
+gedit
+src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/node_config.yaml
+
+Then rebuild and launch
+
+build_ros2
+
+ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
+
+#  
+
+# 13. F1 Tenth Simulator
+
+A light-weight ROS2 simulator using RVIZ can be used for various
+scenarios such as model validation, experiment repeatability and general
+experimentation. The simulator uses a 2D dynamic bicycle-car model to
+simulate how the car would actually move in an environment. There are
+several maps that are already made and can be used in the simulator or
+you can create your own map with the SLAM techniques discussed above and
+load that map into the simulator as well. Below are the steps to pick
+the following plug-ins for the simulator: a map, path planning
+technique, and a controller as an example. Feel free to change any of
+the plug-ins.
+
+**NOTE**: For the example below, we are going to use the joystick for
+the controller so you will need a controller plugged into your computer.
+Since we will be doing manual control, we do not need a path planner
+activated.
+
+**NOTE: Only use the simulator on the [X86 docker image]{.underline} and
+not the Jetson.**
+
+Modify the hardware config file to turn off any sensors you have
+
+gedit src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/car_config.yaml
+
+Then modify the node config file to activate only the **simulator** and
+**f1tenth_vesc_joy_launch,** launch files and any other launch file you
+need to move the robot around **(i.e. manual control, camera_nav etc.)**
+
+gedit
+src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/node_config.yaml
+
+Modify the f1 tenth simulator config file to update the map (if needed)
+
+gedit
+src/ucsd_robocar_hub2/ucsd_robocar_nav2_pkg/config/f1_tenth_sim.yaml
+
+Then rebuild and launch
+
+build_ros2
+
+ros2 launch ucsd_robocar_nav2_pkg all_nodes.launch.py
+
+## 13.1 Creating a Map with Paint (coming soon)
+
+## 13.2 Updating Vehicle Parameters (coming soon)
+
+## 13.3 Adding Multiple Vehicles (coming soon)
+
+#  
+
+# 14. Troubleshooting
+
+Below are the links to the troubleshooting sections when using either
+ROS1 or ROS2. There are troubleshooting guides for every single package
+to potentially help solve any common problems.
+
+-   [**[ucsd_robocar_hub1 troubleshooting
+    links]{.underline}**](https://gitlab.com/ucsd_robocar/ucsd_robocar_nav1_pkg#troubleshooting)
+
+-   [**[ucsd_robocar_hub2 troubleshooting
+    links]{.underline}**](https://gitlab.com/ucsd_robocar2/ucsd_robocar_hub2#troubleshooting)
+
+#  15. Frequently Used Linux commands
+
+## 15.1 WIFI
+
+[Rescan wifi list:]{.mark} sudo nmcli device wifi rescan
+
+[Show wifi list:]{.mark} sudo nmcli device wifi list
+
+[Connect to wifi network:]{.mark} sudo nmcli device wifi connect
+\<NETWORK_NAME\> password \<NETWORK_PASSWORD\>
+
+Restart networking: sudo service NetworkManager restart
+
+Check network interfaces: nmcli device status
+
+Check if connected internet: ping google.com
+
+Disable power save mode for wifi: sudo iw dev wlan0 set power_save off
+
+Networking info: ifconfig
+
+## 15.2 Hardware Tests
+
+List connected USB devices: lsusb
+
+Check if joystick is working: jstest /dev/input/js0
+
+Check if x_11 forwarding is working: xeyes
+
+## 15.3 File management
+
+Listing files in a directory: ls
+
+Copy file: cp old_file_name new_file_name
+
+Copy directory: cp -r old_directory_name new_directory_name
+
+Move file: mv file_name /path/to/new/file/location/file_name
+
+Move directory: mv -r directory_name
+/path/to/new/directory/location/directory_name
+
+Delete file: rm -f file_name
+
+Delete directory: rm -rf directory_name
+
+[To copy a file from B to A while logged into B:]{.mark}
+
+scp /path/to/file username@A_ip_address:/path/to/destination
+
+[To copy a file from B to A while logged into A:]{.mark}
+
+scp username@B_ip_address:/path/to/file /path/to/destination
+
+## 15.4 System Control
+
+Terminate process by PID: sudo kill -9 PID_number
 
