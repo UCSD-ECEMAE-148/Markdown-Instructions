@@ -66,7 +66,7 @@ GYM_CONF["country"] = "USA"
 GYM_CONF["bio"] = "Something_about_you, ex: Made in Brazil"
 #
 # SIM_HOST = "donkey-sim.roboticist.dev"
- SIM_ARTIFICIAL_LATENCY = 0
+SIM_ARTIFICIAL_LATENCY = 0
 SIM_HOST = "127.0.0.1"              # when racing on virtual-race-league use host "roboticists.dev"
 # SIM_ARTIFICIAL_LATENCY = 30          # Use the value when you ping roboticists.dev. When racing on virtual-race league, use 0 (zero)
 
