@@ -11,7 +11,7 @@ Virtual machines (VMs) are essentially computers running on computers &mdash; yo
   * [**Intel and Apple Silicon Macs, not verified yet**](https://drive.google.com/file/d/1WNBgPevWRyrgzT6iecIRC6p06t_CHTSy/view?usp=sharing)
 
 * Download the Ubuntu VM image &mdash; make sure you have enough space on your disk   (~40 GB zipped, ~50 GB unzipped)
-  * [https://drive.google.com/file/d/1aGVPzoEPYW0GxUnVGjzkiNsqqJFgZ7hb/view?usp=sharing](https://drive.google.com/file/d/1aGVPzoEPYW0GxUnVGjzkiNsqqJFgZ7hb/view?usp=sharing)
+  * [https://drive.google.com/file/d/1FdJRxkAi4SwxhePPnk3AYj5t0L5tVnlU/view](https://drive.google.com/file/d/1FdJRxkAi4SwxhePPnk3AYj5t0L5tVnlU/view)
 
 * Minimum 8 GB system RAM on host machine
   * If your system only has 8 GB of RAM, set the ammount of memory allocated to 5120 MB (5 GB)
