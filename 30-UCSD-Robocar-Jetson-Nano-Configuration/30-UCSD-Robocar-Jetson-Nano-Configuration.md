@@ -4,7 +4,7 @@ This document will take you through the process of setting up your Jetson Nano. 
 
 ### Flashing Image
 
-A Jetson Nano runs off of a externally mounted microSD card, which will first need an image flashed onto it. A custom UCSD Jetson Nano Developer Kit image with some pre-configured settings and files can be downloaded here: [UCSD Image](https://drive.google.com/file/d/1Ikdat_BaP3IqEYoYfjfMQJGgmAC-UGNK/view?usp=sharing). You will need to install a program to flash this download onto your microSD card, we recommend Etcher: [Etcher Download](https://www.balena.io/etcher/). 
+A Jetson Nano runs off of a externally mounted microSD card, which will first need an image flashed onto it. A custom UCSD Jetson Nano Developer Kit image with some pre-configured settings and files can be downloaded here: [UCSD Image](https://drive.google.com/file/d/1f_-WRchG55XNWnIYvnPggic7A8a1vyMK/view). You will need to install a program to flash this download onto your microSD card, we recommend Etcher: [Etcher Download](https://www.balena.io/etcher/). 
 
 #### Using Etcher to Write UCSD Image
 
