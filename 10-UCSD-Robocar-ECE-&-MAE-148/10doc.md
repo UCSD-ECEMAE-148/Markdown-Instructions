@@ -449,14 +449,13 @@ pip3 install virtualenv
 > pip3 install virtualenv \--user
 
 We will create a virtual environment called donkey since our AI
-framework is
-
-based on the Donkey Car project
+framework is based on the Donkey Car project
+```
+python3 -m virtualenv -p python3 donkey --system-site-packages
+```
 
 Since your SBC will be initially dedicated to the class AI framework
-(Donkey), at least until
-
-your custom project starts, let's activate the donkey virtual env
+(Donkey), at least until your custom project starts, let's activate the donkey virtual env
 automatically every time the user
 
 Jetson logs into the SBC. We can remove this settings later if needed
