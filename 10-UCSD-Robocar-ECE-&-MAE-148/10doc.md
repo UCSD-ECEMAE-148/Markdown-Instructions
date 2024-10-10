@@ -1,3 +1,6 @@
+# Note, this guide was made more concise by me (Alexander) but I may have messed up and deleted some important parts. I recommend going to [https://docs.google.com/document/d/1Gy4CEKjqXZub0rz-YmxFOakj9O_ZjMmlUYe7NLdM4FY/edit](https://docs.google.com/document/d/1Gy4CEKjqXZub0rz-YmxFOakj9O_ZjMmlUYe7NLdM4FY/edit) instead for a more comprehensive guide.
+
+
 **UCSD RoboCar ECE & MAE 148**
 
 Version 20.7 - 23Oct2022
