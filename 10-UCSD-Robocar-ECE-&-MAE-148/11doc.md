@@ -139,7 +139,7 @@ LOAD_PATH_BTN = "X" # button (re)load path
 RESET_ORIGIN_BTN = "B" # button to press to move car back to origin
 ERASE_PATH_BTN = "Y" # button to erase path
 TOGGLE_RECORDING_BTN = "L1" # button to toggle recording mode
-```
+
 11. Recording a path
 
     a.  The algorithm assumes we will be driving in a continuous
@@ -189,23 +189,23 @@ TOGGLE_RECORDING_BTN = "L1" # button to toggle recording mode
 13. Configuring Path Follow Parameters
 
     a.  So the algorithm uses the cross-track error between a desired
-        line and the vehicle\'s measured position to decide how much and
+        line and the vehicle's measured position to decide how much and
         which way to steer. But the path we recorded is not a simple
         line; it is a lot of points that is typically some kind of
-        circuit. As described above, we use the vehicle\'s current
+        circuit. As described above, we use the vehicle's current
         position to choose a short segment of the path that we use as
         our desired track. That short segment is recalculated every time
         we get a new measured car position. There are a few
         configuration parameters that determine exactly which two points
         on the path that we use to calculate the desired track line.
 
-        i.  PATH_SEARCH_LENGTH = None \# number of points to search for
+        i.  PATH_SEARCH_LENGTH = None # number of points to search for
             closest point, None to search entire path
 
-        ii. PATH_LOOK_AHEAD = 1 \# number of points ahead of the closest
+        ii. PATH_LOOK_AHEAD = 1 # number of points ahead of the closest
             point to include in cte track
 
-        iii. PATH_LOOK_BEHIND = 1 \# number of points behind the closest
+        iii. PATH_LOOK_BEHIND = 1 # number of points behind the closest
              point to include in cte track
 
     b.  Generally, if you are driving very fast you might want the look
