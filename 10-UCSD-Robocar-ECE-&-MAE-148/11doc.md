@@ -12,10 +12,7 @@
     b.  sudo reboot now
 
 2.  Download
-    [[https://drive.google.com/file/d/1BK_UjH-He9d_D4eObWMHzpHHCqmtq75h/view?usp=share_link]{.underline}](https://drive.google.com/file/d/1BK_UjH-He9d_D4eObWMHzpHHCqmtq75h/view?usp=share_link)
-    (Note that this zip file cannot be shared outside of the class. It
-    is still proprietary as of now)
-
+    [https://drive.google.com/file/d/1BK_UjH-He9d_D4eObWMHzpHHCqmtq75h/view?usp=share_link](https://drive.google.com/file/d/1BK_UjH-He9d_D4eObWMHzpHHCqmtq75h/view?usp=share_link)
 3.  Unzip.
 
 4.  Run
@@ -32,15 +29,15 @@
 
     e.  Reboot the jetson
 
-    f.  mamba create \--name py37 -c conda-forge python=3.7 pip
+    f.  mamba create --name py37 -c conda-forge python=3.7 pip
 
     g.  mamba activate py37
 
-    h.  [pip3 install -e .]{.mark}
+    h.  pip3 install -e .
 
         i.  %If this fails, you can try just going to the p1_runner
             directory and running the python3 bin/config_tool.py
-            command, and then doing "pip install \_\_\_\_" for all the
+            command, and then doing "pip install" for all the
             missing things, you may just need
 
             1.  pip install pyserial
@@ -59,8 +56,9 @@
 
     k.  python3 bin/config_tool.py save
 
-    l.  python3 bin/runner.py \--device-id \<polaris_username\>
-        \--polaris \<polaris_password\> \--device-port /dev/ttyUSB1
+    l.  ```python3 bin/runner.py --device-id <polaris_username>
+        --polaris <polaris_password> --device-port /dev/ttyUSB1```
+Note, the polaris passwords will be posted in the class discord. If they aren't up yet and you need them, you can ask the professor or TA's
 
 > (if not getting any data including Nans try USB0)
 
@@ -75,11 +73,11 @@ for anything.
 
     b.  Make sure that the donkey car environment is running
 
-        i.  source \~/projects/envs/donkey/bin/activate
+        i.  ```source ~/projects/envs/donkey/bin/activate```
 
-    c.  cd \~/projects
+    c.  cd ~/projects
 
-    d.  donkey createcar \--path ./mycar \--template path_follow
+    d.  donkey createcar --path ./mycar --template path_follow
 
 6.  Set the following in the myconfig.py
 
@@ -135,31 +133,13 @@ for anything.
         -PID_P_DELTA
 
 > The logitech buttons are named stuff like "X" or "R1" See the example
-> config below.\
-> SAVE_PATH_BTN = \"R1\" \# button to save path
->
-> LOAD_PATH_BTN = \"X\" \# button (re)load path
->
-> RESET_ORIGIN_BTN = \"B\" \# button to press to move car back to origin
->
-> ERASE_PATH_BTN = \"Y\" \# button to erase path
->
-> TOGGLE_RECORDING_BTN = \"L1\" \# button to toggle recording mode
->
-> INC_PID_D_BTN = None \# button to change PID \'D\' constant by
-> PID_D_DELTA
->
-> DEC_PID_D_BTN = None \# button to change PID \'D\' constant by
-> -PID_D_DELTA
->
-> INC_PID_P_BTN = \"None\" \# button to change PID \'P\' constant by
-> PID_P_DELTA
->
-> DEC_PID_P_BTN = \"None\" \# button to change PID \'P\' constant by
-> -PID_P_DELTA
->
-> \#
-
+> config below.
+```SAVE_PATH_BTN = "R1" # button to save path
+LOAD_PATH_BTN = "X" # button (re)load path
+RESET_ORIGIN_BTN = "B" # button to press to move car back to origin
+ERASE_PATH_BTN = "Y" # button to erase path
+TOGGLE_RECORDING_BTN = "L1" # button to toggle recording mode
+```
 11. Recording a path
 
     a.  The algorithm assumes we will be driving in a continuous
