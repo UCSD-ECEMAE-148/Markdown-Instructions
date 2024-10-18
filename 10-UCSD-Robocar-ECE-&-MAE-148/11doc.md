@@ -139,7 +139,7 @@ LOAD_PATH_BTN = "X" # button (re)load path
 RESET_ORIGIN_BTN = "B" # button to press to move car back to origin
 ERASE_PATH_BTN = "Y" # button to erase path
 TOGGLE_RECORDING_BTN = "L1" # button to toggle recording mode
-
+```
 11. Recording a path
 
     a.  The algorithm assumes we will be driving in a continuous
