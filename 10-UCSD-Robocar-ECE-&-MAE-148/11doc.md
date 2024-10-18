@@ -60,7 +60,8 @@
         --polaris <polaris_password> --device-port /dev/ttyUSB1```
 Note, the polaris passwords will be posted in the class discord. If they aren't up yet and you need them, you can ask the professor or TA's
 
-> (if not getting any data including Nans try USB0)
+> (if not getting any data including NANs try USB0)
+> Also, note that the GPS will return NAN's inside, so you need to test it outside.
 
 Note: The GPS corrections will only happen when you are actively running
 runner.py. I recommend making a bashrc command that you can run to start
