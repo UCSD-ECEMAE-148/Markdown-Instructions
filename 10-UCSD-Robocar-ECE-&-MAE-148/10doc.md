@@ -35,14 +35,14 @@ University of California, San Diego
 Setup](#single-board-computer-sbc-basic-setup) 5**
 
 > [Jetson Nano (JTN) Configuration](#jetson-nano-jtn-configuration) 5
->
+
 > [Jetson Xavier NX Configuration](#jetson-xavier-nx-jnx-configuration)
 > 5
 
 **[Hardware Setup](#hardware-setup) 6**
 
 > [Jetson Nano GPIO Header PINOUT](#jetson-nano-gpio-header-pinout) 6
->
+
 > [VESC](#vesc) 7
 >
 > [VESC Hardware V6.x](#_s281f6m5z2vd) 8
@@ -249,11 +249,11 @@ devices again
 
 ls /dev/input
 
-> (env) jetson@ucsdrobocar00:~/projects/d3$ ls /dev/input
->
-> by-id event0 event2 event4 mice mouse1
->
-> by-path event1 event3 [js0] mouse0
+(env) jetson@ucsdrobocar00:~/projects/d3$ ls /dev/input
+
+by-id event0 event2 event4 mice mouse1
+
+by-path event1 event3 [js0] mouse0
 
 We are looking for a js0
 
@@ -349,41 +349,41 @@ Install RPi.GPIO clone for Jetson Nano
 ```
 pip3 install Jetson.GPIO
 ```
-> If the pip install complains about ownership of the directory*
->
-> then execute the following command
->
-> sudo chown -R jetson:jetson /home/jetson/.cache/pip
->
-> ex:
->
-> WARNING: The directory '/home/jetson/.cache/pip/http' or its parent
-> directory is not owned by the current user and the cache has been
-> disabled. Please check the permissions and owner of that directory. If
-> executing pip with sudo, you may want sudo's -H flag.
->
-> WARNING: The directory '/home/jetson/.cache/pip' or its parent
-> directory is not owned by the current user and caching wheels has been
-> disabled. check the permissions and owner of
->
-> that directory. If executing pip with sudo, you may want sudo's -H
-> flag.
->
-> If pip breaks for some reason, you can reinstall it with the following
-> lines
->
-> python3 -m pip uninstall pip
->
-> sudo apt install python3-pip --reinstall
->
-> If the install request elevated privileges, execute the following
-> command
->
-> sudo pip3 install Jetson.GPIO
->
-> if pip has a new version
->
-> pip3 install --upgrade pip
+ If the pip install complains about ownership of the directory*
+
+ then execute the following command
+
+ sudo chown -R jetson:jetson /home/jetson/.cache/pip
+
+ ex:
+
+ WARNING: The directory '/home/jetson/.cache/pip/http' or its parent
+ directory is not owned by the current user and the cache has been
+ disabled. Please check the permissions and owner of that directory. If
+ executing pip with sudo, you may want sudo's -H flag.
+
+ WARNING: The directory '/home/jetson/.cache/pip' or its parent
+ directory is not owned by the current user and caching wheels has been
+ disabled. check the permissions and owner of
+
+ that directory. If executing pip with sudo, you may want sudo's -H
+ flag.
+
+ If pip breaks for some reason, you can reinstall it with the following
+ lines
+
+ python3 -m pip uninstall pip
+
+ sudo apt install python3-pip --reinstall
+
+ If the install request elevated privileges, execute the following
+ command
+
+ sudo pip3 install Jetson.GPIO
+
+ if pip has a new version
+
+ pip3 install --upgrade pip
 
 Let's make sure the user jetson can use gpio
 
@@ -391,17 +391,17 @@ sudo groupadd -f -r gpio
 
 sudo usermod -a -G gpio jetson
 
-> sudo cp /opt/nvidia/jetson-gpio/etc/99-gpio.rules /etc/udev/rules.d/
->
-> 28Jan20 - did not work with JetPack3.4
->
-> 15May21- did not work with JetPack4.5
->
-> 19Oct21 - did not work with JetPack4.6
->
-> 18Sep22 - did not work with JetPack4.6.2
->
-> Will get back to it later if the jetson user can not access GPIO
+ sudo cp /opt/nvidia/jetson-gpio/etc/99-gpio.rules /etc/udev/rules.d/
+
+ 28Jan20 - did not work with JetPack3.4
+
+ 15May21- did not work with JetPack4.5
+
+ 19Oct21 - did not work with JetPack4.6
+
+ 18Sep22 - did not work with JetPack4.6.2
+
+ Will get back to it later if the jetson user can not access GPIO
 
 sudo udevadm control --reload-rules && sudo udevadm trigger
 
@@ -440,9 +440,9 @@ cd envs
 ```
 pip3 install virtualenv
 ```
-> if complains about user permission
->
-> pip3 install virtualenv --user
+ if complains about user permission
+
+ pip3 install virtualenv --user
 
 We will create a virtual environment called donkey since our AI
 framework is based on the Donkey Car project
@@ -472,35 +472,33 @@ default in this virtual environment.
 
 https://docs.donkeycar.com/guide/robot_sbc/setup_jetson_nano/ 46
 
-> #it is necessary to create a link to it
->
-> # Go to the folder where OpenCV's native library is built
->
-> #cd /usr/local/lib/python3.6/site-packages/cv2/python-3.6
->
-> # Rename
->
-> #mv cv2.cpython-36m-xxx-linux-gnu.so cv2.so
->
-> # Go to your virtual environments site-packages folder if previously
-> set
->
-> #cd ~/env/lib/python3.6/site-packages/
->
-> # Or just go to your home folder if not set a venv site-packages
-> folder
->
-> #cd ~
->
-> # Symlink the native library
->
-> #ln -s /usr/local/lib/python3.6/site-packages/cv2/python-3.6/cv2.so
-> cv2.so
->
-> #NOTE that it is almost mandatory to create a virtual environment in
-> order to properly install
->
-> # tensorflow, scipy and keras, and always a best practice.
+ it is necessary to create a link to it
+
+  Go to the folder where OpenCV's native library is built
+```
+ cd /usr/local/lib/python3.6/site-packages/cv2/python-3.6
+```
+  Rename
+```
+ mv cv2.cpython-36m-xxx-linux-gnu.so cv2.so
+```
+  Go to your virtual environments site-packages folder if previously
+ set
+```
+ cd ~/env/lib/python3.6/site-packages/
+```
+ #Or just go to your home folder if not set a venv site-packages
+ folder
+
+ cd ~
+
+  Symlink the native library
+
+ ln -s /usr/local/lib/python3.6/site-packages/cv2/python-3.6/cv2.so
+ cv2.so
+
+ NOTE that it is almost mandatory to create a virtual environment in
+ order to properly install tensorflow, scipy and keras, and always a best practice.
 ```
 cd ~/projects/envs/donkey/lib/python3.6/site-packages/
 ```
@@ -518,10 +516,10 @@ cv2.so
 ```
 python3 -c 'import cv2 as cv; print(cv.__version__)'
 ```
-> (donkey) **jetson@ucsdrobocar-xxx-yy**:**~/projects/envs/donkey**$
-> python3 -c 'import cv2 as cv; print(cv.__version__)'
->
-> 4.6.0
+ (donkey) **jetson@ucsdrobocar-xxx-yy**:**~/projects/envs/donkey**$
+ python3 -c 'import cv2 as cv; print(cv.__version__)'
+
+ 4.6.0
 
 # We won't use Python2, but just in case one will need it for some
 reason
@@ -590,32 +588,32 @@ Add 4G of swap and press S to enable it.
 
 ![](./10images/media/image25.png)
 
-> Alternatively you can use the command line
->
-> # Disable ZRAM:
->
-> sudo systemctl disable nvzramconfig
->
-> # Create 4GB swap file
->
-> sudo fallocate -l 4G /mnt/4GB.swap
->
-> sudo chmod 600 /mnt/4GB.swap
->
-> sudo mkswap /mnt/4GB.swap
->
-> If you have an issue with the final command, you can try the
-> following:
->
-> sudo nano /etc/fstab
->
-> # Add this line at the bottom of the file
->
-> /mnt/4GB.swap swap swap defaults 0 0
->
-> # Reboot
->
-> sudo reboot now
+ Alternatively you can use the command line
+
+ #Disable ZRAM:
+
+ sudo systemctl disable nvzramconfig
+
+#Create 4GB swap file
+
+ sudo fallocate -l 4G /mnt/4GB.swap
+
+ sudo chmod 600 /mnt/4GB.swap
+
+ sudo mkswap /mnt/4GB.swap
+
+ If you have an issue with the final command, you can try the
+ following:
+
+ sudo nano /etc/fstab
+
+ #Add this line at the bottom of the file
+
+ /mnt/4GB.swap swap swap defaults 0 0
+
+ #Reboot
+
+sudo reboot now
 
 #Installing dependencies
 
@@ -767,52 +765,52 @@ Now let's change the type of joystick we use with Donkey
 
 nano myconfig.py
 
-> JOYSTICK
->
-> USE_JOYSTICK_AS_DEFAULT = True when starting the manage.py,
-> when True, wil$
->
-> JOYSTICK_MAX_THROTTLE = 0.5 this scalar is multiplied with the -1 to$
->
-> JOYSTICK_STEERING_SCALE = 1.0 some people want a steering that is
-> less$
->
-> AUTO_RECORD_ON_THROTTLE = True if true, we will record whenever
-> throttle$
->
-> CONTROLLER_TYPE='F710'(ps3|ps4|xbox|nimbus|wiiu|F710)
+ JOYSTICK
+
+ USE_JOYSTICK_AS_DEFAULT = True when starting the manage.py,
+ when True, wil$
+
+ JOYSTICK_MAX_THROTTLE = 0.5 this scalar is multiplied with the -1 to$
+
+ JOYSTICK_STEERING_SCALE = 1.0 some people want a steering that is
+ less$
+
+ AUTO_RECORD_ON_THROTTLE = True if true, we will record whenever
+ throttle$
+
+ CONTROLLER_TYPE='F710'(ps3|ps4|xbox|nimbus|wiiu|F710)
 
 python manage.py drive
 
 ex
 
-> Starting vehicle...
->
-> Opening /dev/input/js0...
->
-> Device name: Logitech Gamepad F710
->
-> recorded 10 records
->
-> recorded 20 records
->
-> recorded 30 records
->
-> recorded 40 records
->
-> erased last 100 records.
->
-> E-Stop!!!
->
-> recorded 10 records
->
-> recorded 20 records
->
-> recorded 30 records
->
-> recorded 40 records
->
-> recorded 50 records
+ Starting vehicle...
+
+ Opening /dev/input/js0...
+
+ Device name: Logitech Gamepad F710
+
+ recorded 10 records
+
+ recorded 20 records
+
+ recorded 30 records
+
+ recorded 40 records
+
+ erased last 100 records.
+
+ E-Stop!!!
+
+ recorded 10 records
+
+ recorded 20 records
+
+ recorded 30 records
+
+ recorded 40 records
+
+ recorded 50 records
 
 The Right Joystick is the Throttle, the Left Joystick is the Steering
 
@@ -823,35 +821,35 @@ The A Button is the emergency break
 
 Joystick Controls:
 
-> +------------------+---------------------------+
->
-> | control | action |
->
-> +------------------+---------------------------+
->
-> | start | toggle_mode |
->
-> | B | toggle_manual_recording |
->
-> | Y | erase_last_N_records |
->
-> | A | emergency_stop |
->
-> | back | toggle_constant_throttle |
->
-> | R1 | chaos_monkey_on_right |
->
-> | L1 | chaos_monkey_on_left |
->
-> | circle | show_record_acount_status |
->
-> | R2 | enable_ai_launch |
->
-> | left_stick_horz | set_steering |
->
-> | right_stick_vert | set_throttle |
->
-> +------------------+---------------------------+
+ +------------------+---------------------------+
+
+ | control | action |
+
+ +------------------+---------------------------+
+
+ | start | toggle_mode |
+
+ | B | toggle_manual_recording |
+
+ | Y | erase_last_N_records |
+
+ | A | emergency_stop |
+
+ | back | toggle_constant_throttle |
+
+ | R1 | chaos_monkey_on_right |
+
+ | L1 | chaos_monkey_on_left |
+
+ | circle | show_record_acount_status |
+
+ | R2 | enable_ai_launch |
+
+ | left_stick_horz | set_steering |
+
+ | right_stick_vert | set_throttle |
+
+ +------------------+---------------------------+
 
 If your joystick is not returning to neutral
 
@@ -861,12 +859,12 @@ on myconfig.py
 
 ex:
 
-> NETWORK_JS_SERVER_IP = "192.168.0.1"when listening for network
-> joystick cont$
->
-> JOYSTICK_DEADZONE = 0.01 when non zero, this is the smallest throt$
->
-> JOYSTICK_THROTTLE_DIR = -1.0 use -1.0 to flip forward/backward, use $
+ NETWORK_JS_SERVER_IP = "192.168.0.1"when listening for network
+ joystick cont$
+
+ JOYSTICK_DEADZONE = 0.01 when non zero, this is the smallest throt$
+
+ JOYSTICK_THROTTLE_DIR = -1.0 use -1.0 to flip forward/backward, use $
 
 Lets Integrate the JTN and PWM Controller into the RC Chassis
 
