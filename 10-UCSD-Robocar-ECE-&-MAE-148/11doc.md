@@ -112,42 +112,29 @@ Then ```source ~/.bashrc``` and you can just type gps_corrections to get correct
 
     a.  python3 manage.py drive
 
-9.  You should see GPS positions being outputted after you run
-    Donkeycar. If you don't want to output set GPS_DEBUG to False
+9.  You should see GPS positions being outputted after you run Donkeycar. If you don't want to output set GPS_DEBUG to False
 
 10. Configure button actions
 
-    a.  SAVE_PATH_BTN is the button to save the in-memory path to a
-        file.
+a.  SAVE_PATH_BTN is the button to save the in-memory path to a file.
 
-    b.  LOAD_PATH_BTN is the button to (re)load path from the csv file
-        into memory.
+b.  LOAD_PATH_BTN is the button to (re)load path from the csv file into memory.
 
-    c.  RESET_ORIGIN_BTN is the button to set the current position as
-        the origin.
+c.  RESET_ORIGIN_BTN is the button to set the current position as the origin.
 
-    d.  ERASE_PATH_BTN is the button to erase path from memory and reset
-        the origin.
+d.  ERASE_PATH_BTN is the button to erase path from memory and reset the origin.
 
-    e.  TOGGLE_RECORDING_BTN is the button to toggle recording mode on
-        or off. Note that there is a pre-assigned button in the web ui,
-        so there is not need to assign this button to one of the web/w\*
-        buttons if you are using the web ui.
+e.  TOGGLE_RECORDING_BTN is the button to toggle recording mode on or off. Note that there is a pre-assigned button in the web ui, so there is not need to assign this button to one of the web buttons if you are using the web ui.
 
-    f.  INC_PID_D_BTN is the button to change PID \'D\' constant by
-        PID_D_DELTA.
+f.  INC_PID_D_BTN is the button to change PID \'D\' constant by PID_D_DELTA.
 
-    g.  DEC_PID_D_BTN is the button to change PID \'D\' constant by
-        -PID_D_DELTA
+g.  DEC_PID_D_BTN is the button to change PID \'D\' constant by -PID_D_DELTA
 
-    h.  INC_PID_P_BTN is the button to change PID \'P\' constant by
-        PID_P_DELTA
+h.  INC_PID_P_BTN is the button to change PID \'P\' constant by PID_P_DELTA
 
-    i.  DEC_PID_P_BTN is the button to change PID \'P\' constant by
-        -PID_P_DELTA
+i.  DEC_PID_P_BTN is the button to change PID \'P\' constant by -PID_P_DELTA
 
-The logitech buttons are named stuff like "X" or "R1" See the example
-config below.
+The logitech buttons are named stuff like "X" or "R1" See the example config below.
 
 SAVE_PATH_BTN = "R1" # button to save path
 LOAD_PATH_BTN = "X" # button (re)load path
@@ -157,137 +144,78 @@ TOGGLE_RECORDING_BTN = "L1" # button to toggle recording mode
 
 11. Recording a path
 
-    a.  The algorithm assumes we will be driving in a continuous
-        connected path such that the start and end are the same. You can
-        adjust the space between recorded waypoints by editing the
-        PATH_MIN_DIST value in myconfig.py You can change the name and
-        location of the saved file by editing the PATH_FILENAME value.
+a.  The algorithm assumes we will be driving in a continuous connected path such that the start and end are the same. You can adjust the space between recorded waypoints by editing the PATH_MIN_DIST value in myconfig.py You can change the name and location of the saved file by editing the PATH_FILENAME value.
 
-    b.  Enter User driving mode using either the web controller or a
-        game controller.
+b.  Enter User driving mode using either the web controller or a game controller.
 
-    c.  Move the car to the desired starting point
+c.  Move the car to the desired starting point
 
-    d.  Erase the path in memory (which will also reset the origin).
+d.  Erase the path in memory (which will also reset the origin).
 
-        Note:  Make sure to reset the origin!!! If you didn't need to erase
-            the path in memory you can just go ahead with toggling recording
+Note:  Make sure to reset the origin!!! If you didn't need to erase the path in memory you can just go ahead with toggling recording
 
-    e.  Toggle recording on.
+e.  Toggle recording on.
 
-    f.  Drive the car manually around the track until you reach the
-        desired starting point again.
+f.  Drive the car manually around the track until you reach the desired starting point again.
 
-    g.  Toggle recording off.
+g.  Toggle recording off.
 
-    h.  If desired, save the path.
+h.  If desired, save the path.
 
 13. Following a path
 
-    a.  Enter User driving mode using either the web controller or a
-        game controller.
+a.  Enter User driving mode using either the web controller or a
+game controller.
 
-    b.  Move the car to the desired starting point - make sure it's the
+b.  Move the car to the desired starting point - make sure it's the
         same one from when you recorded the path
 
-    c.  Reset the origin (be careful; don\'t erase the path, just reset
+c.  Reset the origin (be careful; don\'t erase the path, just reset
         the origin).
 
-    d.  Load the path
+d.  Load the path
 
-    e.  Enter Autosteering or Autopilot driving mode. This is normally
-        done by pressing the start button either once or twice If you
-        are in Autosteering mode you will need to manually provide
-        throttle for the car to move. If you are in Autopilot mode the
-        car should drive itself completely.
+e.  Enter Autosteering or Autopilot driving mode. This is normally done by pressing the start button either once or twice If you are in Autosteering mode you will need to manually provide throttle for the car to move. If you are in Autopilot mode the car should drive itself completely.
 
 14. Configuring Path Follow Parameters
 
-    a.  So the algorithm uses the cross-track error between a desired
-        line and the vehicle's measured position to decide how much and
-        which way to steer. But the path we recorded is not a simple
-        line; it is a lot of points that is typically some kind of
-        circuit. As described above, we use the vehicle's current
-        position to choose a short segment of the path that we use as
-        our desired track. That short segment is recalculated every time
-        we get a new measured car position. There are a few
-        configuration parameters that determine exactly which two points
-        on the path that we use to calculate the desired track line.
+ a.  So the algorithm uses the cross-track error between a desired line and the vehicle's measured position to decide how much and which way to steer. But the path we recorded is not a simple line; it is a lot of points that is typically some kind of circuit. As described above, we use the vehicle's current position to choose a short segment of the path that we use as our desired track. That short segment is recalculated every time we get a new measured car position. There are a few configuration parameters that determine exactly which two points on the path that we use to calculate the desired track line.
 
-        i.  PATH_SEARCH_LENGTH = None # number of points to search for
-            closest point, None to search entire path
+i.  PATH_SEARCH_LENGTH = None # number of points to search for closest point, None to search entire path
 
-        ii. PATH_LOOK_AHEAD = 1 # number of points ahead of the closest
-            point to include in cte track
+ii. PATH_LOOK_AHEAD = 1 # number of points ahead of the closest point to include in cte track
 
-        iii. PATH_LOOK_BEHIND = 1 # number of points behind the closest
-             point to include in cte track
+iii. PATH_LOOK_BEHIND = 1 # number of points behind the closest point to include in cte track
 
-    b.  Generally, if you are driving very fast you might want the look
-        ahead to be larger than if driving slowly so that your steering
-        can anticipate upcoming curves. Increasing the length of the
-        resulting track line, by increasing the look behind and/or look
-        ahead, also acts as a noise filter; it smooths out the track.
-        This reduces the amount of jitter in the controller. However,
-        this must be balanced with the true curves in the path; longer
-        track segments effectively \'flatten\' curves and so can result
-        in understeer; not steering enough when on a curve.
+b.  Generally, if you are driving very fast you might want the look ahead to be larger than if driving slowly so that your steering can anticipate upcoming curves. Increasing the length of the resulting track line, by increasing the look behind and/or look ahead, also acts as a noise filter; it smooths out the track. This reduces the amount of jitter in the controller. However, this must be balanced with the true curves in the path; longer track segments effectively 'flatten' curves and so can result in understeer; not steering enough when on a curve.
 
 15. Determining PID Coefficients
 
-    a.  The PID coefficients are the most important (and time consuming)
-        parameters to configure. If they are not correct for your car
-        then it will not follow the path. The coefficients can be
-        changed by editing their values in the myconfig.py file.
+a.  The PID coefficients are the most important (and time consuming) parameters to configure. If they are not correct for your car then it will not follow the path. The coefficients can be changed by editing their values in the myconfig.py file.
 
-    b.  PID_P is the proportional coefficient; it is multiplied with the
-        cross-track error. This is the most important parameter; it
-        contributes the most to the output steering value and in some
-        cases may be all that is needed to follow the line. If this is
-        too small then car will not turn enough when it reaches a curve.
-        If this to too large then it will over-react to small changes in
-        the path and may start turning in circles; especially when it
-        gets to a curve.
+b.  PID_P is the proportional coefficient; it is multiplied with the cross-track error. This is the most important parameter; it contributes the most to the output steering value and in some cases may be all that is needed to follow the line. If this is too small then car will not turn enough when it reaches a curve. If this to too large then it will over-react to small changes in the path and may start turning in circles; especially when it gets to a curve.
 
-    c.  PID_D is the differential coefficient; it is multiplied with the
-        change in the cross-track error. This parameter can be useful in
-        reducing oscillations and overshoot.
+c.  PID_D is the differential coefficient; it is multiplied with the change in the cross-track error. This parameter can be useful in reducing oscillations and overshoot.
 
-    d.  PID_I is the integral coefficient; it is multiplied with the
-        total accumulated cross-track error. This may be useful in
-        reducing offsets caused by accumulated error; such as if one
-        wheel is slightly smaller in diameter than another.
+d.  PID_I is the integral coefficient; it is multiplied with the total accumulated cross-track error. This may be useful in reducing offsets caused by accumulated error; such as if one wheel is slightly smaller in diameter than another.
 
-    e.  Determining PID Coefficients can be difficult. One approach is:
+e.  Determining PID Coefficients can be difficult. One approach is:
 
-        i.  First determine the P coefficient.
+i.  First determine the P coefficient.
 
-        ii. zero out the D and the I coefficients.
+ii. zero out the D and the I coefficients.
 
-        iii. Use a kind of \'binary\' search to find a value where the
-             vehicle will roughly follow a recorded straight line;
-             probably oscillating around it. It will be weaving
+iii. Use a kind of 'binary' search to find a value where the vehicle will roughly follow a recorded straight line;
+ probably oscillating around it. It will be weaving
 
-        iv. Next find a D coefficient that reduces the weaving
-            (oscillations) on a straight line. Then record a path with a
-            tight turn. Find a D coefficient that reduces the overshoot
-            when turning.
+iv. Next find a D coefficient that reduces the weaving (oscillations) on a straight line. Then record a path with a tight turn. Find a D coefficient that reduces the overshoot when turning.
 
-        v.  You may not even need the I value. If the car becomes
-            unstable after driving for a while then you may want to
-            start to set this value. It will likely be much smaller than
-            the other values.
+v.  You may not even need the I value. If the car becomes unstable after driving for a while then you may want to start to set this value. It will likely be much smaller than the other values.
 
-        vi. Be patient. Start with a reasonably slow speed. Change one
-            thing at a time and test the change; don\'t make many
-            changes at once. Write down what is working.
+vi. Be patient. Start with a reasonably slow speed. Change one thing at a time and test the change; don't make many changes at once. Write down what is working.
 
 
-        vii. Once you have a stable PID controller, then you can figure
-             out just how fast you can go with it before autopilot
-             becomes unstable. If you want to go faster then set the
-             desired speed and start tweaking the values again using the
-             method suggested above.
+vii. Once you have a stable PID controller, then you can figure out just how fast you can go with it before autopilot becomes unstable. If you want to go faster then set the desired speed and start tweaking the values again using the method suggested above.
 
 
 
