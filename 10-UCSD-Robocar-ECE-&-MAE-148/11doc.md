@@ -146,14 +146,15 @@ Then ```source ~/.bashrc``` and you can just type gps_corrections to get correct
     i.  DEC_PID_P_BTN is the button to change PID \'P\' constant by
         -PID_P_DELTA
 
-> The logitech buttons are named stuff like "X" or "R1" See the example
-> config below.
-```SAVE_PATH_BTN = "R1" # button to save path
+The logitech buttons are named stuff like "X" or "R1" See the example
+config below.
+
+SAVE_PATH_BTN = "R1" # button to save path
 LOAD_PATH_BTN = "X" # button (re)load path
 RESET_ORIGIN_BTN = "B" # button to press to move car back to origin
 ERASE_PATH_BTN = "Y" # button to erase path
 TOGGLE_RECORDING_BTN = "L1" # button to toggle recording mode
-```
+
 11. Recording a path
 
     a.  The algorithm assumes we will be driving in a continuous
@@ -181,7 +182,7 @@ TOGGLE_RECORDING_BTN = "L1" # button to toggle recording mode
 
     h.  If desired, save the path.
 
-12. Following a path
+13. Following a path
 
     a.  Enter User driving mode using either the web controller or a
         game controller.
@@ -200,7 +201,7 @@ TOGGLE_RECORDING_BTN = "L1" # button to toggle recording mode
         throttle for the car to move. If you are in Autopilot mode the
         car should drive itself completely.
 
-13. Configuring Path Follow Parameters
+14. Configuring Path Follow Parameters
 
     a.  So the algorithm uses the cross-track error between a desired
         line and the vehicle's measured position to decide how much and
@@ -232,7 +233,7 @@ TOGGLE_RECORDING_BTN = "L1" # button to toggle recording mode
         track segments effectively \'flatten\' curves and so can result
         in understeer; not steering enough when on a curve.
 
-14. Determining PID Coefficients
+15. Determining PID Coefficients
 
     a.  The PID coefficients are the most important (and time consuming)
         parameters to configure. If they are not correct for your car
