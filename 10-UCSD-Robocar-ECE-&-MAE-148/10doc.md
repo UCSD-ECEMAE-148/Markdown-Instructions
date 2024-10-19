@@ -985,13 +985,14 @@ document](#configuring-oakd-lite)
 Edit the myconfig.py camera type to OAKD
 
 CAMERA_TYPE = "OAKD"
+CAMERA_INDEX = 0
 
 Make sure the camera is working by checking the images that are being
 saved to the /data/images directory.
 
 The easiest way to do this is to go to
 
-[http://localhost:8887](http://localhost:8887) while
+[http://ucsdrobocar-xxx-yy:8887](http://ucsdrobocar01.local:8887) while
 running donkeysim, and you should be able to see a livestream from the
 camera. Note - if several people are running donkeysim at the same time
 on the same wifi this interface may get buggy
