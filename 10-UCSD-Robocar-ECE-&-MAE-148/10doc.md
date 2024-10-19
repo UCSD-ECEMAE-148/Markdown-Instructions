@@ -240,7 +240,7 @@ Instructions](https://docs.google.com/document/d/1Y5DdvWdtFjbeyGIVJyWAb8Wrq6M1Mk
 
 ## Logitech F710 controller 
 
-Place your Logitech F710 controller on the [x mode]{.mark}
+Place your Logitech F710 controller on the [x mode]
 
 (look for small switch in one of the controller face)
 
@@ -253,7 +253,7 @@ ls /dev/input
 >
 > by-id event0 event2 event4 mice mouse1
 >
-> by-path event1 event3 [js0]{.mark} mouse0
+> by-path event1 event3 [js0] mouse0
 
 We are looking for a js0
 
@@ -295,7 +295,7 @@ remove THE_CONTROLLER_MAC_ADDRESS
 ## LD06 Lidar
 
 Datasheet for LD06 lidar:
-[[datasheet]{.underline}](https://drive.google.com/file/d/1t0CkEEd9fYG_eIq_DL8eqy4NywQQDrjg/view?usp=sharing)
+[datasheet](https://drive.google.com/file/d/1t0CkEEd9fYG_eIq_DL8eqy4NywQQDrjg/view?usp=sharing)
 
 ### Laser Map
 
@@ -311,7 +311,7 @@ Datasheet for LD06 lidar:
 ## Setting up the DonkeyCar AI Framework
 
 Reference
-[[http://docs.donkeycar.com]{.underline}](http://docs.donkeycar.com)
+[http://docs.donkeycar.com](http://docs.donkeycar.com)
 
 Make sure that the OpenCV you want to use supporting CUDA is already
 available as a systemwide package.
@@ -584,13 +584,11 @@ jtop
 
 4
 
-![](./10images/media/image33.png){width="4.005208880139983in"
-height="1.776890857392826in"}
+![](./10images/media/image33.png)
 
-Add 4G of swap and press <S> to enable it.
+Add 4G of swap and press S to enable it.
 
-![](./10images/media/image25.png){width="3.0156255468066493in"
-height="2.161738845144357in"}
+![](./10images/media/image25.png)
 
 > Alternatively you can use the command line
 >
@@ -874,8 +872,8 @@ Lets Integrate the JTN and PWM Controller into the RC Chassis
 
 Charge your LiPo Battery
 
-After you charge your Lithium Polymer (LiPo) battery(ries) - [[some info
-here]{.underline}](https://rogershobbycenter.com/lipoguide/)
+After you charge your Lithium Polymer (LiPo) battery(ries) - [some info
+here](https://rogershobbycenter.com/lipoguide/)
 
 Connect the battery(ries) **and batteries monitor/alarm**
 
