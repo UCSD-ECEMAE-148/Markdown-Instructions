@@ -78,7 +78,9 @@ python3 /projects/quectel-lg69t-am.0.15.0/p1_runner/bin/runner.py --device-id <p
 ```
 
 Of course substituting in your own password and filepath.
-Then ```source ~/.bashrc``` and you can just type gps_corrections to get 
+
+Then ```source ~/.bashrc``` and you can just type gps_corrections to get corrections going
+
 5.  Create a project with the DonkeyCar path follow template
 
     a.  Open a new terminal window
