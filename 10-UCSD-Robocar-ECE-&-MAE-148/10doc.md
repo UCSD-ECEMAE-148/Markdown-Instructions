@@ -314,9 +314,7 @@ Reference
 [[http://docs.donkeycar.com]{.underline}](http://docs.donkeycar.com)
 
 Make sure that the OpenCV you want to use supporting CUDA is already
-available as a system
-
-wide package.
+available as a systemwide package.
 
 Remember that when you are compiling and building software from source,
 it may take a few hours \...
@@ -411,9 +409,7 @@ We want to have control over the versions of each software library to
 minimize the framework from
 
 breaking after system-wide upgrades. Therefore, lets create a virtual
-environment for the
-
-DonkeyCar.
+environment for the DonkeyCar.
 
 ### Create a virtual environment for the DonkeyCar AI Framework. 
 
@@ -427,7 +423,7 @@ and one subdirectory
 
 to store virtual environments
 ```
-cd \~
+cd ~
 ```
 ```
 mkdir projects
@@ -446,7 +442,7 @@ pip3 install virtualenv
 ```
 > if complains about user permission
 >
-> pip3 install virtualenv \--user
+> pip3 install virtualenv --user
 
 We will create a virtual environment called donkey since our AI
 framework is based on the Donkey Car project
@@ -456,22 +452,20 @@ python3 -m virtualenv -p python3 donkey --system-site-packages
 
 Since your SBC will be initially dedicated to the class AI framework
 (Donkey), at least until your custom project starts, let's activate the donkey virtual env
-automatically every time the user
-
-Jetson logs into the SBC. We can remove this settings later if needed
+automatically every time the user Jetson logs into the SBC. We can remove this settings later if needed
 when using ROS2
 ```
-echo \"source \~/projects/envs/donkey/bin/activate\" \>\> \~/.bashrc
+echo "source ~/projects/envs/donkey/bin/activate" >> ~/.bashrc
 ```
 ```
-source \~/.bashrc
+source ~/.bashrc
 ```
 When a virtual environment is active, you should see
 (name_of_virtual_enviroment) in front of the terminal prompt.
 
 ex:
 ```
-(donkey)jetson@ucsdrobocar-xxx-yy:\~\$
+(donkey)jetson@ucsdrobocar-xxx-yy:
 ```
 At this point, using pip and pip3 should be the same as using pip3 by
 default in this virtual environment.
@@ -538,300 +532,35 @@ We are not done installing software yet. We need to install more
 dependencies..
 
 **Make sure you have the donkey virtual environment activated**
+### Step 3a: Install System-Wide Dependencies
 
-Remember some of these installs may take a while. It does not mean that
-the SBC is frozen, you
+First install some packages with `apt-get`.
 
-can see that the CPU is busy with top, htop, or jtop
+```bash
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
+sudo apt-get install -y python3-dev python3-pip
+sudo apt-get install -y libxslt1-dev libxml2-dev libffi-dev libcurl4-openssl-dev libssl-dev libpng-dev libopenblas-dev
+sudo apt-get install -y git nano
+sudo apt-get install -y openmpi-doc openmpi-bin libopenmpi-dev libopenblas-dev
 ```
-source \~/projects/envs/donkey/bin/activate
-```
-```
+
+#### Setup Python Dependencies
+
+Next, you will need to install packages with `pip`:
+
+```bash
 pip3 install -U pip testresources setuptools
-```
-```
 pip3 install -U futures==3.1.1 protobuf==3.12.2 pybind11==2.5.0
-```
-```
 pip3 install -U cython==0.29.21 pyserial
-```
-```
-pip3 install -U future==0.18.2 mock==4.0.2 h5py==2.10.0
-keras_preprocessing==1.1.2 keras_applications==1.0.8 gast==0.3.3
-```
-```
-pip3 install -U absl-py==0.9.0 py-cpuinfo==7.0.0 psutil==5.7.2
-portpicker==1.3.1 six requests==2.24.0 astor==0.8.1 termcolor==1.1.0
-wrapt==1.12.1 google-pasta==0.2.0
-```
-```
+pip3 install -U future==0.18.2 mock==4.0.2 h5py==2.10.0 keras_preprocessing==1.1.2 keras_applications==1.0.8 gast==0.3.3
+pip3 install -U absl-py==0.9.0 py-cpuinfo==7.0.0 psutil==5.7.2 portpicker==1.3.1 six requests==2.24.0 astor==0.8.1 termcolor==1.1.0 wrapt==1.12.1 google-pasta==0.2.0
 pip3 install -U gdown
+
+# This will install tensorflow as a system package
+pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v45 tensorflow==2.3.1
 ```
-### Tensorflow
-
-Now let\'s install
-[Tensorflow](https://www.tensorflow.org/) (Artificial
-Neural Network software).
-
-> "TensorFlow is an end-to-end open source platform for machine
-> learning. It has a comprehensive, flexible ecosystem of tools,
-> libraries and community resources that lets researchers push the
-> state-of-the-art in ML and developers easily build and deploy ML
-> powered applications."
-
-Lets install Tensorflow enabled for GPU acceleration
-
-Another chance for you to study while software is being installed...
-
-Background information here
-
-[https://docs.nvidia.com/deeplearning/frameworks/install-tf-jetson-platform/index.html](https://docs.nvidia.com/deeplearning/frameworks/install-tf-jetson-platform/index.html)
-
-Remember you are using a low power SBC, depending on the size of the
-software it takes a while
-
-We are installing Tensorflow outside the virtual environment so it is
-available for other uses
-
-Here is another chance for you to study while software is being
-installed...
-
-[Background information
-here](https://docs.nvidia.com/deeplearning/frameworks/install-tf-jetson-platform/index.html)
-
-We are using JetPack 4.5 because the new DonkeyCar release was breaking
-the install with JetPack4.6.2. It requires Python 7 and newer.
-
-Let\'s stick with JetPack4.5 for now
-
-[https://developer.download.nvidia.com/compute/redist/jp/v45/tensorflow/](https://developer.download.nvidia.com/compute/redist/jp/v45/tensorflow/)
-
-As of 18Sep22
-
-> tensorflow-1.15.4+nv20.12-cp36-cp36m-linux_aarch64.whl 218MB
-> 2020-12-18 14:54:04
->
-> tensorflow-2.3.1+nv20.12-cp36-cp36m-linux_aarch64.whl 264MB 2020-12-18
-> 14:54:06
->
-> tensorflow-1.15.5+nv21.2-cp36-cp36m-linux_aarch64.whl 218MB 2021-02-26
-> 16:10:00
->
-> tensorflow-2.4.0+nv21.2-cp36-cp36m-linux_aarch64.whl 273MB 2021-02-26
-> 16:10:14
->
-> tensorflow-1.15.5+nv21.3-cp36-cp36m-linux_aarch64.whl 218MB 2021-03-25
-> 18:14:17
->
-> tensorflow-2.4.0+nv21.3-cp36-cp36m-linux_aarch64.whl 273MB 2021-03-25
-> 18:14:48
->
-> tensorflow-1.15.5+nv21.4-cp36-cp36m-linux_aarch64.whl 218MB 2021-04-26
-> 20:36:59
->
-> tensorflow-2.4.0+nv21.4-cp36-cp36m-linux_aarch64.whl 273MB 2021-04-26
-> 20:38:13
->
-> tensorflow-1.15.5+nv21.5-cp36-cp36m-linux_aarch64.whl 218MB 2021-05-20
-> 20:19:08
->
-> tensorflow-2.4.0+nv21.5-cp36-cp36m-linux_aarch64.whl 274MB 2021-05-20
-> 20:19:20
->
-> tensorflow-1.15.5+nv21.6-cp36-cp36m-linux_aarch64.whl 220MB 2021-06-29
-> 18:18:14
->
-> **tensorflow-2.5.0**+nv21.6-cp36-cp36m-linux_aarch64.whl 293MB
-> 2021-06-29 18:18:43
-
-\# This will install the latest tensorflow compatible with the Jet Pack
-as a system package
-
-Alternatively if you want to chose a particular version:
-```
-pip3 install \--pre \--extra-index-url
-https://developer.download.nvidia.com/compute/redist/jp/v45
-tensorflow==**2.3.1**
-```
-
-Remember you are using a low power SBC, depending on the size of the
-software it takes a while
-
-Lets verify that Tensorflow installed correctly
-```
-python3
-```
-```
-import tensorflow
-```
-```
-exit()
-```
-> No errors should be reported
->
-> **If you get errors importing Tensorflow 2.5.0, try these**
->
-> **pip install numpy==1.19.2**
-
-ex:
-
-If you see info with **libcuda** it means, Tensorflow will be
-accelerated using the CUDA
-
-cores of the SBC's GPU
-
-(donkey) jetson@ucsdrobocar-xxx-yy:\~/projects\$ python3
-
-Python 3.6.9 (default, Jun 29 2022, 11:45:57)
-
-\[GCC 8.4.0\] on linux
-
-Type \"help\", \"copyright\", \"credits\" or \"license\" for more
-information.
-
-\>\>\> import tensorflow
-
-2022-08-09 12:19:25.285765: I
-tensorflow/stream_executor/platform/default/dso_loader.cc:53\]
-Successfully opened dynamic library [libcudart.]{.mark}so.10.2
-
-\>\>\> exit()
-
-Verifying that TensorRT was installed
-
-sudo apt-get update
-
-(donkey) jetson@ucsdrobocar-xxx-yy:\~\$ sudo apt-get install tensorrt
-
-Reading package lists\... Done
-
-Building dependency tree
-
-Reading state information\... Done
-
-tensorrt is already the newest version (7.1.3.0-1+cuda10.2).
-
-0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
-
-dpkg -l \| grep TensorRT
-
-> arm64 Meta package of TensorRT
->
-> ii uff-converter-tf 7.1.3-1+cuda10.2 arm64 UFF converter for TensorRT
-> package
-
-\# Periodically the versions of tensorflow, cuDNN / CUDA give us
-conflict. Here is a list of compatibility
-
-[[https://www.tensorflow.org/install/sourcegpu]{.underline}](https://www.tensorflow.org/install/source#gpu)
-
-Installing pycuda - it will take a while again...
-```
-pip3 install pycuda
-```
-If you are having errors installing pycuda use the following command:
-```
-pip3 install pycuda==2020.1
-```
-### PyTorch
-
-Lets install [[PyTorch]{.underline}](https://pytorch.org/) too
-
-"An open source machine learning framework that accelerates the path
-from research prototyping to production deployment"
-
-Again, these steps will take some time. Use your time wisely
-```
-cd \~/projects
-```
-```
-wget
-https://nvidia.box.com/shared/static/p57jwntv436lfrd78inwl7iml6p13fzh.whl
-```
-
-cp p57jwntv436lfrd78inwl7iml6p13fzh.whl
-torch-1.8.0-cp36-cp36m-linux_aarch64.whl
-```
-pip3 install torch-1.8.0-cp36-cp36m-linux_aarch64.whl
-```
-```
-sudo apt-get install libjpeg-dev zlib1g-dev libpython3-dev
-libavcodec-dev libavformat-dev libswscale-dev
-```
-```
-git clone -b v0.9.0 https://github.com/pytorch/vision torchvision
-```
-```
-cd torchvision
-```
-```
-python setup.py install
-```
-```
-cd ../
-```
-\# it will take a good while again. Keep studying other things...
-
-Testing Pythorch install
-
-python
-
-> import torch
->
-> print(torch.\_\_version\_\_)
-
-exit()
-
-ex:
-
-> (donkey) jetson@ucsdrobocar-xxx-yy:\~/projects\$ python
->
-> Python 3.6.9 (default, Jan 26 2021, 15:33:00)
->
-> \[GCC 8.4.0\] on linux
->
-> Type \"help\", \"copyright\", \"credits\" or \"license\" for more
-> information.
->
-> \>\>\> import torch
->
-> \>\>\> print(torch.\_\_version\_\_)
->
-> 1.8.0
->
-> \>\>\> exit()
->
-> (donkey) jetson@ucsdrobocar-xxx-yy:\~/projects\$
-
-One more test
-
-pip3 show torch
-
-ex:
-
-> Name: torch
->
-> Version: 1.8.0
->
-> Summary: Tensors and Dynamic neural networks in Python with strong GPU
-> acceleration
->
-> Home-page: https://pytorch.org/
->
-> Author: PyTorch Team
->
-> Author-email: packages@pytorch.org
->
-> License: BSD-3
->
-> Location:
-> /home/jetson/projects/envs/donkey/lib/python3.6/site-packages
->
-> Requires: dataclasses, typing-extensions, numpy
->
-> Required-by: torchvision
-
-###  
 
 ## As of Summer II 2022, we are using a new Stereo Camera from Luxonis 
 
@@ -947,138 +676,48 @@ You should be able to see preview video on the No machine desktop
 
 ### Installing Donkeycar AI Framework
 
-Lets Install the Donkeycar AI Framework
 
-If you are upgrading from Donkey3 then save the values from your
-calibration that
+#### Install Donkeycar Python Code
 
-you had on
+Change to a dir you would like to use as the head of your projects. Assuming
+you've already made the `projects` directory above, you can use that. Get
+the latest 4.5.X release and install that into the venv.
 
-myconfig.py
+```bash
+mkdir projects
+cd ~/projects
+git clone https://github.com/autorope/donkeycar
+cd donkeycar
+git fetch --all --tags -f
+git checkout 4.5.1
+pip install -e .[nano]
 
-Then let\'s remove the old donkeycar and d3 directories
-
-> cd \~/projects
->
-> rm -rf donkeycar
->
-> rm -rf d3
->
-> If the projects directory was not created yet, mkdir projects
->
-> #cd \~/projects
->
-> Get donkeycar from Github
->
-> git clone https://github.com/autorope/donkeycar
->
-> cd donkeycar
->
-> cd \~/projects
->
-> git clone https://github.com/autorope/donkeycar
->
-> cd donkeycar
->
-> git fetch \--all \--tags -f
->
-> git checkout 4.5.1
->
-> pip install -e .\[nano\]
-
-Install more dependencies
-
-sudo apt-get install python3-dev python3-numpy python-dev libsdl-dev
-libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev
-libsdl1.2-dev libsmpeg-dev python-numpy subversion libportmidi-dev
-ffmpeg libswscale-dev libavformat-dev libavcodec-dev libfreetype6-dev
-libswscale-dev libjpeg-dev libfreetype6-dev
-
-pip install pygame
+```
 
 Lets enable the use of synchronization of files with remote computers
 using rsync
-
+```
 sudo apt-get install rsync
-
+```
 This part will take a bit of time. Be patient, please keep in mind that
-you are using a low power
-
-single board computer (SBC).
+you are using a low power single board computer (SBC).
 
 If you are curious if your SBC is really working, you can open another
-tab in the terminal window
-
-or a complete new terminal window, ssh to the JTN then execute the
+tab in the terminal window or a complete new terminal window, ssh to the JTN then execute the
 command top or htop
 
 look at the CPU utilization...
 
-> Note I had problems installing Donkey with the latest version of pip
-> (20.0.2). I had to revert
->
-> to an earlier version of pip. See versions of pip here
-> [[https://pip.pypa.io/en/stable/news/](https://pip.pypa.io/en/stable/news/)
->
-> On 28 May20, it worked. Keeping the line below for reference in case
-> the problem happens again
->
-> \# pip install \--upgrade pip==18.1
 
-Install Donkey with
-```
-pip3 install -e .\[nano\]
-```
-Proceed to [Create a Car]](#create-a-car)
-
-
->
-> cd \~/projects
->
-> git clone https://github.com/autorope/donkeycar
->
-> cd donkeycar
->
-> git fetch \--all \--tags -f
->
-> latestTag=\$(git describe \--tags \`git rev-list \--tags
-> \--max-count=1\`)
->
-> git checkout \$latestTag
->
-> pip install -e .\[[nano45]{.mark}\]
-
-It may take a while. You may not see progress on the terminal. You can
-ssh to the SBC
-
-and run the command top or htop or jtop from another terminal/tab
-
-Grab a coffee, go study something \...
-
-### 
 
 ### Create a Car
 
-Let's create a car on the path \~/project/d4
+Let's create a car on the path ~/projects/d4
 
-cd \~/projects/donkeycar
+cd ~/projects/donkeycar
 
-donkey createcar \--path \~/projects/d4
+donkey createcar --path ~/projects/d4
 
-If complains about old version of numpy and the install fails
-
-pip install numpy \--upgrade
-
-
-using donkey v4.3.22 \...
-
-Creating car folder: /home/jetson/projects/d4
-
-making dir /home/jetson/projects/d4
-
-The version of the Donkey car may be newer than the one above...
-
-\# For Winter 2024
 
 Make sure the DonkeyCar is version 4.5.1. The latest version of the
 DonkeyCar (5.x) does not work at the Jetson Nano yet.
@@ -1096,7 +735,7 @@ nano myconfig.py
 
 #CAMERA
 
-CAMERA_TYPE = \"MOCK\" (PICAM\|WEBCAM\|CVCAM\|CSIC\|V4L\|MOCK)
+CAMERA_TYPE = "MOCK" (PICAM\|WEBCAM\|CVCAM\|CSIC\|V4L\|MOCK)
 
 \# if you have USB camera connected to the JTN , use WEBCAM
 
@@ -1114,7 +753,7 @@ python manage.py drive
 
 Lets connect to the JTN by using a web browser from your PC
 
-[[http://ucsdrobocar-xxx-yy:8887]{.underline}](http://ucsdrobocar01.local:8887)
+[http://ucsdrobocar-xxx-yy:8887](http://ucsdrobocar01.local:8887)
 
 You should see a screen like this
 
@@ -1132,26 +771,26 @@ nano myconfig.py
 
 > JOYSTICK
 >
-> [USE_JOYSTICK_AS_DEFAULT = True]{.mark} when starting the manage.py,
+> USE_JOYSTICK_AS_DEFAULT = True when starting the manage.py,
 > when True, wil\$
 >
 > JOYSTICK_MAX_THROTTLE = 0.5 this scalar is multiplied with the -1 to\$
 >
 > JOYSTICK_STEERING_SCALE = 1.0 some people want a steering that is
-> less\$
+> less$
 >
 > AUTO_RECORD_ON_THROTTLE = True if true, we will record whenever
-> throttle\$
+> throttle$
 >
-> [CONTROLLER_TYPE=\'F710\']{.mark} (ps3\|ps4\|xbox\|nimbus\|wiiu\|F710)
+> CONTROLLER_TYPE='F710'(ps3\|ps4\|xbox\|nimbus\|wiiu\|F710)
 
 python manage.py drive
 
 ex
 
-> Starting vehicle\...
+> Starting vehicle...
 >
-> Opening /dev/input/js0\...
+> Opening /dev/input/js0...
 >
 > Device name: Logitech Gamepad F710
 >
