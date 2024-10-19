@@ -249,7 +249,7 @@ devices again
 
 ls /dev/input
 
-> (env) jetson@ucsdrobocar00:\~/projects/d3\$ ls /dev/input
+> (env) jetson@ucsdrobocar00:~/projects/d3$ ls /dev/input
 >
 > by-id event0 event2 event4 mice mouse1
 >
@@ -281,7 +281,7 @@ sudo apt-get install -y jstest-gtk
 
 jstest /dev/input/js0
 
-To remove a device, let\'s say another JoyStick that you don't use
+To remove a device, let's say another JoyStick that you don't use
 anymore
 
 bluetoothctl
@@ -317,11 +317,11 @@ Make sure that the OpenCV you want to use supporting CUDA is already
 available as a systemwide package.
 
 Remember that when you are compiling and building software from source,
-it may take a few hours \...
+it may take a few hours ...
 
 SSH into the Single Board Computer (SBC) e.g., RPI, JTN, JNX, etc.
 
-\ Install some packaged, some may be already installed
+ Install some packaged, some may be already installed
 ```
 sudo apt update -y
 ```
@@ -334,7 +334,7 @@ sudo usermod -aG dialout jetson
 
  #If packages are being held back
 ```
- sudo apt-get \--with-new-pkgs upgrade
+ sudo apt-get --with-new-pkgs upgrade
 ```
 ```
 sudo apt-get install -y build-essential python3 python3-dev python3-pip
@@ -349,7 +349,7 @@ Install RPi.GPIO clone for Jetson Nano
 ```
 pip3 install Jetson.GPIO
 ```
-> If the pip install complains about ownership of the directory\*
+> If the pip install complains about ownership of the directory*
 >
 > then execute the following command
 >
@@ -357,16 +357,16 @@ pip3 install Jetson.GPIO
 >
 > ex:
 >
-> WARNING: The directory \'/home/jetson/.cache/pip/http\' or its parent
+> WARNING: The directory '/home/jetson/.cache/pip/http' or its parent
 > directory is not owned by the current user and the cache has been
 > disabled. Please check the permissions and owner of that directory. If
-> executing pip with sudo, you may want sudo\'s -H flag.
+> executing pip with sudo, you may want sudo's -H flag.
 >
-> WARNING: The directory \'/home/jetson/.cache/pip\' or its parent
+> WARNING: The directory '/home/jetson/.cache/pip' or its parent
 > directory is not owned by the current user and caching wheels has been
 > disabled. check the permissions and owner of
 >
-> that directory. If executing pip with sudo, you may want sudo\'s -H
+> that directory. If executing pip with sudo, you may want sudo's -H
 > flag.
 >
 > If pip breaks for some reason, you can reinstall it with the following
@@ -374,7 +374,7 @@ pip3 install Jetson.GPIO
 >
 > python3 -m pip uninstall pip
 >
-> sudo apt install python3-pip \--reinstall
+> sudo apt install python3-pip --reinstall
 >
 > If the install request elevated privileges, execute the following
 > command
@@ -383,7 +383,7 @@ pip3 install Jetson.GPIO
 >
 > if pip has a new version
 >
-> pip3 install \--upgrade pip
+> pip3 install --upgrade pip
 
 Let's make sure the user jetson can use gpio
 
@@ -403,7 +403,7 @@ sudo usermod -a -G gpio jetson
 >
 > Will get back to it later if the jetson user can not access GPIO
 
-sudo udevadm control \--reload-rules && sudo udevadm trigger
+sudo udevadm control --reload-rules && sudo udevadm trigger
 
 We want to have control over the versions of each software library to
 minimize the framework from
@@ -474,25 +474,25 @@ https://docs.donkeycar.com/guide/robot_sbc/setup_jetson_nano/ 46
 
 > #it is necessary to create a link to it
 >
-> \# Go to the folder where OpenCV\'s native library is built
+> # Go to the folder where OpenCV's native library is built
 >
 > #cd /usr/local/lib/python3.6/site-packages/cv2/python-3.6
 >
-> \# Rename
+> # Rename
 >
 > #mv cv2.cpython-36m-xxx-linux-gnu.so cv2.so
 >
-> \# Go to your virtual environments site-packages folder if previously
+> # Go to your virtual environments site-packages folder if previously
 > set
 >
-> #cd \~/env/lib/python3.6/site-packages/
+> #cd ~/env/lib/python3.6/site-packages/
 >
-> \# Or just go to your home folder if not set a venv site-packages
+> # Or just go to your home folder if not set a venv site-packages
 > folder
 >
-> #cd \~
+> #cd ~
 >
-> \# Symlink the native library
+> # Symlink the native library
 >
 > #ln -s /usr/local/lib/python3.6/site-packages/cv2/python-3.6/cv2.so
 > cv2.so
@@ -500,9 +500,9 @@ https://docs.donkeycar.com/guide/robot_sbc/setup_jetson_nano/ 46
 > #NOTE that it is almost mandatory to create a virtual environment in
 > order to properly install
 >
-> \# tensorflow, scipy and keras, and always a best practice.
+> # tensorflow, scipy and keras, and always a best practice.
 ```
-cd \~/projects/envs/donkey/lib/python3.6/site-packages/
+cd ~/projects/envs/donkey/lib/python3.6/site-packages/
 ```
 ```
 ln -s /usr/local/lib/python3.6/site-packages/cv2/python-3.6/cv2.so
@@ -514,19 +514,19 @@ cv2.so
 
 ### Confirm that OpenCV built from previous steps is working on the virtual environment Donkey
 
-\# Testing to see if OpenCV is installed in the virtual env.
+# Testing to see if OpenCV is installed in the virtual env.
 ```
-python3 -c \'import cv2 as cv; print(cv.\_\_version\_\_)\'
+python3 -c 'import cv2 as cv; print(cv.__version__)'
 ```
-> (donkey) **jetson@ucsdrobocar-xxx-yy**:**\~/projects/envs/donkey**\$
-> python3 -c \'import cv2 as cv; print(cv.\_\_version\_\_)\'
+> (donkey) **jetson@ucsdrobocar-xxx-yy**:**~/projects/envs/donkey**$
+> python3 -c 'import cv2 as cv; print(cv.__version__)'
 >
 > 4.6.0
 
-\# We won\'t use Python2, but just in case one will need it for some
+# We won't use Python2, but just in case one will need it for some
 reason
 ```
-python2 -c \'import cv2 as cv; print(cv.\_\_version\_\_)\'
+python2 -c 'import cv2 as cv; print(cv.__version__)'
 ```
 We are not done installing software yet. We need to install more
 dependencies..
@@ -570,7 +570,7 @@ Open a terminal window and run the following commands:
 
 sudo apt update && sudo apt upgrade
 
-\# after upgrades
+# after upgrades
 
 sudo reboot now
 
@@ -587,18 +587,18 @@ jtop
 ![](./10images/media/image33.png){width="4.005208880139983in"
 height="1.776890857392826in"}
 
-Add 4G of swap and press \<S\> to enable it.
+Add 4G of swap and press <S> to enable it.
 
 ![](./10images/media/image25.png){width="3.0156255468066493in"
 height="2.161738845144357in"}
 
 > Alternatively you can use the command line
 >
-> \# Disable ZRAM:
+> # Disable ZRAM:
 >
 > sudo systemctl disable nvzramconfig
 >
-> \# Create 4GB swap file
+> # Create 4GB swap file
 >
 > sudo fallocate -l 4G /mnt/4GB.swap
 >
@@ -611,18 +611,18 @@ height="2.161738845144357in"}
 >
 > sudo nano /etc/fstab
 >
-> \# Add this line at the bottom of the file
+> # Add this line at the bottom of the file
 >
 > /mnt/4GB.swap swap swap defaults 0 0
 >
-> \# Reboot
+> # Reboot
 >
 > sudo reboot now
 
 #Installing dependencies
 
 Navigate to the directory where you will be installing the luxonis
-libraries using cd \~/projects
+libraries using cd ~/projects
 ```
 sudo nano install_dependencies.sh
 ```
@@ -632,21 +632,21 @@ Copy the entire contents of the file:
 bash install_dependencies.sh
 ```
 ```
-echo \"export OPENBLAS_CORETYPE=ARMV8\" \>\> \~/.bashrc
+echo "export OPENBLAS_CORETYPE=ARMV8" >> ~/.bashrc
 ```
 ```
-echo \'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"03e7\", MODE=\"0666\"\' \|
+echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' |
 ```
 ```
 sudo tee /etc/udev/rules.d/80-movidius.rules
 ```
 ```
-sudo udevadm control \--reload-rules && sudo udevadm trigger
+sudo udevadm control --reload-rules && sudo udevadm trigger
 ```
 #Navigate using cd to the folder where you would like to install the
 camera example files and requirements
 ```
-cd \~/projects
+cd ~/projects
 ```
 ```
 git clone
@@ -735,11 +735,11 @@ nano myconfig.py
 
 #CAMERA
 
-CAMERA_TYPE = "MOCK" (PICAM\|WEBCAM\|CVCAM\|CSIC\|V4L\|MOCK)
+CAMERA_TYPE = "MOCK" (PICAM|WEBCAM|CVCAM|CSIC|V4L|MOCK)
 
-\# if you have USB camera connected to the JTN , use WEBCAM
+# if you have USB camera connected to the JTN , use WEBCAM
 
-\# And change this line so the Donkey can run using the web interface
+# And change this line so the Donkey can run using the web interface
 
 USE_JOYSTICK_AS_DEFAULT = False
 
@@ -765,16 +765,16 @@ Ctrl-C
 
 ### Modifying Joystick 
 
-Now let\'s change the type of joystick we use with Donkey
+Now let's change the type of joystick we use with Donkey
 
 nano myconfig.py
 
 > JOYSTICK
 >
 > USE_JOYSTICK_AS_DEFAULT = True when starting the manage.py,
-> when True, wil\$
+> when True, wil$
 >
-> JOYSTICK_MAX_THROTTLE = 0.5 this scalar is multiplied with the -1 to\$
+> JOYSTICK_MAX_THROTTLE = 0.5 this scalar is multiplied with the -1 to$
 >
 > JOYSTICK_STEERING_SCALE = 1.0 some people want a steering that is
 > less$
@@ -782,7 +782,7 @@ nano myconfig.py
 > AUTO_RECORD_ON_THROTTLE = True if true, we will record whenever
 > throttle$
 >
-> CONTROLLER_TYPE='F710'(ps3\|ps4\|xbox\|nimbus\|wiiu\|F710)
+> CONTROLLER_TYPE='F710'(ps3|ps4|xbox|nimbus|wiiu|F710)
 
 python manage.py drive
 
@@ -825,35 +825,35 @@ The A Button is the emergency break
 
 Joystick Controls:
 
-> +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--+
+> +------------------+---------------------------+
 >
-> \| control \| action \|
+> | control | action |
 >
-> +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--+
+> +------------------+---------------------------+
 >
-> \| start \| toggle_mode \|
+> | start | toggle_mode |
 >
-> \| B \| toggle_manual_recording \|
+> | B | toggle_manual_recording |
 >
-> \| Y \| erase_last_N_records \|
+> | Y | erase_last_N_records |
 >
-> \| A \| emergency_stop \|
+> | A | emergency_stop |
 >
-> \| back \| toggle_constant_throttle \|
+> | back | toggle_constant_throttle |
 >
-> \| R1 \| chaos_monkey_on_right \|
+> | R1 | chaos_monkey_on_right |
 >
-> \| L1 \| chaos_monkey_on_left \|
+> | L1 | chaos_monkey_on_left |
 >
-> \| circle \| show_record_acount_status \|
+> | circle | show_record_acount_status |
 >
-> \| R2 \| enable_ai_launch \|
+> | R2 | enable_ai_launch |
 >
-> \| left_stick_horz \| set_steering \|
+> | left_stick_horz | set_steering |
 >
-> \| right_stick_vert \| set_throttle \|
+> | right_stick_vert | set_throttle |
 >
-> +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--+
+> +------------------+---------------------------+
 
 If your joystick is not returning to neutral
 
@@ -863,12 +863,12 @@ on myconfig.py
 
 ex:
 
-> NETWORK_JS_SERVER_IP = \"192.168.0.1\"when listening for network
-> joystick cont\$
+> NETWORK_JS_SERVER_IP = "192.168.0.1"when listening for network
+> joystick cont$
 >
-> JOYSTICK_DEADZONE = 0.01 when non zero, this is the smallest throt\$
+> JOYSTICK_DEADZONE = 0.01 when non zero, this is the smallest throt$
 >
-> JOYSTICK_THROTTLE_DIR = -1.0 use -1.0 to flip forward/backward, use \$
+> JOYSTICK_THROTTLE_DIR = -1.0 use -1.0 to flip forward/backward, use $
 
 Lets Integrate the JTN and PWM Controller into the RC Chassis
 
@@ -893,12 +893,12 @@ Tool Software
 
 Edit the myconfig.py to have these values
 
-DRIVE_TRAIN_TYPE = \"VESC\"
+DRIVE_TRAIN_TYPE = "VESC"
 
-VESC_MAX_SPEED_PERCENT =.2 \## Max speed as a percent of actual max
+VESC_MAX_SPEED_PERCENT =.2 ## Max speed as a percent of actual max
 speed
 
-VESC_SERIAL_PORT= \"/dev/ttyACM0\" \## check this val with ls /dev/tty\*
+VESC_SERIAL_PORT= "/dev/ttyACM0" ## check this val with ls /dev/tty*
 
 VESC_HAS_SENSOR= True
 
@@ -925,7 +925,7 @@ And replace them on the Jetson in the locations shown in the images
 below. Note - to get the files on the jetson you can use SFTP (secure
 file transfer protocol):
 
-Examples on how to use SFTP:\
+Examples on how to use SFTP:
 ```
 sftp jetson@ucsdrobocar-148-xx.local
 ```
@@ -957,23 +957,23 @@ the terminal to install the needed libraries
 Then run it again. It should throw a permissions error. Follow the
 advice on how to fix the error with chmod
 
-Int(10) error bug fix (Credit Saimai Lau and Albert Chang):\
-When running python manage.py drive, the intermittent \"invalid literal
-for int() with base 10: \'None\' error is from the VESC package checking
+Int(10) error bug fix (Credit Saimai Lau and Albert Chang):
+When running python manage.py drive, the intermittent "invalid literal
+for int() with base 10: 'None' error is from the VESC package checking
 whether the version of the VESC is below 3.0, so we can comment out that
-part since we\'re using 6.0 just do
+part since we're using 6.0 just do
 ```
 nano
 /home/jetson/projects/envs/donkey/lib/python3.6/site-packages/pyvesc/VESC/VESC.py
 ```
-and put \# at the beginning of lines 38-40 Then \^S to save and \^X to
+and put # at the beginning of lines 38-40 Then ^S to save and ^X to
 exit
 
 ![](./10images/media/image35.png)
 
 Error explanation: The self.get_firmware_version() get thes version by
 requesting it from the VESC and reading the replied bytes, but sometimes
-the data is lost or incomplete so the function returns \'None\' as the
+the data is lost or incomplete so the function returns 'None' as the
 version. We already know the version is 6.0 so we don't need this
 function.
 
@@ -986,7 +986,7 @@ document](#configuring-oakd-lite)
 
 Edit the myconfig.py camera type to OAKD
 
-CAMERA_TYPE = \"OAKD\"
+CAMERA_TYPE = "OAKD"
 
 Make sure the camera is working by checking the images that are being
 saved to the /data/images directory.
