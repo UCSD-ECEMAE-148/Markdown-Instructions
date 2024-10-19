@@ -70,11 +70,13 @@ for anything.
 For example:
 nano ~/.bashrc
 Add the text:
-```function gps_corrections() {
+```
+function gps_corrections() {
 mamba activate py37
 python3 /projects/quectel-lg69t-am.0.15.0/p1_runner/bin/runner.py --device-id <polaris_username> --polaris <polaris_password> --device-port /dev/ttyUSB1  
 }
 ```
+
 Of course substituting in your own password and filepath.
 Then ```source ~/.bashrc``` and you can just type gps_corrections to get 
 5.  Create a project with the DonkeyCar path follow template
