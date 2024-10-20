@@ -42,6 +42,9 @@ Hostname: ucsdrobocar-vm
 Username: robocar  
 Password: ucsdrobocar  
 
+#### Ros2 on a ARM mac:
+https://robostack.github.io/GettingStarted.html has a guide for how to get ros2 running on your mac m1
+
 
 ## 2. UCSD Robocar Framework Breakdown
 
