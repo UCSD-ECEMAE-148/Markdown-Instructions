@@ -557,7 +557,8 @@ pip3 install -U absl-py==0.9.0 py-cpuinfo==7.0.0 psutil==5.7.2 portpicker==1.3.1
 pip3 install -U gdown
 
 # This will install tensorflow as a system package
-pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v45 tensorflow==2.3.1
+#pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v45 tensorflow==2.3.1
+#Note: As of oct 20, 2024 I could not find a tensorflow version that worked. But it seems to be possible to get by without it, as tensorflow is mainly required for training which we do on the GPU cluster.
 ```
 
 ## As of Summer II 2022, we are using a new Stereo Camera from Luxonis 
@@ -973,7 +974,7 @@ the data is lost or incomplete so the function returns 'None' as the
 version. We already know the version is 6.0 so we don't need this
 function.
 
-## OAKD 
+### OAKD 
 
 Once you have the VESC driving the car, you will need to make sure you
 have set up the document by following the instructions labeled
