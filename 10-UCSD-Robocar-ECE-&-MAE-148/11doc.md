@@ -13,9 +13,10 @@
 
 2.  Download
     [https://drive.google.com/file/d/1BK_UjH-He9d_D4eObWMHzpHHCqmtq75h/view?usp=share_link](https://drive.google.com/file/d/1BK_UjH-He9d_D4eObWMHzpHHCqmtq75h/view?usp=share_link)
-3.  Unzip.
+    Or you can alternatively do ```git clone https://github.com/UCSD-ECEMAE-148/quectel```
+4.  Unzip.
 
-4.  Run
+5.  Run
 
     a.  cd quectel-lg69t-am.0.15.0/p1_runner
 
