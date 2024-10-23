@@ -102,7 +102,8 @@ Then ```source ~/.bashrc``` and you can just type gps_corrections to get correct
     GPS_SERIAL = "/dev/ttyUSB0 #This applies for ublox
 
     b.  GPS_SERIAL_BAUDRATE = 460800 #for pointone nav
-    GPS_SERIAL_BAUDRATE = 9600 #for ublox
+    
+    GPS_SERIAL_BAUDRATE = 38400 #for ublox
 
     c.  GPS_DEBUG = True
 
