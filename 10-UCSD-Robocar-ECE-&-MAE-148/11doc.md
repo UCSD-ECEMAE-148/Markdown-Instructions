@@ -18,7 +18,7 @@
 
 5.  Run
 
-    a.  cd quectel-lg69t-am.0.15.0/p1_runner
+    a.  cd quectel-lg69t-am.0.15.0/p1_runner (or if you cloned from github, cd quectel/p1_runner)
 
     b.  deactivate (This should get you out of the current environment)
 
