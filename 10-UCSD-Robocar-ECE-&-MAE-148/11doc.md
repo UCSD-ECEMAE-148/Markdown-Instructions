@@ -2,6 +2,8 @@
 
 
 ## GNSS Configuration:
+## Ublox:
+This GPS doesn't require any configuration out of the gate, it just starts transmitting data right away. Later on the instructions will tell you what to add in myconfig.py to get it to work with donkeycar.
 
 ## How to Plug PointOneNav to Donkeycar
 
@@ -94,11 +96,13 @@ Then ```source ~/.bashrc``` and you can just type gps_corrections to get correct
 
     d.  donkey createcar --path ./mycar --template path_follow
 
-6.  Set the following in the myconfig.py
+6.  Set the following in the myconfig.py 
 
-    a.  GPS_SERIAL = "/dev/ttyUSB2" (USB1 if USB0 used above)
+    a.  GPS_SERIAL = "/dev/ttyUSB2" #(USB1 if USB0 used above) This applies for pointone nav
+    GPS_SERIAL = "/dev/ttyUSB0 #This applies for ublox
 
-    b.  GPS_SERIAL_BAUDRATE = 460800
+    b.  GPS_SERIAL_BAUDRATE = 460800 #for pointone nav
+    GPS_SERIAL_BAUDRATE = 9600 #for ublox
 
     c.  GPS_DEBUG = True
 
@@ -106,16 +110,16 @@ Then ```source ~/.bashrc``` and you can just type gps_corrections to get correct
 
     e.  GPS_NMEA_PATH = None
 
-7.  Also set things like the VESC parameters in myconfig.py. You can
+8.  Also set things like the VESC parameters in myconfig.py. You can
     copy these over from the donkeycar you created earlier.
 
-8.  Run
+9.  Run
 
     a.  python3 manage.py drive
 
-9.  You should see GPS positions being outputted after you run Donkeycar. If you don't want to output set GPS_DEBUG to False
+10.  You should see GPS positions being outputted after you run Donkeycar. If you don't want to output set GPS_DEBUG to False
 
-10. Configure button actions
+11. Configure button actions
 
 a.  SAVE_PATH_BTN is the button to save the in-memory path to a file.
 
