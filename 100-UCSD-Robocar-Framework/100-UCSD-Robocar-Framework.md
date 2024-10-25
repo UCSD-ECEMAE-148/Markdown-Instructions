@@ -297,7 +297,7 @@ nano ~/.bashrc
 robocar_docker ()
 {
     docker run \
-    --name ${1}\
+    --name ${1} \
     -it \
     --privileged \
     --net=host \
