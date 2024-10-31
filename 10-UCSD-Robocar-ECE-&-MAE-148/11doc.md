@@ -269,13 +269,15 @@ We are connecting through serial.
 should see lots of gps coordinates being published.
 
 
-Troubleshooting:
-If you have version conflicts with the config.py, (specifically catkin version errors for me), try setting up the p1_tools inside of a docker container. The docker containers 
-run a newer version of ubuntu linux which can help fix these conflicts.
+# Troubleshooting:
+If you have version conflicts with the config.py, (specifically catkin version errors for me), try setting up the p1_tools inside of a docker container with the ucsd_robocar image. The docker containers run a newer version of ubuntu linux which can help fix these conflicts.
 
 If you have significant configuration issues, running  
 python3 bin/config_tool.py reset factory 
 and then reconfiguring can be a good idea to fix them.
+
+If you experience serious lag when running the gps laps, check your numpy version. Anything but 1.19.0 will create serious issues. 
+To fix, do ```pip install numpy==1.19.0``` and then create a new car with ```donkey createcar --path ./newcar --template path_follow``` 
 
 If you decide you don't need the fusion-engine-client and want fast build times, I recommend modifying the build_ros2 command in the ~./bashrc to exlude the 
 fusion-engine-driver package for faster loading time, unless you really need it. Excluding the ntrip_client can save time too. 
@@ -287,4 +289,4 @@ function build_ros2() {
   colcon build --packages-ignore fusion-engine-driver ntrip_client
   source install/setup.bash
 }
-make sure to source ~/.bashrc after to have the changes take effect
+make sure to source ~/.bashrc after to have the changes take effect. Do all this inside a docker container
