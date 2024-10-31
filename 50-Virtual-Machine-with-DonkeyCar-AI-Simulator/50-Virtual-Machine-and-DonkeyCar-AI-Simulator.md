@@ -323,8 +323,6 @@ Tubs are subsections of the data folder that you may create to separate training
 
 **Do not train on the cluster until you have demonstrated model training on your local machine.**
 
-[Instructions from UCSD IT](https://docs.google.com/document/u/1/d/e/2PACX-1vTe9sehl7izNJJNypsDNABD4wg-F-AClAi0cYV3pIIRGpCknD7SEWQPEGqy_5DBRmFQtkulLkHkLxEm/pub)
-
 To train our models faster, we can use more powerful GPUs with higher throughputs.
 
 On the virtual machine you will be using 2 terminals:
