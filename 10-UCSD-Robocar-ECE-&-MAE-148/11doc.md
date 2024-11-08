@@ -276,8 +276,26 @@ If you have significant configuration issues, running
 python3 bin/config_tool.py reset factory 
 and then reconfiguring can be a good idea to fix them.
 
+If the GPS is not responding to the configuration tool, reflashing the firmware can usually fix it.
+To do this,
+```git clone https://github.com/PointOneNav/firmware-tools/tree/main```
+Then deactivate all virtual environments, and make a new environment with the command
+```mamba create -n gpsfirmware python=3.11```
+```mamba activate gpsfirmware```
+Then download the pointone nav firmware from https://pointonenav.com/resources/ and get it on to your jetson somehow (rsync, sftp, etc.)
+```
+cd l69t/firmware-tools
+```
+```
+python3 firmware_tool.py --port=/dev/ttyUSB1 /Path/To/firmware
+```
+If even this doesn't work, reflashing the bootloader the bootloader as per the instructions at the above github can help.
+If you need to find a bootloader file, know that one exists in the quectel GPS repository linked above in the instructions in quectel-lg69t-am.0.15.0/sw/quectel-bootloader-1.0.2.bin 
+Please don't hesitate to ask the TA's for help with any of this (firmware or bootloader)!
+
 If you experience serious lag when running the gps laps, check your numpy version. Anything but 1.19.0 will create serious issues. 
-To fix, do ```pip install numpy==1.19.0``` and then create a new car with ```donkey createcar --path ./newcar --template path_follow``` 
+To fix, do ```pip install numpy==1.19.0``` and then create a new car with ```donkey createcar --path ./newcar --template path_follow```
+
 
 If you decide you don't need the fusion-engine-client and want fast build times, I recommend modifying the build_ros2 command in the ~./bashrc to exlude the 
 fusion-engine-driver package for faster loading time, unless you really need it. Excluding the ntrip_client can save time too. 
