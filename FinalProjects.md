@@ -17,6 +17,8 @@ Team 9:\
 https://github.com/UCSD-ECEMAE-148/fall-2024-final-project-team-09.git?branch=main \
 Team 10:\
 https://github.com/UCSD-ECEMAE-148/fall-2024-final-project-team-10.git?branch=main \
+Team 11: \
+https://github.com/UCSD-ECEMAE-148/fall-2024-final-project-team-11 \
 Team 12:\
 https://github.com/UCSD-ECEMAE-148/fall-2024-final-project-team-12.git?branch=main \
 Team 13:\
