@@ -2,7 +2,7 @@ Fall 2024 Final Projects: \
 Team 1:\
 https://github.com/UCSD-ECEMAE-148/fall-2024-final-project-team-1.git?branch=main \
 Team 2:\
-https://ucsd-ecemae-148.github.io/fall-2024-final-project-team-2/
+https://ucsd-ecemae-148.github.io/fall-2024-final-project-team-2/ \
 Team 3:\
 https://github.com/UCSD-ECEMAE-148/fall-2024-final-project-team-3.git?branch=main \
 Team 4:\
