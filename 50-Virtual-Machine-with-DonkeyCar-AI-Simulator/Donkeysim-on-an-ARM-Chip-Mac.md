@@ -27,8 +27,9 @@ Note: If you get prompted asking to change your shell to zsh by the terminal, pl
 7. ```conda activate donkey```  
 8. ```pip install donkeycar\[macos\]```
 9. ```pip install git+https://github.com/tawnkramer/gym-donkeycar```
-10. ```donkey createcar --path ./d4_sim```
-11. ```cd d4_sim```
+10. ```pip install tensorflow==2.15.0```
+11. ```donkey createcar --path ./d4_sim```
+12. ```cd d4_sim```
 
 From here on the instructions are pretty much the same between the two versions.
 
