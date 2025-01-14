@@ -4,13 +4,12 @@
 
 ### Required Hardware includes:
 
-- 5V Relay
 - Arduino Pro Micro
 - Radiomaster receiver (RX)
 - Radiomaster controller (TX)
-- 2x 3.7 LiPo cells
+- 2x 3.7 LiPo cells (should be in controller by default)
 
-The relay, Arduino, and receiver should be wired together according to the schematic. *Do not forget to put the cells into the controller. The LED will illuminate without them, but the controller won't turn on.*
+The Arduino, jetson nano and receiver should be wired together according to the picture. *Do not forget to put the cells into the controller. The LED will illuminate without them, but the controller won't turn on.*
 
 ### Flashing the Arduino
 
