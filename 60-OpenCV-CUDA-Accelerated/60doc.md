@@ -450,49 +450,14 @@ python3
 
 import cv2
 
-cv2.\_\_version\_\_
+cv2.__version__
 
 exit ()
 ```
-\# Resulting on something similar to this
-
-**jetson@ucsdrobocar-xxx-yy**:**\~**\$ python3
-
-Python 3.6.9 (default, Jun 29 2022, 11:45:57)
-
-\[GCC 8.4.0\] on linux
-
-Type \"help\", \"copyright\", \"credits\" or \"license\" for more
-information.
-
-\>\>\> import cv2
-
-\>\>\> cv2.\_\_version\_\_
-
-\'4.6.0\'
-
-\>\>\> exit()
-
-**jetson@ucsdrobocar-xxx-yy**:**\~**\$
-
-> Python 3.8.10 (default, May 26 2023, 14:05:08)
->
-> \[GCC 9.4.0\] on linux
->
-> Type \"help\", \"copyright\", \"credits\" or \"license\" for more
-> information.
->
-> \>\>\> import cv2
->
-> \>\>\> cv2.\_\_version\_\_
->
-> \'4.8.0\'
->
-> \>\>\> exit ()
 
 \# Here is quicker way to test cv2 on Python 3
 ```
-python3 -c \'import cv2 as cv; print(cv.\_\_version\_\_)\'
+python3 -c 'import cv2 as cv; print(cv.__version__)'
 ```
 > 4.6.0
 >
