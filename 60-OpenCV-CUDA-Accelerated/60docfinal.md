@@ -544,7 +544,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 \# Here is quicker way to test cv2 on Python 3
 
-python3 -c 'import cv2 as cv; print(cv.\_\_version\_\_)'
+```python3 -c 'import cv2 as cv; print(cv.__version__)'```
 
 > 4.6.0
 >
