@@ -9,7 +9,7 @@ Support
 \# Search the web if you are curious why.
 
 \#
-[[https://forums.developer.nvidia.com/t/opencv-cuda-python-with-jetson-nano/72902]{.underline}](https://forums.developer.nvidia.com/t/opencv-cuda-python-with-jetson-nano/72902)
+[[https://forums.developer.nvidia.com/t/opencv-cuda-python-with-jetson-nano/72902]](https://forums.developer.nvidia.com/t/opencv-cuda-python-with-jetson-nano/72902)
 
 Youtube Video about the process:
 [https://www.youtube.com/watch?v=art0-99fFa8](https://www.youtube.com/watch?v=art0-99fFa8)
