@@ -24,11 +24,8 @@ This GPS doesn't require any configuration out of the gate, it just starts trans
 
     b.  deactivate (This should get you out of the current environment)
 
-    c.  wget
-        https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-pypy3-Linux-aarch64.sh
-        .
-
-    d.  bash Mambaforge-pypy3-Linux-aarch64.sh
+    c.  wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+    d.  bash Miniforge-pypy3-Linux-aarch64.sh
 
     e.  Reboot the jetson
 
