@@ -948,8 +948,11 @@ Once these have been replaced, you should run
 ```
 python manage.py drive
 ```
-It should first throw a pyvesc import error. Follow the description in
-the terminal to install the needed libraries
+It should first throw a pyvesc import error.  
+To import the library, run
+```
+pip install git+https://github.com/LiamBindle/PyVESC.git
+```
 
 Then run it again. It should throw a permissions error. Follow the
 advice on how to fix the error with chmod
