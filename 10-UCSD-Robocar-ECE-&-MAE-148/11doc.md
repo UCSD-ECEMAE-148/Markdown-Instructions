@@ -25,15 +25,16 @@ This GPS doesn't require any configuration out of the gate, it just starts trans
     b.  deactivate (This should get you out of the current environment)
 
     c.  wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-    d.  bash Miniforge-pypy3-Linux-aarch64.sh
+    
+    d.  bash Miniforge-pypy3-Linux-aarch64.sh   
 
-    e.  Reboot the jetson
+    e.  Reboot the jetson   
 
-    f.  mamba create --name py37 -c conda-forge python=3.7 pip
+    f.  mamba create --name py37 -c conda-forge python=3.7 pip   
 
-    g.  mamba activate py37
+    g.  mamba activate py37   
 
-    h.  pip3 install -e .
+    h.  pip3 install -e .   
 
         i.  %If this fails, you can try just going to the p1_runner
             directory and running the python3 bin/config_tool.py
