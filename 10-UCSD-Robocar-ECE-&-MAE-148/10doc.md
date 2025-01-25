@@ -646,8 +646,7 @@ camera example files and requirements
 cd ~/projects
 ```
 ```
-git clone
-[https://github.com/luxonis/depthai-python.git](https://github.com/luxonis/depthai-python.git)
+git clone https://github.com/luxonis/depthai-python.git  
 ```
 ```
 cd depthai-python/examples
