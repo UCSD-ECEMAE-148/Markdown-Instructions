@@ -355,6 +355,8 @@ Container for training models: (8 CPU, 1 GPU, 16 GB RAM)
 ```
 launch-scipy-ml.sh -g 1 -i ucsdets/donkeycar-notebook:latest
 ```
+
+You may want to add in the flag -v 2080ti to get faster performance by selecting a better gpu. Or, you can specify one of the other gpu types in the datahub if the 2080ti gpus are all busy (like a5000 for example). The website [https://datahub.ucsd.edu/hub/status](https://datahub.ucsd.edu/hub/status) has a list of gpu's and their status. They do sometimes get booked up.
 When creating the GPU container, the terminal should look like:
 
 ![alt text](image-7.png)
