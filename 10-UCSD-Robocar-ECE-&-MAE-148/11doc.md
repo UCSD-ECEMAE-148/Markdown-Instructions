@@ -34,7 +34,7 @@ This GPS doesn't require any configuration out of the gate, it just starts trans
 
     g.  mamba activate py37   
 
-    h.  pip3 install -e .   
+    h.  python3 -m pip install -r requirements.txt
 
         i.  %If this fails, you can try just going to the p1_runner
             directory and running the python3 bin/config_tool.py
