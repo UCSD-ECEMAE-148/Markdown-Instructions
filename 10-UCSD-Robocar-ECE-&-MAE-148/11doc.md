@@ -20,19 +20,19 @@ This GPS doesn't require any configuration out of the gate, it just starts trans
 
 5.  Run
 
-    a.  cd quectel-lg69t-am.0.15.0/p1_runner (or if you cloned from github, cd quectel/p1_runner)
+    a.  deactivate (This should get you out of the current environment)
 
-    b.  deactivate (This should get you out of the current environment)
-
-    c.  wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+    b.  wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
     
-    d.  bash Miniforge-pypy3-Linux-aarch64.sh   
+    c.  bash Miniforge-pypy3-Linux-aarch64.sh   
 
-    e.  Reboot the jetson   
+    d.  Reboot the jetson   
 
-    f.  mamba create --name py37 -c conda-forge python=3.7 pip   
+    e.  mamba create --name py37 -c conda-forge python=3.7 pip   
 
-    g.  mamba activate py37   
+    f.  mamba activate py37
+
+    g.   cd quectel-lg69t-am.0.15.0/p1_runner (or if you cloned from github, cd quectel/p1_runner)
 
     h.  python3 -m pip install -r requirements.txt
 
