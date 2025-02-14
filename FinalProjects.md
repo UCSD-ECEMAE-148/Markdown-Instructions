@@ -62,7 +62,10 @@
 #### Team 7:  
 [https://github.com/UCSD-ECEMAE-148/summer-2024-final-project-team-7](https://github.com/UCSD-ECEMAE-148/summer-2024-final-project-team-7)  
 
-### Winter 2024 Final Projects:  
+### Winter 2024 Final Projects: 
+
+#### Team 1:    
+[https://github.com/UCSD-ECEMAE-148/winter-2024-final-project-team-1](https://github.com/UCSD-ECEMAE-148/winter-2024-final-project-team-1)    
 
 #### Team 2:  
 [https://github.com/UCSD-ECEMAE-148/winter-2024-final-project-team-2aka8](https://github.com/UCSD-ECEMAE-148/winter-2024-final-project-team-2aka8)  
