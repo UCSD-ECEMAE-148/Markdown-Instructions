@@ -243,7 +243,7 @@ Navigate to the p1-host-tools that you set up earlier
 ```
 python3 bin/config_tool.py apply uart2_message_rate fe ROSPoseMessage 100ms
 python3 bin/config_tool.py apply uart2_message_rate fe ROSGPSFixMessage 100ms
-python3 bin/config_too.py save
+python3 bin/config_tool.py save
 ```
 The website instructions include a 3rd command which is setting up the imu. However our gps devices do not have the firmware loaded to support that, so that command will not 
 work.
