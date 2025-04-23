@@ -63,6 +63,7 @@ Note, the polaris passwords will be posted in the class discord. If they aren't 
 
 > (if not getting any data including NANs try USB0)
 > Also, note that the GPS will return NAN's inside, so you need to test it outside.
+> Also, note that the port used can change from anything from ttyUSB0 to ttyUSB2, as the lidar also uses a ttyUSBn port and the assignment is sort of random
 
 Note: The GPS corrections will only happen when you are actively running
 runner.py. I recommend making a bashrc command that you can run to start
@@ -97,7 +98,7 @@ Then ```source ~/.bashrc``` and you can just type gps_corrections to get correct
 6.  Set the following in the myconfig.py 
 
     a.  GPS_SERIAL = "/dev/ttyUSB2" #(USB1 if USB0 used above) This applies for pointone nav
-    GPS_SERIAL = "/dev/ttyUSB0" #This applies for ublox
+    GPS_SERIAL = "/dev/ttyUSB0" #This applies for ublox, note that it might also be ttyUSB1
 
     b.  GPS_SERIAL_BAUDRATE = 460800 #for pointone nav
     
