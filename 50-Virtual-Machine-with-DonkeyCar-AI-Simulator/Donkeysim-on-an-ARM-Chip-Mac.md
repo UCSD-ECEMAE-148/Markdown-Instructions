@@ -229,9 +229,9 @@ Container for transfering data: (2 CPU 4 GB RAM)
 launch-scipy-ml.sh -i ucsdets/donkeycar-notebook:latest
 ```
 
-Container for training models: (8 CPU, 1 GPU, 16 GB RAM)
+Container for training models: (8 CPU, 1 GPU, 32 GB RAM)
 ```
-launch-scipy-ml.sh -g 1 -i ucsdets/donkeycar-notebook:latest
+launch-scipy-ml.sh -g 1 -m 32 -i ucsdets/donkeycar-notebook:latest
 ```
 You may want to add in the flag -v 2080ti to get faster performance by selecting a better gpu. Or, you can specify one of the other gpu types in the datahub if the 2080ti gpus are all busy (like a5000 for example). The website [https://datahub.ucsd.edu/hub/status](https://datahub.ucsd.edu/hub/status) has a list of gpu's and their status. They do sometimes get booked up.
 
