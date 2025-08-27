@@ -189,7 +189,7 @@ If you increase the number of samples recorded after training a model, you can t
 
 To train data from a specific tub and transfer to a previous model:
 ```
-python3 train.py --tub ~/projects/d4_sim/data/TUB_NAME  --transfer=models/PREVIOUS_MODEL.h5  --model=models/NEW_MODEL.h5
+donkey train --tub=~/projects/d4_sim/data/TUB_NAME  --transfer=models/PREVIOUS_MODEL.h5  --model=models/NEW_MODEL.h5
 ```
 Tubs are subsections of the data folder that you may create to separate training data. To use all the data in the ```data``` folder, do not include a tub name after ```~/projects/d4_sim/data/``` in the tub argument.
 
@@ -317,7 +317,7 @@ python train.py --tub=data/tub1,data/tub2 --model=models/MODEL_NAME.h5 --type=li
 ```
 To alter a previous model with new data:
 ```
-python train.py --tub=data/tub1 --model=models/NEW_MODEL_NAME.h5 --transfer=models/OLD_MODEL_NAME.h5
+donkey train --tub=data/tub1 --model=models/NEW_MODEL_NAME.h5 --transfer=models/OLD_MODEL_NAME.h5
 ```
 
 **Note** : If "imgaug" is not availible and Donkeysim generates an error, run 
