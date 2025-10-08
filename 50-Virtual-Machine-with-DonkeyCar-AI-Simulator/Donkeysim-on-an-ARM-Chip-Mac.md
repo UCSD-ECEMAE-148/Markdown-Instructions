@@ -10,7 +10,7 @@ These instructions are new for Fall 2024, and the donkey_sim app was just compil
 For this process to run, you'll need the xcode developer tools installed. You can run ```xcode-select --install``` in the terminal to get the developer tools. If you are low on storage space, you may be able to just install python 3.10 on your mac, but I have not had the chance to test this myself.
 
 Download the donkeysim video game from here:  
-[https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing](https://drive.google.com/file/d/1FRDT7DiuKDhAuoKyqt8KyMnRAYsALx5Y/view?usp=sharing)  
+[https://drive.google.com/file/d/1SWGTddp6XaK2ZhvD4M6FVbJPb5ujszFs/view?usp=share_link](https://drive.google.com/file/d/1SWGTddp6XaK2ZhvD4M6FVbJPb5ujszFs/view?usp=share_link)
 To run the app, you may need to go to your settings->security&privacy->general and click "run anyway," although it is not from an identified developer.    
 Note that the arm64 compiled simulator does have a known bug where there are a few invisible cones outside the track that your car can collide with. I am working on fixing it!  
 Note: If you're using this guide to install on linux, windows, or an intel mac download the simulator from here:
