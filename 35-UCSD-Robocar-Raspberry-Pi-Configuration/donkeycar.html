@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECE/MAE 148 — DonkeyCar Setup, Training & Autonomous Driving</title>
+<meta name="description" content="Complete setup, installation, training and autonomous driving guide for the DonkeyCar framework used in ECE/MAE 148 Intro to Autonomous Vehicles.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --ucsd-navy:    #002E6D;
+  --ucsd-blue:    #00629B;
+  --ucsd-gold:    #C69214;
+  --ucsd-gold-lt: #E8B931;
+  --bg:           #09111E;
+  --bg2:          #0D1A2D;
+  --surface:      #111F35;
+  --surface2:     #162643;
+  --surface3:     #1C2F50;
+  --border:       #1E3355;
+  --border-lt:    #2A4670;
+  --text:         #DCE8F5;
+  --text-muted:   #7A9EC4;
+  --text-dim:     #4D6E96;
+  --accent:       #00A8E8;
+  --accent-glow:  rgba(0,168,232,0.15);
+  --gold-glow:    rgba(198,146,20,0.18);
+  --green:        #00C896;
+  --yellow:       #F0B429;
+  --red:          #F04E37;
+  --purple:       #9B7FE8;
+  --code-bg:      #060E1A;
+  --code-border:  #1A2E4A;
+  --sidebar-w:    290px;
+  --topbar-h:     60px;
+  --r:            6px;
+  --font-body:    'Sora', sans-serif;
+  --font-mono:    'IBM Plex Mono', monospace;
+  --ease:         cubic-bezier(0.4,0,0.2,1);
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; scroll-padding-top: calc(var(--topbar-h) + 20px); }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.7; min-height: 100vh; overflow-x: hidden; }
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,98,155,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,98,155,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--topbar-h);
+  background: rgba(9,17,30,0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  display: flex; align-items: center;
+  padding: 0 0 0 var(--sidebar-w);
+}
+.topbar-inner { display: flex; align-items: center; gap: 16px; padding: 0 32px; width: 100%; }
+.topbar-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+.topbar-emblem {
+  width: 36px; height: 36px; background: var(--ucsd-navy);
+  border: 2px solid var(--ucsd-gold); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.topbar-emblem svg { width: 20px; height: 20px; }
+.topbar-name { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+.topbar-course { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+.topbar-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+.topbar-breadcrumb { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+.topbar-spacer { flex: 1; }
+
+.page-switcher {
+  display: flex; align-items: center; gap: 2px;
+  background: var(--surface); border: 1px solid var(--border-lt);
+  border-radius: 20px; padding: 3px; flex-shrink: 0;
+}
+.ps-link {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+  padding: 4px 14px; border-radius: 16px; letter-spacing: 0.4px;
+  text-decoration: none; color: var(--text-muted);
+  transition: all 0.15s var(--ease);
+}
+.ps-link:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+.ps-link.active { background: var(--ucsd-gold); color: var(--bg); }
+@media (max-width: 768px) { .page-switcher { display: none; } }
+#menu-toggle {
+  display: none; background: none; border: 1px solid var(--border);
+  color: var(--text-muted); padding: 6px 10px; border-radius: var(--r);
+  cursor: pointer; font-size: 16px; flex-shrink: 0;
+}
+
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 150;
+  width: var(--sidebar-w); background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.sidebar-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  background: var(--ucsd-navy); flex-shrink: 0;
+}
+.sidebar-logo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.sidebar-logo {
+  width: 32px; height: 32px; border-radius: 6px;
+  background: rgba(198,146,20,0.2); border: 1.5px solid var(--ucsd-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--ucsd-gold);
+}
+.sidebar-title { font-size: 13px; font-weight: 700; color: #fff; }
+.sidebar-sub { font-size: 10px; color: rgba(255,255,255,0.5); font-family: var(--font-mono); margin-top: 2px; }
+.sidebar-search { margin: 12px 16px; position: relative; flex-shrink: 0; }
+.sidebar-search input {
+  width: 100%; padding: 8px 12px 8px 32px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); color: var(--text); font-family: var(--font-body);
+  font-size: 12px; outline: none;
+}
+.sidebar-search input::placeholder { color: var(--text-dim); }
+.sidebar-search input:focus { border-color: var(--border-lt); }
+.sidebar-search-icon {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 13px; pointer-events: none;
+}
+.nav-scroll { overflow-y: auto; flex: 1; padding-bottom: 40px; }
+.nav-scroll::-webkit-scrollbar { width: 3px; }
+.nav-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.nav-group-label {
+  font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.8px;
+  color: var(--text-dim); padding: 16px 20px 6px;
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-group-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 20px; text-decoration: none; color: var(--text-muted); font-size: 12.5px;
+  border-left: 2px solid transparent; transition: all 0.15s var(--ease);
+}
+.nav-link .nl-num {
+  font-family: var(--font-mono); font-size: 9px; color: var(--text-dim);
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 1px 5px; border-radius: 3px; flex-shrink: 0;
+}
+.nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); border-left-color: var(--border-lt); }
+.nav-link.active { color: var(--ucsd-gold-lt); border-left-color: var(--ucsd-gold); background: var(--gold-glow); }
+.nav-link.active .nl-num { background: rgba(198,146,20,0.2); border-color: rgba(198,146,20,0.3); color: var(--ucsd-gold); }
+.nav-progress { padding: 12px 20px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.np-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.np-bar { height: 3px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.np-fill { height: 100%; background: linear-gradient(90deg, var(--ucsd-gold), var(--ucsd-gold-lt)); border-radius: 3px; width: 0%; transition: width 0.4s var(--ease); }
+
+.layout { display: flex; padding-top: var(--topbar-h); min-height: 100vh; }
+.main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; position: relative; z-index: 1; }
+
+.hero {
+  background:
+    radial-gradient(ellipse 80% 100% at 100% 50%, rgba(0,98,155,0.25), transparent),
+    radial-gradient(ellipse 50% 80% at 0% 0%, rgba(198,146,20,0.08), transparent),
+    linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 72px 80px 60px; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,168,232,0.07), transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  color: var(--ucsd-gold); letter-spacing: 1px;
+  background: var(--gold-glow); border: 1px solid rgba(198,146,20,0.3);
+  padding: 5px 14px; border-radius: 20px;
+}
+.hero-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ucsd-gold); }
+.hero h1 { font-size: clamp(32px, 4.5vw, 56px); font-weight: 800; line-height: 1.08; letter-spacing: -1.5px; margin-bottom: 20px; color: var(--text); }
+.hero h1 span { color: var(--ucsd-gold); }
+.hero-desc { font-size: 16px; color: var(--text-muted); max-width: 640px; line-height: 1.65; margin-bottom: 36px; }
+.hero-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--surface); border: 1px solid var(--border-lt);
+  color: var(--text-muted); font-size: 12px; font-family: var(--font-mono);
+  padding: 6px 14px; border-radius: 20px;
+}
+.hero-chip-icon { font-size: 14px; }
+
+.badge { font-family: var(--font-mono); font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 3px; letter-spacing: 0.8px; text-transform: uppercase; }
+.badge-new    { background: rgba(155,127,232,0.2); color: var(--purple); border: 1px solid rgba(155,127,232,0.3); }
+.badge-fix    { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-warn   { background: rgba(240,78,55,0.15); color: var(--red); border: 1px solid rgba(240,78,55,0.3); }
+.badge-critical { background: rgba(240,78,55,0.2); color: #ff7b6e; border: 1px solid rgba(240,78,55,0.4); }
+
+.callout { display: flex; gap: 14px; padding: 16px 18px; border-radius: var(--r); margin: 16px 0; border: 1px solid; font-size: 13.5px; }
+.callout-icon { font-size: 16px; flex-shrink: 0; line-height: 1.4; }
+.callout-body { flex: 1; min-width: 0; }
+.callout-title { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 5px; }
+.callout-text { color: var(--text-muted); line-height: 1.65; }
+.callout-text code { font-family: var(--font-mono); font-size: 11.5px; background: rgba(255,255,255,0.07); color: var(--text); padding: 1px 5px; border-radius: 3px; }
+.callout.info  { background: rgba(0,168,232,0.07); border-color: rgba(0,168,232,0.25); }
+.callout.info  .callout-title { color: var(--accent); }
+.callout.warn  { background: rgba(240,180,41,0.07); border-color: rgba(240,180,41,0.28); }
+.callout.warn  .callout-title { color: var(--yellow); }
+.callout.tip   { background: rgba(0,200,150,0.07); border-color: rgba(0,200,150,0.25); }
+.callout.tip   .callout-title { color: var(--green); }
+.callout.error { background: rgba(240,78,55,0.07); border-color: rgba(240,78,55,0.28); }
+.callout.error .callout-title { color: var(--red); }
+.callout.new   { background: rgba(155,127,232,0.07); border-color: rgba(155,127,232,0.28); }
+.callout.new   .callout-title { color: var(--purple); }
+
+.cb { background: var(--code-bg); border: 1px solid var(--code-border); border-radius: var(--r); margin: 12px 0; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+.cb-header { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; background: var(--surface); border-bottom: 1px solid var(--code-border); }
+.cb-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-dim); display: flex; align-items: center; gap: 8px; }
+.cb-label::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ucsd-gold); opacity: 0.7; }
+.copy-btn { font-family: var(--font-mono); font-size: 9.5px; font-weight: 600; background: var(--surface2); border: 1px solid var(--border-lt); color: var(--text-dim); padding: 4px 12px; border-radius: 4px; cursor: pointer; transition: all 0.15s var(--ease); letter-spacing: 0.5px; }
+.copy-btn:hover { background: var(--border); color: var(--text); }
+.copy-btn.ok { color: var(--green); border-color: rgba(0,200,150,0.4); }
+pre { padding: 18px 20px; overflow-x: auto; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; tab-size: 2; color: #C9D8EC; }
+pre::-webkit-scrollbar { height: 3px; }
+pre::-webkit-scrollbar-thumb { background: var(--border); }
+.k  { color: #6BBFFF; }
+.s  { color: #A8D8B9; }
+.c  { color: #4D6E96; font-style: italic; }
+.f  { color: #BFA0F4; }
+.v  { color: #F0B429; }
+.ok { color: #00C896; }
+.er { color: #F04E37; }
+
+.content { padding: 0 80px 80px; }
+
+.section { padding-top: 64px; }
+.section-anchor {
+  display: block;
+  visibility: hidden;
+  height: 0;
+  margin-top: calc(-1 * (var(--topbar-h) + 24px));
+  padding-top: calc(var(--topbar-h) + 24px);
+}
+.sec-header {
+  display: flex; align-items: flex-start; gap: 20px;
+  margin-bottom: 28px; padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.sec-num {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  color: var(--ucsd-gold); background: var(--gold-glow);
+  border: 1px solid rgba(198,146,20,0.3);
+  padding: 4px 12px; border-radius: 20px; flex-shrink: 0; margin-top: 4px;
+}
+.sec-title-block { flex: 1; }
+.sec-title-block h2 { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; line-height: 1.2; }
+.sec-title-block .sec-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+.sec-badges { display: flex; gap: 6px; margin-left: auto; flex-shrink: 0; align-items: center; }
+
+h3 { font-size: 15px; font-weight: 600; color: var(--accent); margin: 28px 0 10px; letter-spacing: -0.2px; }
+h4 { font-size: 13px; font-weight: 600; color: var(--text-muted); margin: 18px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+p { color: var(--text-muted); margin-bottom: 14px; font-size: 14px; line-height: 1.75; }
+p strong { color: var(--text); font-weight: 600; }
+p code, li code {
+  font-family: var(--font-mono); font-size: 12px;
+  background: rgba(0,168,232,0.1); color: var(--accent);
+  padding: 1px 5px; border-radius: 3px;
+}
+
+.steps { display: flex; flex-direction: column; gap: 14px; margin: 16px 0; }
+.step { display: flex; gap: 18px; padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); transition: border-color 0.15s var(--ease); }
+.step:hover { border-color: var(--border-lt); }
+.step-num { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; background: var(--gold-glow); border: 1.5px solid rgba(198,146,20,0.45); color: var(--ucsd-gold); font-family: var(--font-mono); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.step-body { flex: 1; min-width: 0; }
+.step-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.step-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-bottom: 8px; }
+.step-desc:last-child { margin-bottom: 0; }
+
+.tw { overflow-x: auto; margin: 14px 0; border-radius: var(--r); border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: var(--surface2); }
+th { text-align: left; padding: 11px 16px; font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+td { padding: 11px 16px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; font-size: 13px; line-height: 1.6; }
+td code { font-family: var(--font-mono); font-size: 11.5px; color: var(--accent); background: rgba(0,168,232,0.08); padding: 1px 6px; border-radius: 3px; }
+td strong { color: var(--text); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.015); }
+
+.divider { height: 1px; background: var(--border); margin: 48px 0; }
+
+#btt { position: fixed; bottom: 28px; right: 28px; z-index: 190; width: 42px; height: 42px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border-lt); color: var(--text-muted); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.2s var(--ease); pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+#btt.show { opacity: 1; pointer-events: auto; }
+#btt:hover { background: var(--ucsd-gold); color: var(--bg); border-color: var(--ucsd-gold); transform: translateY(-2px); }
+
+#read-progress { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 2px; z-index: 300; background: transparent; }
+#read-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--ucsd-navy), var(--ucsd-gold)); transition: width 0.1s linear; }
+
+@media (max-width: 1024px) { .hero { padding: 48px 40px 40px; } .content { padding: 0 40px 60px; } }
+@media (max-width: 768px) {
+  #menu-toggle { display: flex; }
+  .sidebar { transform: translateX(-100%); transition: transform 0.25s var(--ease); top: var(--topbar-h); }
+  .sidebar.open { transform: translateX(0); }
+  .topbar { padding-left: 0; }
+  .main { margin-left: 0; }
+  .hero { padding: 32px 20px 28px; }
+  .content { padding: 0 20px 48px; }
+  #read-progress { left: 0; }
+}
+</style>
+</head>
+<body>
+
+<div id="read-progress"><div id="read-progress-fill"></div></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="#hero" class="topbar-brand">
+      <div class="topbar-emblem">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="5" stroke="#C69214" stroke-width="2"/>
+          <path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="#C69214" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="2" fill="#C69214"/>
+        </svg>
+      </div>
+      <div>
+        <div class="topbar-name">UCSD Robocar</div>
+        <div class="topbar-course">ECE / MAE 148</div>
+      </div>
+    </a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-breadcrumb">DonkeyCar Setup & Training Guide</span>
+    <div class="topbar-spacer"></div>
+    <div class="page-switcher">
+      <a href="./rpi_setup.html" class="ps-link">RPI Setup</a>
+      <a href="./vesc_setup.html" class="ps-link">VESC Setup</a>
+      <a href="./donkeycar.html" class="ps-link active">DonkeyCar</a>
+      <a href="./gps_laps.html" class="ps-link">GPS Laps</a>
+      <a href="./index.html" class="ps-link">ROS Setup</a>
+    </div>
+    <button id="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+  </div>
+</header>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo-row">
+      <div class="sidebar-logo">DC</div>
+      <div>
+        <div class="sidebar-title">DonkeyCar Docs</div>
+        <div class="sidebar-sub">ECE/MAE 148 · UCSD</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-search">
+    <span class="sidebar-search-icon">⌕</span>
+    <input type="text" placeholder="Search sections…" id="nav-search" oninput="filterNav(this.value)">
+  </div>
+
+  <div class="nav-scroll" id="nav-scroll">
+    <div class="nav-group-label">Setup</div>
+    <a class="nav-link" href="#s1"><span class="nl-num">01</span>Raspberry Pi Prep</a>
+    <a class="nav-link" href="#s2"><span class="nl-num">02</span>DonkeyCar Install</a>
+
+    <div class="nav-group-label">Hardware</div>
+    <a class="nav-link" href="#s3"><span class="nl-num">03</span>Camera (Oak-D Lite)</a>
+    <a class="nav-link" href="#s4"><span class="nl-num">04</span>Motor Controller (VESC)</a>
+    <a class="nav-link" href="#s5"><span class="nl-num">05</span>Joystick (F710)</a>
+    <a class="nav-link" href="#s6"><span class="nl-num">06</span>TensorFlow Verify</a>
+
+    <div class="nav-group-label">Configuration</div>
+    <a class="nav-link" href="#s7"><span class="nl-num">07</span>Patch VESC.py</a>
+    <a class="nav-link" href="#s8"><span class="nl-num">08</span>Patch tub_v2.py</a>
+    <a class="nav-link" href="#s9"><span class="nl-num">09</span>Patch oak_d.py</a>
+    <a class="nav-link" href="#s10"><span class="nl-num">10</span>myconfig.py Settings</a>
+
+    <div class="nav-group-label">Operation</div>
+    <a class="nav-link" href="#s11"><span class="nl-num">11</span>Data Collection</a>
+    <a class="nav-link" href="#s12"><span class="nl-num">12</span>Training the Model</a>
+    <a class="nav-link" href="#s13"><span class="nl-num">13</span>Autonomous Driving</a>
+
+    <div class="nav-group-label">Reference</div>
+    <a class="nav-link" href="#s14"><span class="nl-num">14</span>Troubleshooting</a>
+  </div>
+
+  <div class="nav-progress">
+    <div class="np-label"><span>Reading Progress</span><span id="np-pct">0%</span></div>
+    <div class="np-bar"><div class="np-fill" id="np-fill"></div></div>
+  </div>
+</nav>
+
+<main class="layout">
+<div class="main">
+
+<div class="hero" id="hero">
+  <div class="hero-eyebrow"><div class="hero-eyebrow-dot"></div>UCSD Jacobs School of Engineering</div>
+  <h1>DonkeyCar Framework<br><span>Setup, Training &amp; Autonomous Driving</span></h1>
+  <p class="hero-desc">Complete reference for ECE/MAE 148 — covering Raspberry Pi preparation, DonkeyCar installation, Oak-D Lite camera setup, VESC motor controller integration, source code patches, data collection, model training, and autonomous deployment.</p>
+  <div class="hero-chips">
+    <div class="hero-chip"><span class="hero-chip-icon">🍓</span>Raspberry Pi 5</div>
+    <div class="hero-chip"><span class="hero-chip-icon">🤖</span>DonkeyCar</div>
+    <div class="hero-chip"><span class="hero-chip-icon">📷</span>Oak-D Lite</div>
+    <div class="hero-chip"><span class="hero-chip-icon">⚡</span>VESC</div>
+    <div class="hero-chip"><span class="hero-chip-icon">🧠</span>TensorFlow 2.15</div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══════════════════════════════════
+     §1 — Raspberry Pi System Prep
+══════════════════════════════════ -->
+<div class="section-anchor" id="s1"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">01</span>
+    <div class="sec-title-block">
+      <h2>Raspberry Pi System Prep</h2>
+      <div class="sec-subtitle">Prepare the OS, enable hardware interfaces, and expand storage</div>
+    </div>
+  </div>
+
+  <p>Before installing any DonkeyCar software, the Raspberry Pi OS must be up-to-date and properly configured. This section enables the I2C interface (required for some sensors), expands the filesystem to use your full SD card, and ensures the package manager is current. Skipping these steps is the most common cause of cryptic installation failures later.</p>
+
+  <div class="callout info"><div class="callout-icon">ℹ</div><div class="callout-body"><div class="callout-title">What is I2C?</div><div class="callout-text">I2C (Inter-Integrated Circuit) is a communication protocol that lets the Raspberry Pi talk to sensors and peripherals using just two wires. It must be explicitly enabled in the OS before any device can use it. Even if you are not using I2C sensors right now, enabling it is required for certain DonkeyCar components to initialize correctly.</div></div></div>
+
+  <h3>Step 1 — Update the System</h3>
+  <p>Fetch updated package lists from the Debian/Raspberry Pi repositories and upgrade all installed packages. The <code>--allow-releaseinfo-change</code> flag suppresses errors that appear when repository metadata (such as suite names) changes between point releases of Raspberry Pi OS.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># Refresh package lists — safe even if Pi OS was recently updated</span>
+<span class="k">sudo apt-get update</span> <span class="f">--allow-releaseinfo-change</span>
+
+<span class="c"># Upgrade all installed packages to the latest available versions</span>
+<span class="k">sudo apt-get upgrade</span></pre></div>
+
+  <div class="callout warn"><div class="callout-icon">⚠</div><div class="callout-body"><div class="callout-title">Use Home Wi-Fi for Upgrades</div><div class="callout-text">The campus Wi-Fi blocks or throttles large package downloads. Run this step from home or via a mobile hotspot. An interrupted upgrade can leave broken packages that are difficult to recover from.</div></div></div>
+
+  <h3>Step 2 — Configure Hardware Settings via raspi-config</h3>
+  <p><code>raspi-config</code> is the Raspberry Pi's built-in configuration tool. It presents a text-based menu that lets you change OS-level settings without editing config files manually. Two critical settings must be changed here: <strong>I2C must be enabled</strong> so the Pi can communicate with sensors over the I2C bus, and <strong>Expand Filesystem</strong> ensures the OS uses the full capacity of your SD card rather than the smaller compressed image size it starts with.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">sudo raspi-config</span></pre></div>
+
+  <div class="callout info"><div class="callout-icon">ℹ</div><div class="callout-body"><div class="callout-title">Navigation Inside raspi-config</div><div class="callout-text">Use the <strong>arrow keys</strong> to move between options, <strong>Enter</strong> to select, and <strong>Tab</strong> to jump to the &lt;Finish&gt; button at the bottom. Perform both of these actions before exiting:<br><br><strong>1.</strong> Interface Options → I2C → Enable<br><strong>2.</strong> Advanced Options → Expand Filesystem<br><br>Select <strong>Yes</strong> when prompted to reboot after you exit.</div></div></div>
+
+  <h3>Verification Test — Confirm I2C is Active</h3>
+  <p>After rebooting, run the following commands to confirm that I2C was enabled successfully. The device file <code>/dev/i2c-1</code> should exist. If any I2C devices are physically wired to the Pi, their addresses will appear in the <code>i2cdetect</code> output.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — after reboot</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># Verify the I2C kernel device file exists</span>
+<span class="k">ls</span> /dev/i2c-*
+<span class="ok"># Expected: /dev/i2c-1</span>
+
+<span class="c"># Install i2c-tools, then scan for connected I2C devices</span>
+<span class="k">sudo apt install</span> <span class="f">-y</span> i2c-tools
+<span class="k">i2cdetect</span> <span class="f">-y</span> 1
+<span class="c"># Each cell shows -- if no device is at that address, or a hex address if a device is found</span></pre></div>
+
+  <div class="callout tip"><div class="callout-icon">✓</div><div class="callout-body"><div class="callout-title">Filesystem Expansion Confirmation</div><div class="callout-text">Run <code>df -h /</code> after rebooting. The available space on <code>/dev/root</code> should now match your full SD card size (e.g., ~28 GB on a 32 GB card), not the compressed 4–6 GB image size it started at.</div></div></div>
+
+  <h3>Common Issues &amp; Fixes</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Problem</th><th>Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td><code>E: Release file is not valid yet</code></td><td>Pi system clock is wrong (NTP not yet synced)</td><td>Run <code>sudo date -s "$(curl -s --head http://google.com | grep Date | sed 's/Date: //')"</code> to set the clock, then retry.</td></tr>
+      <tr><td><code>/dev/i2c-1: No such file</code></td><td>I2C was not enabled or the kernel module did not load</td><td>Re-run <code>sudo raspi-config</code> → Interface Options → I2C → Enable, then reboot.</td></tr>
+      <tr><td>Filesystem still shows 4–6 GB after reboot</td><td>The Expand Filesystem step was skipped</td><td>Re-run <code>sudo raspi-config</code> → Advanced Options → Expand Filesystem, then reboot again.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §2 — DonkeyCar Installation
+══════════════════════════════════ -->
+<div class="section-anchor" id="s2"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">02</span>
+    <div class="sec-title-block">
+      <h2>DonkeyCar Installation</h2>
+      <div class="sec-subtitle">Create a virtual environment and install all DonkeyCar dependencies</div>
+    </div>
+  </div>
+
+  <p>DonkeyCar and its dependencies (TensorFlow, OpenCV, NumPy) can conflict with the system-level Python packages the Raspberry Pi OS uses internally. A virtual environment isolates DonkeyCar's libraries completely, so you can safely upgrade or reinstall them without breaking any OS tools.</p>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Create the Virtual Environment</div>
+        <div class="step-desc">The <code>--system-site-packages</code> flag is important — it allows the virtual environment to inherit system-level packages like <code>numpy</code> that were compiled against the Pi's hardware-accelerated math libraries. Without it, pip would install a slower, generic version. The second command adds <code>source ~/env/bin/activate</code> to your <code>~/.bashrc</code> startup file so the environment activates automatically on every new login session.</div>
+        <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># Create a virtualenv named 'env' that can see system-level packages</span>
+<span class="k">python3</span> <span class="f">-m venv</span> env <span class="f">--system-site-packages</span>
+
+<span class="c"># Auto-activate this environment on every new terminal session</span>
+<span class="k">echo</span> <span class="s">"source ~/env/bin/activate"</span> >> ~/.bashrc
+<span class="k">source</span> ~/.bashrc</pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Install System Dependencies</div>
+        <div class="step-desc"><strong>libcap-dev</strong> enables POSIX capability access needed by some DonkeyCar components. <strong>libhdf5-dev</strong> and <strong>libhdf5-serial-dev</strong> provide the HDF5 file format library that TensorFlow uses to save and load trained model weights (<code>.h5</code> files). Without these, the TensorFlow pip installation will either fail or produce a broken build.</div>
+        <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">sudo apt install</span> <span class="f">-y</span> libcap-dev libhdf5-dev libhdf5-serial-dev</pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Install DonkeyCar (Standard)</div>
+        <div class="step-desc">The <code>[pi]</code> extras selector tells pip to also install the Raspberry Pi-specific dependencies, including TensorFlow Lite, DepthAI camera bindings, and VESC serial libraries. This is the recommended installation method for production use.</div>
+        <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — virtual environment must be active (prompt shows "(env)")</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">pip install</span> donkeycar[pi]</pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Alternative: Clone from GitHub (Custom Version)</div>
+        <div class="step-desc">Use this method only if you need a specific version or want to apply custom patches before installing. The <code>-e</code> flag installs in "editable" mode — any changes you make to the source files inside <code>~/projects/donkeycar/</code> take effect immediately without reinstalling. <strong>Replace <code>5.1.0</code></strong> with the specific git tag or branch name you need.</div>
+        <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — only if the standard pip install above is insufficient</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">mkdir</span> ~/projects
+<span class="k">cd</span> ~/projects
+<span class="k">git clone</span> https://github.com/autorope/donkeycar
+<span class="k">cd</span> donkeycar
+<span class="k">git checkout</span> <span class="v">5.1.0</span>      <span class="c"># Replace with the version tag you need</span>
+<span class="k">pip install</span> <span class="f">-e</span> .[pi]</pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Create Your Car Directory</div>
+        <div class="step-desc">This command scaffolds a complete DonkeyCar project at <code>~/mycar</code>. It creates the <code>manage.py</code> drive script, a default <code>myconfig.py</code> configuration file, a <code>models/</code> directory for trained model weights, and a <code>data/</code> directory for driving recordings (called "tubs" — each tub is one folder of images paired with steering and throttle values recorded during a manual drive session). All subsequent configuration happens inside this directory.</div>
+        <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">donkey createcar</span> <span class="f">--path</span> ~/mycar</pre></div>
+      </div>
+    </div>
+
+  </div><!-- /steps -->
+
+  <h3>Verification Test — Confirm Installation</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># Verify DonkeyCar installed correctly and the car directory was created</span>
+<span class="k">python3</span> <span class="f">-c</span> <span class="s">"import donkeycar; print('DonkeyCar version:', donkeycar.__version__)"</span>
+<span class="k">ls</span> ~/mycar
+<span class="ok"># Expected output includes: manage.py  myconfig.py  models/  data/</span></pre></div>
+
+  <div class="callout error"><div class="callout-icon">✗</div><div class="callout-body"><div class="callout-title">Common Error: pip Not Found</div><div class="callout-text">If you get <code>command not found: pip</code>, the virtual environment is not active. Run <code>source ~/env/bin/activate</code> and verify your terminal prompt shows <code>(env)</code> before the hostname. Then re-run the pip command.</div></div></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §3 — Camera Setup (Oak-D Lite)
+══════════════════════════════════ -->
+<div class="section-anchor" id="s3"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">03</span>
+    <div class="sec-title-block">
+      <h2>Camera Setup — Oak-D Lite</h2>
+      <div class="sec-subtitle">Install DepthAI drivers and configure USB permissions for the Oak-D Lite</div>
+    </div>
+    <div class="sec-badges"><span class="badge badge-warn">Critical</span></div>
+  </div>
+
+  <p>The Oak-D Lite is an Intel Movidius MyriadX-based depth camera that also provides a high-quality RGB stream. It communicates with the Pi over USB and requires a <code>udev</code> rule to allow non-root access. Without this rule, every attempt to open the camera will fail with a permission error, even if the camera is physically detected by the system.</p>
+
+  <h3>Step 1 — Install the DepthAI Python Library</h3>
+  <p>This specific version (<code>2.21.2.0</code>) is pinned because later versions changed the pipeline API in ways that conflict with DonkeyCar's <code>oak_d.py</code> component. Using a different version will likely cause import errors or silent camera failures at runtime.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">pip install</span> depthai==2.21.2.0
+
+<span class="c"># Confirm the camera is detected at the USB level before testing the driver</span>
+<span class="k">lsusb</span>
+<span class="ok"># Look for a line containing: Intel Corp. Movidius MyriadX   or the USB ID   03e7:2485</span></pre></div>
+
+  <h3>Step 2 — Create the udev Permission Rule</h3>
+  <p>By default on Linux, USB devices are only accessible to the <code>root</code> user. A <code>udev</code> rule is a small configuration file that tells the OS to change the permissions on a device file as soon as it is plugged in. The rule below sets the file mode to <code>0666</code> (readable and writable by all users) for any USB device with Intel's Movidius vendor ID (<code>03e7</code>). This is what allows a regular Python script running as your user account to open the camera without requiring <code>sudo</code>.</p>
+
+  <div class="callout info"><div class="callout-icon">ℹ</div><div class="callout-body"><div class="callout-title">About the tee Command Below</div><div class="callout-text">The command uses a "heredoc" — everything between the two <code>EOF</code> markers is written directly to the file. You do not need to type the file contents manually; just copy and run the entire block as one command.</div></div></div>
+
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — creates the udev rule file</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># Write the udev rule file (copy and run this entire block as one command)</span>
+<span class="k">sudo tee</span> /etc/udev/rules.d/80-movidius.rules > /dev/null &lt;&lt;'EOF'
+<span class="c"># Intel Movidius / Luxonis OAK-D-Lite (MyriadX) — allow non-root user access</span>
+SUBSYSTEM=="usb", ATTR{idVendor}=="03e7", MODE:="0666"
+EOF
+
+<span class="c"># Apply the new rule immediately — no reboot required for this step</span>
+<span class="k">sudo udevadm control</span> <span class="f">--reload-rules</span>
+<span class="k">sudo udevadm trigger</span></pre></div>
+
+  <h3>Step 3 — Add Your User to the Required Groups</h3>
+  <p>The <code>plugdev</code> group grants access to removable USB devices. The <code>dialout</code> group grants access to serial ports, which is required for the VESC motor controller in Section 4. Both groups must be added now. <strong>Group changes require a full reboot to take effect.</strong></p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">sudo usermod</span> <span class="f">-aG</span> plugdev $USER
+<span class="k">sudo usermod</span> <span class="f">-aG</span> dialout $USER
+<span class="k">sudo reboot</span></pre></div>
+
+  <h3>Step 4 — Test the Camera</h3>
+  <p>This Python script opens a connection to the Oak-D Lite and prints its device information. A successful result confirms that the udev rule, group permissions, and DepthAI driver are all working correctly.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — run after the reboot</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">python3</span> - &lt;&lt; 'EOF'
+import depthai as dai
+print("DepthAI version:", dai.__version__)
+
+<span class="c"># List all cameras visible on USB (should show OAK-D-LITE)</span>
+print("Available devices:", dai.Device.getAllAvailableDevices())
+
+<span class="c"># Open the camera and read its identity</span>
+with dai.Device() as device:
+    print("Opened device:", device.getDeviceName())
+    print("MXID:", device.getMxId())
+    print("USB speed:", device.getUsbSpeed())
+EOF</pre></div>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Expected output</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="ok">DepthAI version: 2.21.2.0
+Available devices: [DeviceInfo(OAK-D-LITE-FF)]
+Opened device: OAK-D-LITE-FF
+MXID: 18443010D10BF40F00
+USB speed: UsbSpeed.HIGH</span></pre></div>
+
+  <div class="callout tip"><div class="callout-icon">✓</div><div class="callout-body"><div class="callout-title">USB Speed Note</div><div class="callout-text"><code>UsbSpeed.HIGH</code> means USB 2.0 (480 Mbps), which is sufficient for the 160×120 RGB stream used in this course. If you see <code>UsbSpeed.SUPER</code>, the camera is running at USB 3.0 speed — either is fine. If you see <code>UsbSpeed.LOW</code> or <code>UsbSpeed.FULL</code>, try a different cable or USB port, as the camera may not perform reliably at those speeds.</div></div></div>
+
+  <h3>Troubleshooting Camera Issues</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Error / Symptom</th><th>Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td><code>RuntimeError: Failed to find device</code></td><td>Camera not detected on USB</td><td>Run <code>lsusb | grep 03e7</code>. If nothing appears, try a different USB port or cable. A powered USB hub is recommended if the Pi's ports cannot supply enough current.</td></tr>
+      <tr><td><code>Permission denied opening /dev/bus/usb/...</code></td><td>udev rule was not applied, or the user is not in the <code>plugdev</code> group</td><td>Verify the rule exists: <code>cat /etc/udev/rules.d/80-movidius.rules</code>. Then reboot and retry — group membership only takes effect after a full reboot.</td></tr>
+      <tr><td>Camera found by <code>lsusb</code> but Python fails</td><td>Wrong depthai version installed</td><td>Run <code>pip show depthai</code>. The version must be exactly <code>2.21.2.0</code>. Reinstall with <code>pip install depthai==2.21.2.0</code>.</td></tr>
+      <tr><td>Camera opens, then disconnects repeatedly</td><td>Insufficient USB power from the Pi's built-in ports</td><td>Use a powered USB 3.0 hub between the Pi and the camera. The Oak-D Lite draws up to ~900 mA at peak load.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §4 — Motor Controller (VESC)
+══════════════════════════════════ -->
+<div class="section-anchor" id="s4"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">04</span>
+    <div class="sec-title-block">
+      <h2>Motor Controller — VESC</h2>
+      <div class="sec-subtitle">Verify serial connection and install the PyVESC library</div>
+    </div>
+  </div>
+
+  <p>The VESC (Vedder Electronic Speed Controller) controls the car's drive motor and steering servo. It communicates with the Raspberry Pi over a USB-to-serial connection. When plugged in, the Pi creates a device file at <code>/dev/ttyACM0</code>. The PyVESC library handles the VESC serial protocol, translating Python steering and throttle commands into the low-level binary packets the VESC expects.</p>
+
+  <div class="callout warn"><div class="callout-icon">⚠</div><div class="callout-body"><div class="callout-title">Prerequisite: VESCTool Motor &amp; App Configuration Must Be Complete</div><div class="callout-text">Before the VESC will respond to any commands from the Pi, it must first be configured using the <strong>VESCTool desktop application</strong>. If you have not done this yet, complete the <a href="./vesc_setup.html" style="color: var(--yellow); text-decoration: underline;">VESC Setup guide</a> first, then return here.<br><br>Specifically, both of these operations must have been performed in VESCTool:<br><br><strong>Write Motor Configuration</strong> — configures the motor type, pole count, and current limits so the VESC drives the motor correctly.<br><br><strong>Write App Configuration</strong> — sets the communication interface to <strong>UART</strong>, which is the serial mode the Pi uses. Without this step, the VESC will completely ignore all commands sent from the Pi over USB.</div></div></div>
+
+  <h3>Step 1 — Verify the Serial Device is Visible</h3>
+  <p>With the VESC powered on and connected to the Pi via USB, a device file should appear automatically. Run the command below to confirm it exists.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — VESC must be powered on and connected via USB</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">ls</span> /dev/ttyACM*
+<span class="ok"># Expected: /dev/ttyACM0   (may appear as ttyACM1 if the Oak-D camera is also connected)</span>
+
+<span class="c"># If nothing appears, check the kernel log for USB enumeration errors</span>
+<span class="k">dmesg</span> | <span class="k">grep</span> <span class="f">-i</span> <span class="s">"usb\|tty\|acm"</span> | <span class="k">tail</span> <span class="f">-20</span></pre></div>
+
+  <h3>Step 2 — Install the PyVESC Library</h3>
+  <p>PyVESC handles the binary serial protocol used to send commands to and read data from the VESC. It must be installed directly from GitHub because the PyPI version is outdated. The <code>pyserial</code> library (which handles the underlying serial port communication) is installed automatically as a dependency.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">pip install</span> git+https://github.com/LiamBindle/PyVESC.git@master
+
+<span class="c"># Verify both pyvesc and pyserial installed correctly</span>
+<span class="k">python3</span> <span class="f">-c</span> <span class="s">"import pyvesc; import serial; print('pyvesc OK, pyserial', serial.__version__)"</span>
+<span class="ok"># Expected: pyvesc OK, pyserial 3.5</span></pre></div>
+
+  <h3>Step 3 — Verify Serial Port Permissions</h3>
+  <p>The <code>dialout</code> group (added in Section 3) must be active for your user account. Confirm both the group membership and the device file permissions.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># Confirm your user account is a member of the dialout group</span>
+<span class="k">groups</span> $USER | <span class="k">grep</span> dialout
+<span class="ok"># Expected output contains: dialout</span>
+
+<span class="c"># Confirm the device file is owned by the dialout group</span>
+<span class="k">ls</span> <span class="f">-la</span> /dev/ttyACM0
+<span class="ok"># Expected: crw-rw---- 1 root dialout 166, 0 ...</span></pre></div>
+
+  <div class="callout warn"><div class="callout-icon">⚠</div><div class="callout-body"><div class="callout-title">VESC Firmware Version Warning</div><div class="callout-text">Modern VESC firmware (v5.x and later) returns a version string that the stock PyVESC library cannot handle, causing an unhandled exception on startup. <strong>Section 7 documents the required code patch to fix this.</strong> Do not attempt to drive the car until that patch has been applied.</div></div></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §5 — Joystick
+══════════════════════════════════ -->
+<div class="section-anchor" id="s5"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">05</span>
+    <div class="sec-title-block">
+      <h2>Joystick — Logitech F710</h2>
+      <div class="sec-subtitle">Install input tools and verify joystick recognition</div>
+    </div>
+  </div>
+
+  <p>The Logitech F710 connects via a USB wireless dongle and appears to the OS as a standard Linux input event device. DonkeyCar reads joystick input through the Linux joystick interface at <code>/dev/input/js0</code>. The <code>evtest</code> tool lets you verify that button presses and analog stick movements are being registered before you launch <code>manage.py</code>.</p>
+
+  <h3>Step 1 — Install Joystick Tools</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">sudo apt install</span> <span class="f">-y</span> joystick evtest</pre></div>
+
+  <h3>Step 2 — Identify the Controller's Event Node</h3>
+  <p>Running <code>evtest</code> prints a numbered list of all detected input devices. Select the number next to "Logitech Gamepad F710" (or your specific controller name). Once selected, move the analog sticks — you should see a continuous stream of axis-change events printed to the terminal, confirming the OS is reading the controller correctly. Press <code>Ctrl+C</code> to exit.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — wireless USB dongle must be plugged in and controller powered on</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">sudo evtest</span>
+<span class="c"># Select the event number for "Logitech Gamepad F710" from the list</span>
+<span class="c"># Move the analog sticks — you should see lines like:</span>
+<span class="c">#   Event: type 3 (EV_ABS), code 0 (ABS_X), value 14253</span>
+<span class="c"># Press Ctrl+C to exit when done</span></pre></div>
+
+  <h3>Step 3 — Verify the JS0 Device File Exists</h3>
+  <p>DonkeyCar reads the joystick from <code>/dev/input/js0</code>. This Python script confirms the file is present before you run the full car stack.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">python3</span> - &lt;&lt; 'EOF'
+import os
+js_exists = os.path.exists("/dev/input/js0")
+print("Joystick device /dev/input/js0 present:", js_exists)
+assert js_exists, "ERROR: /dev/input/js0 not found — is the dongle plugged in and the controller powered on?"
+print("Joystick ready.")
+EOF
+<span class="ok"># Expected:
+# Joystick device /dev/input/js0 present: True
+# Joystick ready.</span></pre></div>
+
+  <div class="callout tip"><div class="callout-icon">✓</div><div class="callout-body"><div class="callout-title">F710 Mode Switch</div><div class="callout-text">The Logitech F710 has a <strong>Mode</strong> button on the front face that swaps the X/Y axis assignments between D mode (DirectInput) and X mode (XInput). For DonkeyCar with <code>CONTROLLER_TYPE = 'F710'</code>, the <strong>LED near the Mode button must be OFF</strong> (DirectInput mode). If your steering or throttle axes feel swapped or unresponsive, press the Mode button once to toggle between modes and test again.</div></div></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §6 — TensorFlow Verification
+══════════════════════════════════ -->
+<div class="section-anchor" id="s6"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">06</span>
+    <div class="sec-title-block">
+      <h2>TensorFlow Verification</h2>
+      <div class="sec-subtitle">Confirm TensorFlow 2.15.1 is installed and functional on the Pi</div>
+    </div>
+  </div>
+
+  <p>TensorFlow is the machine learning engine used to train and run the DonkeyCar autopilot model. On Raspberry Pi, TensorFlow runs on the CPU only — there is no GPU acceleration. This is expected and perfectly fine for the small models DonkeyCar uses. These tests verify that the installation is complete and not corrupted.</p>
+
+  <h3>Test 1 — Version Check</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">python3</span> - &lt;&lt; 'EOF'
+import tensorflow as tf
+print("TensorFlow version:", tf.__version__)
+EOF
+<span class="ok"># Expected: TensorFlow version: 2.15.1</span></pre></div>
+
+  <h3>Test 2 — Matrix Multiplication</h3>
+  <p>This confirms TensorFlow can actually execute tensor operations, not just import. The output should match exactly — if it does, the mathematical backend is working correctly.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">python3</span> - &lt;&lt; 'EOF'
+import tensorflow as tf
+a = tf.constant([[1.0, 2.0],[3.0, 4.0]])
+b = tf.constant([[5.0, 6.0],[7.0, 8.0]])
+c = tf.matmul(a, b)
+print("matmul result:\n", c.numpy())
+EOF</pre></div>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Expected output</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="ok">matmul result:
+ [[19. 22.]
+ [43. 50.]]</span></pre></div>
+
+  <h3>Test 3 — Hardware &amp; CUDA Status</h3>
+  <p>This confirms the Pi is correctly identified as a CPU-only device. <code>Built with CUDA: False</code> is the correct and expected result on Raspberry Pi — do not attempt to install CUDA on a Pi.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">python3</span> - &lt;&lt; 'EOF'
+import tensorflow as tf
+print("TF version:", tf.__version__)
+print("Built with CUDA:", tf.test.is_built_with_cuda())
+print("Physical devices:", tf.config.list_physical_devices())
+EOF</pre></div>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Expected output</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="ok">TF version: 2.15.1
+Built with CUDA: False
+Physical devices: [PhysicalDevice(name='/physical_device:CPU:0', device_type='CPU')]</span></pre></div>
+
+  <div class="callout info"><div class="callout-icon">ℹ</div><div class="callout-body"><div class="callout-title">TensorFlow Import Warnings Are Normal</div><div class="callout-text">You will likely see several warning messages about oneDNN optimizations, AVX CPU instructions, and deprecated API usage. These are informational only and do not affect functionality. The only output that matters is what your <code>print()</code> statements produce.</div></div></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §7 — Patch VESC.py
+══════════════════════════════════ -->
+<div class="section-anchor" id="s7"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">07</span>
+    <div class="sec-title-block">
+      <h2>Patch VESC.py — Firmware Version Compatibility</h2>
+      <div class="sec-subtitle">Fix a PyVESC crash caused by unrecognized VESC firmware version strings</div>
+    </div>
+    <div class="sec-badges"><span class="badge badge-fix">Bug Fix</span></div>
+  </div>
+
+  <p>Modern VESC firmware (versions 5.x and later) returns a firmware version string during startup. The original PyVESC code tries to parse this string with <code>int(version.split('.')[0])</code> to determine whether to use legacy field formats, but crashes with a <code>TypeError</code> if the version is <code>None</code> or returns an unexpected format. This crash happens before the car can move at all.</p>
+
+  <h3>Step 1 — Locate the File</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># Find the exact path to VESC.py in your virtualenv</span>
+<span class="k">find</span> ~/env <span class="f">-name</span> <span class="s">"VESC.py"</span> <span class="f">-path</span> <span class="s">"*/pyvesc/*"</span>
+<span class="ok"># Expected: /home/pi/env/lib/python3.11/site-packages/pyvesc/VESC/VESC.py</span></pre></div>
+
+  <h3>Step 2 — Open the File and Find the Bug</h3>
+  <p>Open the file in the nano text editor. Once inside, press <strong>Ctrl+W</strong> to open the search prompt, type <code>get_firmware_version</code>, and press Enter. This will jump directly to the relevant section.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">nano</span> ~/env/lib/python3.11/site-packages/pyvesc/VESC/VESC.py
+<span class="c"># Once inside nano: press Ctrl+W, type "get_firmware_version", press Enter</span></pre></div>
+
+  <h3>Step 3 — Replace the Original Code Block</h3>
+  <p>Find the following three-line block inside the <code>__init__</code> method and <strong>delete it entirely</strong>:</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">ORIGINAL — find and delete these 3 lines</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># check firmware version and set GetValue fields to old values if pre version 3.xx</span>
+version = self.get_firmware_version()
+if int(version.split('.')[0]) &lt; 3:
+    GetValues.fields = pre_v3_33_fields</pre></div>
+
+  <p>Then type in the following replacement block in its place:</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">PATCHED — type this in place of the deleted block</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># check firmware version and set GetValue fields to old values if pre version 3.xx</span>
+version = self.get_firmware_version()
+<span class="c"># PATCH: Safely handle None or unexpected version strings from modern VESC firmware</span>
+if not version or str(version).lower() == "none":
+    version = "3.0"    <span class="c"># Default to v3 behaviour if the version string cannot be read</span>
+if int(str(version).split('.')[0]) &lt; 3:
+    GetValues.fields = pre_v3_33_fields</pre></div>
+
+  <div class="callout tip"><div class="callout-icon">✓</div><div class="callout-body"><div class="callout-title">How to Save and Exit nano</div><div class="callout-text">When you are done editing, press <strong>Ctrl+O</strong> to write the file (nano will show the filename at the bottom — press <strong>Enter</strong> to confirm), then press <strong>Ctrl+X</strong> to exit.</div></div></div>
+
+  <h3>Why This Patch Works</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Scenario</th><th>Original Behaviour</th><th>Patched Behaviour</th></tr></thead>
+    <tbody>
+      <tr><td>VESC returns <code>None</code> as the version</td><td>Crashes immediately: <code>AttributeError: 'NoneType' object has no attribute 'split'</code></td><td>Sets <code>version = "3.0"</code> as a safe default and continues normally</td></tr>
+      <tr><td>VESC firmware v5.3</td><td>Runs correctly (5 ≥ 3, no crash)</td><td>Runs correctly (same logic, unchanged behaviour)</td></tr>
+      <tr><td>VESC firmware v2.x (legacy hardware)</td><td>Sets the legacy field format correctly</td><td>Same — still sets legacy fields correctly</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Verification Test</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">python3</span> <span class="f">-c</span> <span class="s">"import pyvesc; import serial; print('pyvesc OK, pyserial', serial.__version__)"</span>
+<span class="ok"># Expected: pyvesc OK, pyserial 3.5</span></pre></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §8 — Patch tub_v2.py
+══════════════════════════════════ -->
+<div class="section-anchor" id="s8"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">08</span>
+    <div class="sec-title-block">
+      <h2>Patch tub_v2.py — Image File Naming</h2>
+      <div class="sec-subtitle">Fix a parameter name mismatch that causes all training images to be silently overwritten</div>
+    </div>
+    <div class="sec-badges"><span class="badge badge-fix">Bug Fix</span></div>
+  </div>
+
+  <p>The <code>tub_v2.py</code> file manages how training data (images paired with steering and throttle values) is saved to disk in "tub" folders. There is a critical mismatch between how the image file-naming function is called and what the function actually expects: the calling code passes <code>ext='.png'</code>, but the function's signature defines the parameter as <code>extension='.png'</code>. Because Python does not match the keyword argument, the extension is silently ignored and all images are saved with no file extension at all, causing every new frame to overwrite the last one. You can drive 20 laps and end up with only a single image file on disk. <strong>There is no error message — the bug is completely silent.</strong></p>
+
+  <h3>Step 1 — Open the File</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">nano</span> ~/env/lib/python3.11/site-packages/donkeycar/parts/tub_v2.py
+<span class="c"># Once inside nano: press Ctrl+W, type "_image_file_name", press Enter</span></pre></div>
+
+  <h3>Step 2 — Find the Incorrect Call and Fix It</h3>
+  <p>Search for the line that calls <code>_image_file_name</code> with <code>ext=</code>. Change only the keyword argument name from <code>ext=</code> to <code>extension=</code>. Do not change anything else on the line.</p>
+
+  <div class="cb"><div class="cb-header"><span class="cb-label">ORIGINAL — find this line</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre>name = Tub._image_file_name(self.manifest.current_index, key, <span class="er">ext=</span>'.png')</pre></div>
+
+  <div class="cb"><div class="cb-header"><span class="cb-label">PATCHED — change only the keyword name as shown</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre>name = Tub._image_file_name(self.manifest.current_index, key, <span class="ok">extension=</span>'.png')</pre></div>
+
+  <div class="callout tip"><div class="callout-icon">✓</div><div class="callout-body"><div class="callout-title">Save and Exit nano</div><div class="callout-text">Press <strong>Ctrl+O</strong> → <strong>Enter</strong> to save, then <strong>Ctrl+X</strong> to exit.</div></div></div>
+
+  <h3>Verification Test — Confirm Images Save Correctly</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — run a very short test drive, then inspect the tub directory</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">cd</span> ~/mycar
+<span class="k">python3</span> manage.py drive    <span class="c"># Drive for ~5 seconds using the joystick, then press Ctrl+C</span>
+
+<span class="c"># Inspect the tub that was just created — you should see multiple numbered .png files</span>
+<span class="k">ls</span> data/tub_*/images/ | <span class="k">head</span> <span class="f">-5</span>
+<span class="ok"># Expected: files named like:
+#   0_cam-image_array_.png
+#   1_cam-image_array_.png
+#   2_cam-image_array_.png
+# If you see only ONE file with no .png extension, the patch was not saved correctly.</span></pre></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §9 — Patch oak_d.py
+══════════════════════════════════ -->
+<div class="section-anchor" id="s9"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">09</span>
+    <div class="sec-title-block">
+      <h2>Patch oak_d.py — Separate RGB and Depth Queues</h2>
+      <div class="sec-subtitle">Fix queue initialization that crashes when only one camera stream is enabled</div>
+    </div>
+    <div class="sec-badges"><span class="badge badge-fix">Bug Fix</span></div>
+  </div>
+
+  <p>The Oak-D Lite provides two separate data streams: an RGB color image and a depth map. The default <code>oak_d.py</code> code always tries to open both streams simultaneously, regardless of which ones are enabled in <code>myconfig.py</code>. When only RGB is enabled (the typical configuration for lane following), the code still tries to open the depth queue, which was never configured in the pipeline — causing a <code>RuntimeError</code> on startup.</p>
+
+  <h3>Step 1 — Open the File</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">nano</span> ~/env/lib/python3.11/site-packages/donkeycar/parts/oak_d.py
+<span class="c"># Once inside nano: press Ctrl+W, type "enable_rgb or self.enable_depth", press Enter</span></pre></div>
+
+  <h3>Step 2 — Comment Out the Original Block</h3>
+  <p>Find the block shown below. In nano, move your cursor to the start of each line and add a <code>#</code> character to comment it out. Comment out every line in this block — from the <code>if</code> statement down to the last assignment.</p>
+
+  <div class="cb"><div class="cb-header"><span class="cb-label">ORIGINAL block — add a # at the start of each of these lines</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre>if self.enable_rgb or self.enable_depth:
+
+    self.depth_queue: DataOutputQueue = self.oak_d_device.getOutputQueue(
+        name="depth", maxSize=1, blocking=False
+    )
+    self.rgb_queue: DataOutputQueue = self.oak_d_device.getOutputQueue(
+        "rgb", maxSize=1, blocking=False
+    )
+
+    depth_frame = self.get_frame(self.depth_queue)
+    rgb_frame = self.get_frame(self.rgb_queue)
+
+    self.depth_image = depth_frame
+    self.color_image = rgb_frame</pre></div>
+
+  <p>After commenting out the block above, it should look like this:</p>
+
+  <div class="cb"><div class="cb-header"><span class="cb-label">After commenting — the block should look like this</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># if self.enable_rgb or self.enable_depth:</span>
+<span class="c">#</span>
+<span class="c">#     self.depth_queue: DataOutputQueue = self.oak_d_device.getOutputQueue(</span>
+<span class="c">#         name="depth", maxSize=1, blocking=False</span>
+<span class="c">#     )</span>
+<span class="c">#     self.rgb_queue: DataOutputQueue = self.oak_d_device.getOutputQueue(</span>
+<span class="c">#         "rgb", maxSize=1, blocking=False</span>
+<span class="c">#     )</span>
+<span class="c">#</span>
+<span class="c">#     depth_frame = self.get_frame(self.depth_queue)</span>
+<span class="c">#     rgb_frame = self.get_frame(self.rgb_queue)</span>
+<span class="c">#</span>
+<span class="c">#     self.depth_image = depth_frame</span>
+<span class="c">#     self.color_image = rgb_frame</span></pre></div>
+
+  <h3>Step 3 — Add the Patched Block Immediately Below</h3>
+  <p>Directly below the commented-out block, add the following replacement code. This version checks each stream independently before trying to open its queue.</p>
+
+  <div class="cb"><div class="cb-header"><span class="cb-label">PATCHED block — add this immediately after the commented-out code above</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># PATCH: Initialize RGB and depth queues independently based on myconfig.py settings.</span>
+<span class="c"># This prevents a RuntimeError when only one stream is enabled.</span>
+if self.enable_rgb:
+    self.rgb_queue: DataOutputQueue = self.oak_d_device.getOutputQueue(
+        <span class="s">"rgb"</span>, maxSize=1, blocking=False
+    )
+    rgb_frame = self.get_frame(self.rgb_queue)
+    self.color_image = rgb_frame
+else:
+    self.color_image = None   <span class="c"># Explicitly set None to prevent AttributeError later</span>
+
+if self.enable_depth:
+    self.depth_queue: DataOutputQueue = self.oak_d_device.getOutputQueue(
+        name=<span class="s">"depth"</span>, maxSize=1, blocking=False
+    )
+    depth_frame = self.get_frame(self.depth_queue)
+    self.depth_image = depth_frame
+else:
+    self.depth_image = None   <span class="c"># Explicitly set None to prevent AttributeError later</span></pre></div>
+
+  <div class="callout tip"><div class="callout-icon">✓</div><div class="callout-body"><div class="callout-title">Save and Exit nano</div><div class="callout-text">Press <strong>Ctrl+O</strong> → <strong>Enter</strong> to save, then <strong>Ctrl+X</strong> to exit.</div></div></div>
+
+  <h3>Verification Test</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — test the patched oak_d.py in RGB-only mode</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">python3</span> - &lt;&lt; 'EOF'
+import sys
+sys.path.insert(0, '/home/pi/env/lib/python3.11/site-packages')
+from donkeycar.parts.oak_d import OakD
+
+<span class="c"># Test RGB-only mode — this is the standard lane-following configuration</span>
+cam = OakD(enable_rgb=True, enable_depth=False, image_w=160, image_h=120)
+print("OakD RGB-only init: OK")
+cam.shutdown()
+EOF
+<span class="ok"># Expected: OakD RGB-only init: OK</span></pre></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §10 — myconfig.py Settings
+══════════════════════════════════ -->
+<div class="section-anchor" id="s10"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">10</span>
+    <div class="sec-title-block">
+      <h2>myconfig.py — Full Hardware Configuration</h2>
+      <div class="sec-subtitle">Configure all hardware parameters for the Oak-D camera, VESC, and joystick</div>
+    </div>
+  </div>
+
+  <p><code>~/mycar/myconfig.py</code> is the single source of truth for all hardware parameters. Any setting you define here overrides the corresponding default in DonkeyCar's main <code>config.py</code>. The values below are tuned for the ECE/MAE 148 hardware kit: Oak-D Lite camera, VESC-based drivetrain, and Logitech F710 joystick. Read through the inline comments carefully — several values must be adjusted to match your specific setup.</p>
+
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — open myconfig.py for editing</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">nano</span> ~/mycar/myconfig.py</pre></div>
+
+  <p>Add or update the following parameters. Each comment explains why the value is set the way it is.</p>
+
+  <div class="cb"><div class="cb-header"><span class="cb-label">~/mycar/myconfig.py — complete hardware configuration block</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># ── Image Transformations ────────────────────────────────────────────</span>
+TRANSFORMATIONS = ['RESIZE']
+RESIZE_WIDTH = 160      <span class="c"># Small resolution keeps CPU inference fast on the Pi</span>
+RESIZE_HEIGHT = 120
+
+<span class="c"># ── Drive Loop Timing ────────────────────────────────────────────────</span>
+DRIVE_LOOP_HZ = 20      <span class="c"># 20 Hz = one update every 50 ms; fast enough for smooth driving</span>
+MAX_LOOPS = None        <span class="c"># None = run until Ctrl+C; set a number to auto-stop after N loops</span>
+
+<span class="c"># ── Camera ───────────────────────────────────────────────────────────</span>
+CAMERA_TYPE = <span class="s">"OAKD"</span>   <span class="c"># Use the Oak-D Lite via DepthAI</span>
+IMAGE_W = 160
+IMAGE_H = 120
+IMAGE_DEPTH = 3         <span class="c"># 3 = RGB color; set to 1 for grayscale</span>
+CAMERA_FRAMERATE = DRIVE_LOOP_HZ
+CAMERA_VFLIP = False    <span class="c"># Set True if the camera image appears upside down</span>
+CAMERA_HFLIP = False    <span class="c"># Set True if the camera image appears mirrored left-right</span>
+CAMERA_INDEX = 0
+
+<span class="c"># ── Drivetrain ───────────────────────────────────────────────────────</span>
+DRIVE_TRAIN_TYPE = <span class="s">"VESC"</span>
+VESC_MAX_SPEED_PERCENT = .5     <span class="c"># Start at 50% of max speed; increase gradually as the model improves</span>
+VESC_SERIAL_PORT = <span class="s">"/dev/ttyACM0"</span>  <span class="c"># Change to /dev/ttyACM1 if the camera is using ACM0</span>
+VESC_HAS_SENSOR = True          <span class="c"># Hall effect encoder sensor is present on this drivetrain</span>
+VESC_START_HEARTBEAT = True     <span class="c"># Sends periodic keepalive packets to prevent VESC timeout</span>
+VESC_BAUDRATE = 115200
+VESC_TIMEOUT = 0.05
+VESC_STEERING_SCALE = 0.5   <span class="c"># Maps joystick range (-1 to 1) → VESC range (-0.5 to 0.5)</span>
+VESC_STEERING_OFFSET = 0.5  <span class="c"># Shifts the result so the final range is 0 to 1 (what VESC expects)</span>
+
+<span class="c"># ── Joystick ─────────────────────────────────────────────────────────</span>
+USE_JOYSTICK_AS_DEFAULT = True      <span class="c"># Removes the need to pass --js on every launch</span>
+JOYSTICK_MAX_THROTTLE = 0.5         <span class="c"># Limit top speed during data collection for safety</span>
+JOYSTICK_STEERING_SCALE = 1.0       <span class="c"># Set to -1.0 to reverse the steering direction</span>
+AUTO_RECORD_ON_THROTTLE = True      <span class="c"># Data records automatically while moving; stops when throttle is zero</span>
+CONTROLLER_TYPE = <span class="s">'F710'</span>            <span class="c"># ← CHANGE THIS to match your controller: ps3 | ps4 | xbox | F710</span>
+USE_NETWORKED_JS = False
+NETWORK_JS_SERVER_IP = None
+JOYSTICK_DEADZONE = 0.01            <span class="c"># Ignore stick inputs below 1% to eliminate drift at rest</span>
+JOYSTICK_THROTTLE_DIR = -1.0        <span class="c"># -1.0 flips the throttle axis so "up" on the stick = forward</span>
+JOYSTICK_DEVICE_FILE = <span class="s">"/dev/input/js0"</span>
+
+<span class="c"># ── Oak-D Specific ───────────────────────────────────────────────────</span>
+OAKD_RGB = True         <span class="c"># Capture RGB images for lane-following training</span>
+OAKD_DEPTH = False      <span class="c"># Depth stream not needed for basic lane following</span>
+OAKD_ID = None          <span class="c"># None = auto-detect (works when only one camera is connected)</span>
+
+<span class="c"># ── FPV Web Stream ────────────────────────────────────────────────────</span>
+USE_FPV = False         <span class="c"># Set True to stream the camera to http://&lt;hostname&gt;.local:8887</span></pre></div>
+
+  <div class="callout tip"><div class="callout-icon">✓</div><div class="callout-body"><div class="callout-title">Save and Exit nano</div><div class="callout-text">Press <strong>Ctrl+O</strong> → <strong>Enter</strong> to save, then <strong>Ctrl+X</strong> to exit. Every time you change a value in myconfig.py, you must restart <code>manage.py</code> for the change to take effect.</div></div></div>
+
+  <h3>Key Parameter Reference</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Parameter</th><th>Value</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><code>VESC_STEERING_SCALE</code></td><td><code>0.5</code></td><td>Reduces the maximum steering angle by half, preventing violent over-corrections that can flip the car.</td></tr>
+      <tr><td><code>VESC_STEERING_OFFSET</code></td><td><code>0.5</code></td><td>Shifts the -0.5 to 0.5 scaled range up to 0 to 1, which is the input range the VESC expects for steering.</td></tr>
+      <tr><td><code>JOYSTICK_THROTTLE_DIR</code></td><td><code>-1.0</code></td><td>The joystick "forward" axis is typically reported as a negative value. This flips it to match the car's physical forward direction.</td></tr>
+      <tr><td><code>VESC_MAX_SPEED_PERCENT</code></td><td><code>0.5</code></td><td>Start conservative at 50%. Increase only after confirming the model handles the track reliably.</td></tr>
+      <tr><td><code>AUTO_RECORD_ON_THROTTLE</code></td><td><code>True</code></td><td>Eliminates the need to manually toggle recording — data is saved automatically whenever the car is moving.</td></tr>
+      <tr><td><code>CONTROLLER_TYPE</code></td><td>match your hardware</td><td>Must match your physical controller. Valid options are <code>'ps3'</code>, <code>'ps4'</code>, <code>'xbox'</code>, or <code>'F710'</code>.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §11 — Data Collection
+══════════════════════════════════ -->
+<div class="section-anchor" id="s11"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">11</span>
+    <div class="sec-title-block">
+      <h2>Driving &amp; Data Collection</h2>
+      <div class="sec-subtitle">Manually drive the car to collect high-quality training data</div>
+    </div>
+  </div>
+
+  <p>The quality of your training data is the single biggest factor determining how well the autonomous model performs. Smooth, consistent driving with deliberate lap patterns gives the neural network a clear signal to learn from. Data collection takes place at the <strong>EBU2 Courtyard</strong> — the designated lab track for ECE/MAE 148 located outside the Engineering Building Unit 2 on the UCSD campus.</p>
+
+  <h3>Step 1 — Launch the Car</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — run from your ~/mycar directory</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">cd</span> ~/mycar
+<span class="k">python3</span> manage.py drive</pre></div>
+
+  <div class="callout info"><div class="callout-icon">ℹ</div><div class="callout-body"><div class="callout-title">Web Interface</div><div class="callout-text">After launching, open <code>http://&lt;your_hostname&gt;.local:8887</code> in a browser on any device connected to the same network. You will see the live camera feed, the current driving mode, and real-time throttle and steering values. This is useful for diagnosing camera or joystick issues before you start collecting data.</div></div></div>
+
+  <h3>Step 2 — Data Collection Best Practices</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Factor</th><th>Best Practice</th><th>Why It Matters</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Lap count</strong></td><td>Collect 20–25 smooth laps minimum</td><td>More data produces better generalization. Below 15 laps, models often overfit to a single lane position and fail anywhere else.</td></tr>
+      <tr><td><strong>Lane position</strong></td><td>Stay consistently in the center of the lane</td><td>The model learns to replicate your exact behavior. Inconsistent positioning creates an ambiguous training signal.</td></tr>
+      <tr><td><strong>Steering inputs</strong></td><td>Make smooth, gradual corrections</td><td>Jerky or abrupt inputs teach the model to be jerky. It will reproduce your exact driving style on every curve.</td></tr>
+      <tr><td><strong>Speed</strong></td><td>Maintain a consistent, moderate pace</td><td>Highly variable speeds make throttle prediction harder. The autopilot should drive at approximately the same speed you drove during training.</td></tr>
+      <tr><td><strong>Lighting</strong></td><td>Collect data when lighting is stable</td><td>Moving shadows and changing brightness make the same track look like a different environment to the model. Train at a consistent time of day.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Step 3 — Verify Data Was Saved Correctly</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal — after driving</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="c"># List all tub directories (each represents one drive session)</span>
+<span class="k">ls</span> ~/mycar/data/
+
+<span class="c"># Count how many image frames are in the most recent tub</span>
+<span class="k">ls</span> ~/mycar/data/tub_*/images/*.png | <span class="k">wc</span> <span class="f">-l</span>
+<span class="ok"># 20 laps at 20 Hz for roughly 2 minutes each ≈ 2,400 frames minimum</span>
+
+<span class="c"># Inspect the manifest to confirm steering/throttle values were recorded alongside the images</span>
+<span class="k">head</span> <span class="f">-3</span> ~/mycar/data/tub_*/manifest.json</pre></div>
+
+  <div class="callout warn"><div class="callout-icon">⚠</div><div class="callout-body"><div class="callout-title">Delete Bad Laps Before Training</div><div class="callout-text">If you drive off the track, spin out, or make a very poor correction during a session, stop and delete that entire tub before training: <code>rm -rf ~/mycar/data/tub_X_XX_XX</code>. Bad training data is worse than no data — it explicitly teaches the model to repeat the same mistake.</div></div></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §12 — Training the Model
+══════════════════════════════════ -->
+<div class="section-anchor" id="s12"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">12</span>
+    <div class="sec-title-block">
+      <h2>Training the Model</h2>
+      <div class="sec-subtitle">Use TensorFlow to train a neural network on your collected driving data</div>
+    </div>
+  </div>
+
+  <p>DonkeyCar's <code>train.py</code> script takes your recorded driving data — pairs of camera images and their corresponding steering and throttle labels — and trains a small convolutional neural network to predict the correct steering and throttle values from a camera image alone. Training on the Pi itself takes approximately 20–45 minutes depending on your dataset size. If you have access to a laptop or desktop with a dedicated GPU, training there and copying the result back to the Pi is significantly faster.</p>
+
+  <h3>Option A — Train on a Single Tub</h3>
+  <p>Use this when you want to train on one specific recording session — for example, after deleting bad tubs or after collecting a focused session on a specific part of the track.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">cd</span> ~/mycar
+<span class="k">python3</span> train.py <span class="f">--tub</span> data/tub_1_26_26 <span class="f">--model</span> models/<span class="v">MyFirstModel</span>.h5</pre></div>
+
+  <h3>Option B — Train on All Tubs (Recommended)</h3>
+  <p>More data generally produces a more robust driver. Passing the entire <code>data/</code> directory combines all tub sessions automatically.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">cd</span> ~/mycar
+<span class="k">python3</span> train.py <span class="f">--tub</span> data <span class="f">--model</span> models/<span class="v">MyModel_AllData</span>.h5</pre></div>
+
+  <h3>Monitor Training Progress</h3>
+  <p>During training, TensorFlow prints the loss and validation loss after each epoch. You want both numbers to decrease together over time. If the validation loss starts increasing while the training loss continues to drop, the model is overfitting — meaning it is memorizing your specific dataset rather than learning to generalize. Stop training early and collect more diverse data to address this.</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Example training output — what to look for</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="ok">Epoch  1/100  loss: 0.8432  val_loss: 0.7901   ← both decreasing: good</span>
+<span class="ok">Epoch 10/100  loss: 0.2341  val_loss: 0.2189   ← converging toward the same value: good</span>
+<span class="ok">Epoch 20/100  loss: 0.1102  val_loss: 0.1287   ← small gap between train and val: acceptable</span>
+<span class="er">Epoch 30/100  loss: 0.0423  val_loss: 0.2891   ← val_loss rising while train loss falls: overfitting</span></pre></div>
+
+  <h3>Verify the Model File Was Created</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">ls</span> <span class="f">-lh</span> ~/mycar/models/
+<span class="ok"># Expected: MyModel_AllData.h5   (file size is typically 2–8 MB)</span>
+
+<span class="c"># Quick sanity check — load the model and confirm its expected input and output shapes</span>
+<span class="k">python3</span> - &lt;&lt; 'EOF'
+import tensorflow as tf
+model = tf.keras.models.load_model('/home/pi/mycar/models/MyModel_AllData.h5')
+print("Model loaded OK. Input shape:", model.input_shape)
+print("Model loaded OK. Output shape:", model.output_shape)
+EOF
+<span class="ok"># Expected: Input shape: (None, 120, 160, 3)   Output shape: (None, 2)
+# The 2 outputs are steering and throttle.</span></pre></div>
+
+  <div class="callout tip"><div class="callout-icon">✓</div><div class="callout-body"><div class="callout-title">Train on a Laptop for Speed</div><div class="callout-text">Transfer your <code>data/</code> directory to a laptop with a discrete GPU, install DonkeyCar there, and run <code>train.py</code> with the same command. Training that takes 40 minutes on a Pi typically completes in 2–4 minutes on a modern GPU. Copy the resulting <code>.h5</code> file back to <code>~/mycar/models/</code> on the Pi when done.</div></div></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §13 — Autonomous Driving
+══════════════════════════════════ -->
+<div class="section-anchor" id="s13"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">13</span>
+    <div class="sec-title-block">
+      <h2>Autonomous Driving</h2>
+      <div class="sec-subtitle">Deploy your trained model and let the AI drive</div>
+    </div>
+    <div class="sec-badges"><span class="badge badge-warn">Safety</span></div>
+  </div>
+
+  <p>With a trained model saved to disk, you launch <code>manage.py</code> with the <code>--model</code> flag. The model is loaded into TensorFlow on startup and runs inference at 20 Hz — producing a steering and throttle prediction for every camera frame. You always start in manual mode and engage the autopilot only when the car is in a safe position on the track.</p>
+
+  <h3>Step 1 — Launch with the Model</h3>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Pi terminal</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre><span class="k">cd</span> ~/mycar
+<span class="k">python3</span> manage.py drive <span class="f">--model</span> models/<span class="v">MyModel_AllData</span>.h5</pre></div>
+
+  <h3>Step 2 — Engage Autopilot</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Method</th><th>Action</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Joystick</strong></td><td>Press the <strong>Start</strong> button (or whichever button is mapped to <code>toggle_mode</code>) to cycle through driving modes</td><td>Cycles: Manual → Full Auto → Angle Only → Manual</td></tr>
+      <tr><td><strong>Web UI</strong></td><td>Open <code>http://&lt;hostname&gt;.local:8887</code> and select a mode from the <strong>Mode</strong> dropdown</td><td>Choose <em>Full Auto</em> or <em>Local Angle</em> from the dropdown</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout info"><div class="callout-icon">ℹ</div><div class="callout-body"><div class="callout-title">Understanding the Driving Modes</div><div class="callout-text"><strong>Full Auto (Local Pilot)</strong> — The model controls both steering and throttle. The car drives entirely on its own.<br><br><strong>Angle Only (Local Angle)</strong> — The model controls steering only. You control the throttle manually with the joystick. This is a useful intermediate mode: it lets you verify the model is steering correctly before trusting it with speed control as well.</div></div></div>
+
+  <div class="callout error"><div class="callout-icon">✗</div><div class="callout-body"><div class="callout-title">Safety Warning — Always Be Ready to Override</div><div class="callout-text">A newly trained model will rarely drive perfectly on the first attempt. Keep your hand near the joystick at all times. Moving any analog stick immediately returns the car to manual control. <strong>Start with <code>VESC_MAX_SPEED_PERCENT = 0.3</code></strong> and only increase the speed limit after confirming the model handles all corners reliably at the slower speed.</div></div></div>
+
+  <h3>Iterative Improvement Workflow</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Problem Observed</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Car drifts consistently to one side</td><td>Collect 5–10 additional laps with deliberate corrections toward the failing side, then retrain with all data combined.</td></tr>
+      <tr><td>Car handles straight sections but fails on corners</td><td>Drive corner-focused laps, collecting 10+ passes through each difficult turn, then retrain.</td></tr>
+      <tr><td>Car oscillates or fishtails</td><td>Collect smoother driving data. Also try reducing <code>VESC_STEERING_SCALE</code> in myconfig.py by 0.1 increments.</td></tr>
+      <tr><td>Car drove well yesterday but fails today</td><td>Lighting conditions likely changed. Collect fresh data in the current lighting and retrain.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════════════════════════
+     §14 — Troubleshooting
+══════════════════════════════════ -->
+<div class="section-anchor" id="s14"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">14</span>
+    <div class="sec-title-block">
+      <h2>Troubleshooting &amp; Known Issues</h2>
+      <div class="sec-subtitle">Quick reference for the most common failure modes in the DonkeyCar stack</div>
+    </div>
+  </div>
+
+  <h3>Startup &amp; Installation</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Error</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td><code>ModuleNotFoundError: donkeycar</code></td><td>The virtual environment is not active. Run <code>source ~/env/bin/activate</code> and verify your prompt shows <code>(env)</code>.</td></tr>
+      <tr><td><code>No module named 'depthai'</code></td><td>DepthAI is not installed in the active environment. Run <code>pip install depthai==2.21.2.0</code>.</td></tr>
+      <tr><td><code>TypeError: 'NoneType' object has no attribute 'split'</code></td><td>The VESC.py patch has not been applied. See Section 7.</td></tr>
+      <tr><td><code>manage.py: No such file or directory</code></td><td>You are not in the correct directory. Run <code>cd ~/mycar</code> first.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Camera Issues</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Problem</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td><code>RuntimeError: Failed to find device</code></td><td>Run <code>lsusb | grep 03e7</code>. If nothing appears, try a different USB port or cable. Use a powered hub if the Pi cannot supply enough current.</td></tr>
+      <tr><td>Black or grey camera feed in the web interface</td><td>Insufficient USB power. Use a powered hub. Also check that no other application has already opened the camera.</td></tr>
+      <tr><td><code>RuntimeError: depth queue not found</code></td><td>The oak_d.py patch has not been applied. See Section 9.</td></tr>
+      <tr><td>Camera opens but all images are the same single color</td><td>DepthAI firmware version mismatch. Reinstall: <code>pip install depthai==2.21.2.0</code>.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>VESC / Motor Issues</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Problem</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td><code>/dev/ttyACM0: No such file or directory</code></td><td>The VESC is not connected or not powered on. Check the USB cable and run <code>dmesg | grep ttyACM</code> for details.</td></tr>
+      <tr><td>Car steers but does not move</td><td>Check that <code>VESC_MAX_SPEED_PERCENT</code> is not set to 0. Verify the VESC battery is charged and the ESC is armed.</td></tr>
+      <tr><td>Steering is reversed (left turns right and vice versa)</td><td>Set <code>JOYSTICK_STEERING_SCALE = -1.0</code> in myconfig.py.</td></tr>
+      <tr><td>Forward and backward are reversed</td><td>Flip the sign of <code>JOYSTICK_THROTTLE_DIR</code> in myconfig.py (e.g., change <code>-1.0</code> to <code>1.0</code>).</td></tr>
+      <tr><td>VESC heartbeat timeout crash on startup</td><td>Set <code>VESC_START_HEARTBEAT = True</code> in myconfig.py.</td></tr>
+      <tr><td>VESC receives commands but the car does not move at all</td><td>Confirm that <strong>Write App Configuration</strong> was completed in VESCTool with the UART interface enabled. See the <a href="./vesc_setup.html" style="color: var(--accent);">VESC Setup guide</a>.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Training &amp; Data</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Problem</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Only one image in the tub despite driving many laps</td><td>The tub_v2.py patch has not been applied. See Section 8. Delete the bad tub and recollect your data.</td></tr>
+      <tr><td><code>ValueError: Input 0 is incompatible with layer</code> during inference</td><td>The image dimensions in myconfig.py do not match the dimensions used during training. Verify <code>IMAGE_W = 160</code> and <code>IMAGE_H = 120</code> are set correctly.</td></tr>
+      <tr><td>Training loss converges but the model drives poorly</td><td>Data quality issue. Inspect the images in your tub directory manually. Delete any tubs with bad or inconsistent driving, then retrain.</td></tr>
+      <tr><td><code>OOM: Cannot allocate memory</code> during training</td><td>Reduce the training batch size in <code>train.py</code> from its default of 128 down to 32. Alternatively, train on a laptop with more RAM.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="divider"></div>
+  <p style="text-align:center; font-size:13px;">UCSD Jacobs School of Engineering — ECE/MAE 148 Intro to Autonomous Vehicles</p>
+</section>
+
+</div><!-- /content -->
+</div><!-- /main -->
+</main>
+
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+// ── COPY BUTTON ──────────────────────────────────────────────────
+function doCopy(btn) {
+  const pre = btn.closest('.cb').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'COPIED ✓';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('ok'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'COPIED ✓'; btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('ok'); }, 2000);
+  });
+}
+
+// ── BACK TO TOP ──────────────────────────────────────────────────
+const btt = document.getElementById('btt');
+window.addEventListener('scroll', () => {
+  btt.classList.toggle('show', window.scrollY > 500);
+});
+
+// ── READ PROGRESS ────────────────────────────────────────────────
+const progressFill = document.getElementById('read-progress-fill');
+const npFill = document.getElementById('np-fill');
+const npPct = document.getElementById('np-pct');
+window.addEventListener('scroll', () => {
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docH > 0 ? Math.min(100, Math.round((window.scrollY / docH) * 100)) : 0;
+  progressFill.style.width = pct + '%';
+  npFill.style.width = pct + '%';
+  npPct.textContent = pct + '%';
+});
+
+// ── ACTIVE NAV ───────────────────────────────────────────────────
+const anchors = document.querySelectorAll('.section-anchor[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+      if (a) {
+        a.classList.add('active');
+      }
+    }
+  });
+}, { rootMargin: '-60px 0px -80% 0px' });
+anchors.forEach(a => io.observe(a));
+
+// ── NAV SEARCH ───────────────────────────────────────────────────
+function filterNav(q) {
+  const term = q.toLowerCase();
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.style.display = l.textContent.toLowerCase().includes(term) ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-group-label').forEach(g => {
+    let next = g.nextElementSibling;
+    let hasVisible = false;
+    while (next && next.classList.contains('nav-link')) {
+      if (next.style.display !== 'none') hasVisible = true;
+      next = next.nextElementSibling;
+    }
+    g.style.display = hasVisible ? '' : 'none';
+  });
+}
+
+// ── MOBILE SIDEBAR ───────────────────────────────────────────────
+document.addEventListener('click', e => {
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('menu-toggle');
+  if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== toggle) {
+    sidebar.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>
