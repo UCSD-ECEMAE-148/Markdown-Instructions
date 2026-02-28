@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECE/MAE 148 — UCSD VESC Setup & Motor Calibration Guide</title>
+<meta name="description" content="Complete VESC setup, firmware update, FOC motor detection, hall sensor calibration and servo steering guide for the UCSD Robocar used in ECE/MAE 148.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --ucsd-navy:    #002E6D;
+  --ucsd-blue:    #00629B;
+  --ucsd-gold:    #C69214;
+  --ucsd-gold-lt: #E8B931;
+  --bg:           #09111E;
+  --bg2:          #0D1A2D;
+  --surface:      #111F35;
+  --surface2:     #162643;
+  --surface3:     #1C2F50;
+  --border:       #1E3355;
+  --border-lt:    #2A4670;
+  --text:         #DCE8F5;
+  --text-muted:   #7A9EC4;
+  --text-dim:     #4D6E96;
+  --accent:       #00A8E8;
+  --accent-glow:  rgba(0,168,232,0.15);
+  --gold-glow:    rgba(198,146,20,0.18);
+  --green:        #00C896;
+  --yellow:       #F0B429;
+  --red:          #F04E37;
+  --purple:       #9B7FE8;
+  --code-bg:      #060E1A;
+  --code-border:  #1A2E4A;
+  --sidebar-w:    290px;
+  --topbar-h:     60px;
+  --r:            6px;
+  --font-body:    'Sora', sans-serif;
+  --font-mono:    'IBM Plex Mono', monospace;
+  --ease:         cubic-bezier(0.4,0,0.2,1);
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; scroll-padding-top: calc(var(--topbar-h) + 20px); }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.7; min-height: 100vh; overflow-x: hidden; }
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,98,155,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,98,155,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--topbar-h);
+  background: rgba(9,17,30,0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  display: flex; align-items: center;
+  padding: 0 0 0 var(--sidebar-w);
+}
+.topbar-inner { display: flex; align-items: center; gap: 16px; padding: 0 32px; width: 100%; }
+.topbar-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+.topbar-emblem {
+  width: 36px; height: 36px; background: var(--ucsd-navy);
+  border: 2px solid var(--ucsd-gold); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.topbar-emblem svg { width: 20px; height: 20px; }
+.topbar-name { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+.topbar-course { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+.topbar-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+.topbar-breadcrumb { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+.topbar-spacer { flex: 1; }
+
+.page-switcher {
+  display: flex; align-items: center; gap: 2px;
+  background: var(--surface); border: 1px solid var(--border-lt);
+  border-radius: 20px; padding: 3px; flex-shrink: 0;
+}
+.ps-link {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+  padding: 4px 14px; border-radius: 16px; letter-spacing: 0.4px;
+  text-decoration: none; color: var(--text-muted);
+  transition: all 0.15s var(--ease);
+}
+.ps-link:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+.ps-link.active { background: var(--ucsd-gold); color: var(--bg); }
+@media (max-width: 768px) { .page-switcher { display: none; } }
+#menu-toggle {
+  display: none; background: none; border: 1px solid var(--border);
+  color: var(--text-muted); padding: 6px 10px; border-radius: var(--r);
+  cursor: pointer; font-size: 16px; flex-shrink: 0;
+}
+
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 150;
+  width: var(--sidebar-w); background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.sidebar-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  background: var(--ucsd-navy); flex-shrink: 0;
+}
+.sidebar-logo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.sidebar-logo {
+  width: 32px; height: 32px; border-radius: 6px;
+  background: rgba(198,146,20,0.2); border: 1.5px solid var(--ucsd-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--ucsd-gold);
+}
+.sidebar-title { font-size: 13px; font-weight: 700; color: #fff; }
+.sidebar-sub { font-size: 10px; color: rgba(255,255,255,0.5); font-family: var(--font-mono); margin-top: 2px; }
+.sidebar-search { margin: 12px 16px; position: relative; flex-shrink: 0; }
+.sidebar-search input {
+  width: 100%; padding: 8px 12px 8px 32px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); color: var(--text); font-family: var(--font-body);
+  font-size: 12px; outline: none;
+}
+.sidebar-search input::placeholder { color: var(--text-dim); }
+.sidebar-search input:focus { border-color: var(--border-lt); }
+.sidebar-search-icon {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 13px; pointer-events: none;
+}
+.nav-scroll { overflow-y: auto; flex: 1; padding-bottom: 40px; }
+.nav-scroll::-webkit-scrollbar { width: 3px; }
+.nav-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.nav-group-label {
+  font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.8px;
+  color: var(--text-dim); padding: 16px 20px 6px;
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-group-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 20px; text-decoration: none; color: var(--text-muted); font-size: 12.5px;
+  border-left: 2px solid transparent; transition: all 0.15s var(--ease);
+}
+.nav-link .nl-num {
+  font-family: var(--font-mono); font-size: 9px; color: var(--text-dim);
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 1px 5px; border-radius: 3px; flex-shrink: 0;
+}
+.nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); border-left-color: var(--border-lt); }
+.nav-link.active { color: var(--ucsd-gold-lt); border-left-color: var(--ucsd-gold); background: var(--gold-glow); }
+.nav-link.active .nl-num { background: rgba(198,146,20,0.2); border-color: rgba(198,146,20,0.3); color: var(--ucsd-gold); }
+.nav-progress { padding: 12px 20px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.np-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.np-bar { height: 3px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.np-fill { height: 100%; background: linear-gradient(90deg, var(--ucsd-gold), var(--ucsd-gold-lt)); border-radius: 3px; width: 0%; transition: width 0.4s var(--ease); }
+
+.layout { display: flex; padding-top: var(--topbar-h); min-height: 100vh; }
+.main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; position: relative; z-index: 1; }
+
+.hero {
+  background:
+    radial-gradient(ellipse 80% 100% at 100% 50%, rgba(0,98,155,0.25), transparent),
+    radial-gradient(ellipse 50% 80% at 0% 0%, rgba(198,146,20,0.08), transparent),
+    linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 72px 80px 60px; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,168,232,0.07), transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  color: var(--ucsd-gold); letter-spacing: 1px;
+  background: var(--gold-glow); border: 1px solid rgba(198,146,20,0.3);
+  padding: 5px 14px; border-radius: 20px;
+}
+.hero-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ucsd-gold); }
+.hero h1 { font-size: clamp(32px, 4.5vw, 56px); font-weight: 800; line-height: 1.08; letter-spacing: -1.5px; margin-bottom: 20px; color: var(--text); }
+.hero h1 span { color: var(--ucsd-gold); }
+.hero-desc { font-size: 16px; color: var(--text-muted); max-width: 640px; line-height: 1.65; margin-bottom: 36px; }
+.hero-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--surface); border: 1px solid var(--border-lt);
+  color: var(--text-muted); font-size: 12px; font-family: var(--font-mono);
+  padding: 6px 14px; border-radius: 20px;
+}
+.hero-chip-icon { font-size: 14px; }
+
+.content { padding: 0 80px 80px; }
+
+.section { padding-top: 64px; }
+.section-anchor {
+  display: block;
+  visibility: hidden;
+  height: 0;
+  margin-top: calc(-1 * (var(--topbar-h) + 24px));
+  padding-top: calc(var(--topbar-h) + 24px);
+}
+.sec-header {
+  display: flex; align-items: flex-start; gap: 20px;
+  margin-bottom: 28px; padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.sec-num {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  color: var(--ucsd-gold); background: var(--gold-glow);
+  border: 1px solid rgba(198,146,20,0.3);
+  padding: 4px 12px; border-radius: 20px; flex-shrink: 0; margin-top: 4px;
+}
+.sec-title-block { flex: 1; }
+.sec-title-block h2 { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; line-height: 1.2; }
+.sec-title-block .sec-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+.sec-badges { display: flex; gap: 6px; margin-left: auto; flex-shrink: 0; align-items: center; }
+
+h3 { font-size: 15px; font-weight: 600; color: var(--accent); margin: 28px 0 10px; letter-spacing: -0.2px; }
+h4 { font-size: 13px; font-weight: 600; color: var(--text-muted); margin: 18px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+p { color: var(--text-muted); margin-bottom: 14px; font-size: 14px; line-height: 1.75; }
+p strong { color: var(--text); font-weight: 600; }
+p code, li code {
+  font-family: var(--font-mono); font-size: 12px;
+  background: rgba(0,168,232,0.1); color: var(--accent);
+  padding: 1px 5px; border-radius: 3px;
+}
+
+.badge { font-family: var(--font-mono); font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 3px; letter-spacing: 0.8px; text-transform: uppercase; }
+.badge-new    { background: rgba(155,127,232,0.2); color: var(--purple); border: 1px solid rgba(155,127,232,0.3); }
+.badge-fix    { background: rgba(0,200,150,0.15); color: var(--green); border: 1px solid rgba(0,200,150,0.3); }
+.badge-warn   { background: rgba(240,78,55,0.15); color: var(--red); border: 1px solid rgba(240,78,55,0.3); }
+.badge-critical { background: rgba(240,78,55,0.2); color: #ff7b6e; border: 1px solid rgba(240,78,55,0.4); }
+
+.callout { display: flex; gap: 14px; padding: 16px 18px; border-radius: var(--r); margin: 16px 0; border: 1px solid; font-size: 13.5px; }
+.callout-icon { font-size: 16px; flex-shrink: 0; line-height: 1.4; }
+.callout-body { flex: 1; min-width: 0; }
+.callout-title { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 5px; }
+.callout-text { color: var(--text-muted); line-height: 1.65; }
+.callout-text code { font-family: var(--font-mono); font-size: 11.5px; background: rgba(255,255,255,0.07); color: var(--text); padding: 1px 5px; border-radius: 3px; }
+.callout.info  { background: rgba(0,168,232,0.07); border-color: rgba(0,168,232,0.25); }
+.callout.info  .callout-title { color: var(--accent); }
+.callout.warn  { background: rgba(240,180,41,0.07); border-color: rgba(240,180,41,0.28); }
+.callout.warn  .callout-title { color: var(--yellow); }
+.callout.tip   { background: rgba(0,200,150,0.07); border-color: rgba(0,200,150,0.25); }
+.callout.tip   .callout-title { color: var(--green); }
+.callout.error { background: rgba(240,78,55,0.07); border-color: rgba(240,78,55,0.28); }
+.callout.error .callout-title { color: var(--red); }
+.callout.new   { background: rgba(155,127,232,0.07); border-color: rgba(155,127,232,0.28); }
+.callout.new   .callout-title { color: var(--purple); }
+
+.cb { background: var(--code-bg); border: 1px solid var(--code-border); border-radius: var(--r); margin: 12px 0; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+.cb-header { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; background: var(--surface); border-bottom: 1px solid var(--code-border); }
+.cb-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-dim); display: flex; align-items: center; gap: 8px; }
+.cb-label::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ucsd-gold); opacity: 0.7; }
+.copy-btn { font-family: var(--font-mono); font-size: 9.5px; font-weight: 600; background: var(--surface2); border: 1px solid var(--border-lt); color: var(--text-dim); padding: 4px 12px; border-radius: 4px; cursor: pointer; transition: all 0.15s var(--ease); letter-spacing: 0.5px; }
+.copy-btn:hover { background: var(--border); color: var(--text); }
+.copy-btn.ok { color: var(--green); border-color: rgba(0,200,150,0.4); }
+pre { padding: 18px 20px; overflow-x: auto; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; tab-size: 2; color: #C9D8EC; }
+pre::-webkit-scrollbar { height: 3px; }
+pre::-webkit-scrollbar-thumb { background: var(--border); }
+.k  { color: #6BBFFF; }
+.s  { color: #A8D8B9; }
+.c  { color: #4D6E96; font-style: italic; }
+.f  { color: #BFA0F4; }
+.v  { color: #F0B429; }
+.ok { color: #00C896; }
+.er { color: #F04E37; }
+
+.steps { display: flex; flex-direction: column; gap: 14px; margin: 16px 0; }
+.step { display: flex; gap: 18px; padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); transition: border-color 0.15s var(--ease); }
+.step:hover { border-color: var(--border-lt); }
+.step-num { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; background: var(--gold-glow); border: 1.5px solid rgba(198,146,20,0.45); color: var(--ucsd-gold); font-family: var(--font-mono); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.step-body { flex: 1; min-width: 0; }
+.step-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.step-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-bottom: 8px; }
+.step-desc:last-child { margin-bottom: 0; }
+
+.tw { overflow-x: auto; margin: 14px 0; border-radius: var(--r); border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: var(--surface2); }
+th { text-align: left; padding: 11px 16px; font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+td { padding: 11px 16px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; font-size: 13px; line-height: 1.6; }
+td code { font-family: var(--font-mono); font-size: 11.5px; color: var(--accent); background: rgba(0,168,232,0.08); padding: 1px 6px; border-radius: 3px; }
+td strong { color: var(--text); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.015); }
+
+/* ── FIGURE / SCREENSHOT STYLES ──────────────────────────────── */
+figure { margin: 20px 0; border-radius: var(--r); overflow: hidden; border: 1px solid var(--border); background: var(--surface); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.fig-wrap { background: var(--surface2); display: flex; align-items: center; justify-content: center; padding: 16px; min-height: 100px; }
+.fig-wrap img { max-width: 100%; height: auto; display: block; border-radius: 4px; }
+figcaption { padding: 10px 16px; font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fig-label { color: var(--ucsd-gold); font-weight: 600; }
+
+/* Placeholder box shown when image src is not yet set */
+.img-ph {
+  width: 100%; min-height: 130px;
+  background: var(--surface3);
+  border: 2px dashed var(--border-lt);
+  border-radius: 4px;
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px; padding: 24px 16px;
+  color: var(--text-dim);
+  font-family: var(--font-mono); font-size: 11px;
+  text-align: center;
+}
+.img-ph.visible { display: flex; }
+.img-ph-icon { font-size: 28px; opacity: 0.5; }
+.img-ph-label { color: var(--ucsd-gold); font-weight: 600; font-size: 10px; letter-spacing: 0.8px; text-transform: uppercase; }
+.img-ph-desc { color: var(--text-dim); font-size: 10px; line-height: 1.5; max-width: 400px; }
+
+/* Screenshot groups (side by side small screenshots) */
+.fig-row { display: flex; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
+.fig-row figure { flex: 1; min-width: 200px; margin: 0; }
+
+.divider { height: 1px; background: var(--border); margin: 48px 0; }
+
+#btt { position: fixed; bottom: 28px; right: 28px; z-index: 190; width: 42px; height: 42px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border-lt); color: var(--text-muted); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.2s var(--ease); pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+#btt.show { opacity: 1; pointer-events: auto; }
+#btt:hover { background: var(--ucsd-gold); color: var(--bg); border-color: var(--ucsd-gold); transform: translateY(-2px); }
+
+#read-progress { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 2px; z-index: 300; background: transparent; }
+#read-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--ucsd-navy), var(--ucsd-gold)); transition: width 0.1s linear; }
+
+@media (max-width: 1024px) { .hero { padding: 48px 40px 40px; } .content { padding: 0 40px 60px; } }
+@media (max-width: 768px) {
+  #menu-toggle { display: flex; }
+  .sidebar { transform: translateX(-100%); transition: transform 0.25s var(--ease); top: var(--topbar-h); }
+  .sidebar.open { transform: translateX(0); }
+  .topbar { padding-left: 0; }
+  .main { margin-left: 0; }
+  .hero { padding: 32px 20px 28px; }
+  .content { padding: 0 20px 48px; }
+  #read-progress { left: 0; }
+  .fig-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div id="read-progress"><div id="read-progress-fill"></div></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="#hero" class="topbar-brand">
+      <div class="topbar-emblem">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="5" stroke="#C69214" stroke-width="2"/>
+          <path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="#C69214" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="2" fill="#C69214"/>
+        </svg>
+      </div>
+      <div>
+        <div class="topbar-name">UCSD Robocar</div>
+        <div class="topbar-course">ECE / MAE 148</div>
+      </div>
+    </a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-breadcrumb">VESC Setup & Motor Calibration</span>
+    <div class="topbar-spacer"></div>
+    <div class="page-switcher">
+      <a href="./rpi_setup.html" class="ps-link">RPI Setup</a>
+      <a href="./vesc_setup.html" class="ps-link active">VESC Setup</a>
+      <a href="./donkeycar.html" class="ps-link">DonkeyCar</a>
+      <a href="./gps_laps.html" class="ps-link">GPS Laps</a>
+      <a href="./index.html" class="ps-link">ROS Setup</a>
+    </div>
+    <button id="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+  </div>
+</header>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo-row">
+      <div class="sidebar-logo">V6</div>
+      <div>
+        <div class="sidebar-title">VESC Docs</div>
+        <div class="sidebar-sub">ECE/MAE 148 · UCSD</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-search">
+    <span class="sidebar-search-icon">⌕</span>
+    <input type="text" placeholder="Search sections…" id="nav-search" oninput="filterNav(this.value)">
+  </div>
+
+  <div class="nav-scroll" id="nav-scroll">
+    <div class="nav-group-label">Prerequisites</div>
+    <a class="nav-link" href="#s1"><span class="nl-num">01</span>Overview & Safety</a>
+    <a class="nav-link" href="#s2"><span class="nl-num">02</span>Required Hardware</a>
+    <a class="nav-link" href="#s3"><span class="nl-num">03</span>Install VESC Tool</a>
+
+    <div class="nav-group-label">Firmware</div>
+    <a class="nav-link" href="#s4"><span class="nl-num">04</span>Connect VESC</a>
+    <a class="nav-link" href="#s5"><span class="nl-num">05</span>Firmware (VESC 6.x)</a>
+    <a class="nav-link" href="#s6"><span class="nl-num">06</span>Firmware (VESC 4.x Legacy)</a>
+
+    <div class="nav-group-label">Motor Detection</div>
+    <a class="nav-link" href="#s7"><span class="nl-num">07</span>Cable Connections</a>
+    <a class="nav-link" href="#s8"><span class="nl-num">08</span>FOC Wizard Setup</a>
+    <a class="nav-link" href="#s9"><span class="nl-num">09</span>Battery Config</a>
+    <a class="nav-link" href="#s10"><span class="nl-num">10</span>Motor Parameters</a>
+    <a class="nav-link" href="#s11"><span class="nl-num">11</span>Run Detection & Direction</a>
+
+    <div class="nav-group-label">Calibration</div>
+    <a class="nav-link" href="#s12"><span class="nl-num">12</span>Hall Sensor Detection</a>
+    <a class="nav-link" href="#s13"><span class="nl-num">13</span>Enable Servo Steering</a>
+    <a class="nav-link" href="#s14"><span class="nl-num">14</span>Troubleshooting</a>
+  </div>
+
+  <div class="nav-progress">
+    <div class="np-label"><span>Reading Progress</span><span id="np-pct">0%</span></div>
+    <div class="np-bar"><div class="np-fill" id="np-fill"></div></div>
+  </div>
+</nav>
+
+<main class="layout">
+<div class="main">
+
+<div class="hero" id="hero">
+  <div class="hero-eyebrow"><div class="hero-eyebrow-dot"></div>UCSD Jacobs School of Engineering</div>
+  <h1>VESC Setup &<br><span>Motor Calibration</span></h1>
+  <p class="hero-desc">Complete reference for ECE/MAE 148 — covering VESC Tool installation, firmware updates for VESC 6.x and 4.x hardware, FOC motor detection, hall sensor calibration, battery configuration, and servo steering setup for autonomous RC cars.</p>
+  <div class="hero-chips">
+    <div class="hero-chip"><span class="hero-chip-icon">⚡</span>VESC 6.x / EDU</div>
+    <div class="hero-chip"><span class="hero-chip-icon">🔧</span>VESC Tool</div>
+    <div class="hero-chip"><span class="hero-chip-icon">🚗</span>BLDC Motor</div>
+    <div class="hero-chip"><span class="hero-chip-icon">🔋</span>LiPO Battery</div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- §1 — Overview & Safety -->
+<div class="section-anchor" id="s1"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">01</span>
+    <div class="sec-title-block">
+      <h2>Overview & Safety</h2>
+      <div class="sec-subtitle">Read this before touching any hardware</div>
+    </div>
+    <div class="sec-badges"><span class="badge badge-critical">CRITICAL</span></div>
+  </div>
+
+  <p>The <strong>VESC (Vedder Electronic Speed Controller)</strong> is the motor driver used in all ECE/MAE 148 robots. It controls the BLDC (Brushless DC) drive motor and the servo motor used for steering. Before beginning setup, you must understand the hardware variants and safety requirements — choosing the wrong firmware version can permanently damage your VESC.</p>
+
+  <div class="callout error">
+    <div class="callout-icon">🛑</div>
+    <div class="callout-body">
+      <div class="callout-title">STAND REQUIREMENT — WHEELS MUST BE CLEAR</div>
+      <div class="callout-text">Place the robot on the class-provided stand before connecting anything. The drive wheels <strong>will spin during motor detection</strong> — they must be completely clear of any surfaces, cables, your laptop, and your hands. This is not optional. Failure to use the stand can result in injury or damaged hardware. This warning appears multiple times in this guide intentionally.</div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-body">
+      <div class="callout-title">DO NOT Disconnect During Firmware Update</div>
+      <div class="callout-text">Never remove power or the USB cable from the VESC while firmware is uploading. Doing so will almost certainly brick the VESC, requiring a programmer to recover it. Wait for the "Upload done" confirmation before touching any cables.</div>
+    </div>
+  </div>
+
+  <h3>VESC Hardware Versions in This Class</h3>
+  <p>There are multiple VESC hardware variants used across different semesters. Identifying yours correctly before flashing firmware is critical — flashing the wrong firmware will break your VESC.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Hardware</th><th>Identifier in VESC Tool</th><th>Firmware Track</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>VESC 6 EDU</strong></td><td><code>Hw: EDU</code></td><td>v6.00 (VESC_default.bin)</td><td>Primary class hardware as of Fall 2022</td></tr>
+      <tr><td><strong>Original VESC 6.x</strong></td><td><code>Hw: 60</code></td><td>v6.00 (VESC_default.bin)</td><td>Can upgrade to the latest firmware</td></tr>
+      <tr><td><strong>FLIPSKY FSESC 6.6</strong></td><td><code>Hw: 60</code> or similar</td><td>v6.00</td><td>VESC 6.x compatible — follow VESC 6 instructions</td></tr>
+      <tr><td><strong>FLIPSKY FSESC 6.7</strong></td><td><code>Hw: 60</code> or similar</td><td>v6.00</td><td>VESC 6.x compatible — follow VESC 6 instructions</td></tr>
+      <tr><td><strong>VESC 4.12 / FLIPSKY Mini FSESC4.2</strong></td><td><code>Hw: 412</code></td><td>v4.2 (VESC_servoout.bin)</td><td>Legacy. Use VESC Tool v2.03 only. Do NOT upgrade firmware.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout info">
+    <div class="callout-icon">ℹ</div>
+    <div class="callout-body">
+      <div class="callout-title">Which Hardware Do You Have?</div>
+      <div class="callout-text">Look at the physical board label, or connect with VESC Tool and read the hardware version shown in the bottom status bar and the Firmware section. If you see <code>Hw: EDU</code> or <code>Hw: 60</code>, follow the VESC 6.x instructions (Sections 4–5). If you see <code>Hw: 412</code>, follow the legacy VESC 4.x instructions (Section 6).</div>
+    </div>
+  </div>
+</section>
+
+<!-- §2 — Required Hardware -->
+<div class="section-anchor" id="s2"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">02</span>
+    <div class="sec-title-block">
+      <h2>Required Hardware</h2>
+      <div class="sec-subtitle">Everything you need before starting</div>
+    </div>
+  </div>
+
+  <p>Gather all hardware listed below before starting. Using the wrong battery or cable during a firmware update can damage the VESC.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>Item</th><th>Specification</th><th>Why It's Needed</th></tr></thead>
+    <tbody>
+      <tr><td><strong>RC Car Battery (LiPO/LiIon)</strong></td><td>3S or 4S depending on your robot — ECE/MAE 148 uses 3S (3-cell, 3 Ah) by default</td><td>The VESC must be powered by the same battery you plan to use during operation. Using a different power source produces incorrect motor calibration values.</td></tr>
+      <tr><td><strong>LiPO Battery Alarm</strong></td><td>Must match your battery's cell count</td><td>Monitors each cell's voltage and beeps when any cell drops too low. This protects the battery from over-discharge during the motor detection spin cycle, which can run for several seconds.</td></tr>
+      <tr><td><strong>Micro-USB Cable (long)</strong></td><td>At least 1 m recommended</td><td>Connects the VESC to your host PC. Must be long enough to keep your PC away from the spinning wheels. Ask a TA if you need a longer cable.</td></tr>
+      <tr><td><strong>Host PC</strong></td><td>Windows, macOS, or Linux with a USB port</td><td>Runs VESC Tool for firmware update and configuration. Use your laptop — not the Raspberry Pi.</td></tr>
+      <tr><td><strong>Class-provided robot stand</strong></td><td>Lifts all four wheels off the ground</td><td>Wheels spin freely during motor detection. The stand prevents the robot from driving off the table.</td></tr>
+      <tr><td><strong>BLDC drive motor</strong></td><td>Sensored (includes a hall sensor connector)</td><td>The class uses sensored BLDC motors for precise low-speed control. The hall sensor cable plugs separately into the VESC.</td></tr>
+      <tr><td><strong>Steering servo motor</strong></td><td>Standard RC servo (PWM)</td><td>Controls left/right steering. It is driven by a PWM signal from the VESC's servo output pin.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- §3 — Install VESC Tool -->
+<div class="section-anchor" id="s3"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">03</span>
+    <div class="sec-title-block">
+      <h2>Install VESC Tool</h2>
+      <div class="sec-subtitle">Use the class-provided version to ensure identical firmware across all robots</div>
+    </div>
+  </div>
+
+  <p>The entire class uses the same version of VESC Tool to keep firmware versions consistent between robots. Using a different version may produce incompatible firmware builds or missing firmware files (such as <code>VESC_servoout.bin</code> for legacy 4.x hardware).</p>
+
+  <div class="callout warn">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-body">
+      <div class="callout-title">Use the Class-Provided VESC Tool</div>
+      <div class="callout-text">When VESC Tool opens, it may prompt you to download a newer version. <strong>Dismiss this warning and do not upgrade</strong> unless you are using the class-provided version. The instructor provides a specific version that matches the firmware used on all class robots.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Download the Class-Provided VESC Tool</div>
+        <div class="step-desc">Get the VESC Tool version specified by your instructor from the <strong>class Google Drive folder</strong> linked below. This folder contains the exact version used in class for both VESC 6.x and VESC 4.x hardware.</div>
+
+        <div class="callout tip">
+          <div class="callout-icon">📥</div>
+          <div class="callout-body">
+            <div class="callout-title">Class VESC Tool — Google Drive Download</div>
+            <div class="callout-text">
+              Download the class-provided VESC Tool from the shared Google Drive folder:<br><br>
+              <a href="https://drive.google.com/drive/folders/1m_gqcIWwaCzV3y3raU1FFiEpCyf3rYPi?usp=sharing"
+                 target="_blank" rel="noopener"
+                 style="display:inline-flex;align-items:center;gap:8px;background:rgba(198,146,20,0.15);border:1px solid rgba(198,146,20,0.4);color:var(--ucsd-gold-lt);font-family:var(--font-mono);font-size:12px;font-weight:600;padding:8px 16px;border-radius:6px;text-decoration:none;letter-spacing:0.3px;transition:all 0.15s;">
+                🔗 &nbsp;Open VESC Tool Class Drive Folder
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="cb"><div class="cb-header"><span class="cb-label">VESC Tool — Direct Drive Link (copy &amp; paste)</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre>https://drive.google.com/drive/folders/1m_gqcIWwaCzV3y3raU1FFiEpCyf3rYPi?usp=sharing
+<span class="c"># Download the binary for your OS from this shared folder</span></pre></div>
+        <div class="cb"><div class="cb-header"><span class="cb-label">VESC 4.x legacy — VESC Tool v2.03 (fallback)</span></div><pre>https://github.com/rpasichnyk/vesc_tool/releases/tag/v2.03
+<span class="c"># Download the binary for your OS from this release page</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Install and Launch VESC Tool</div>
+        <div class="step-desc">On Windows, run the installer. On macOS, drag the app to Applications. On Linux, extract the archive and run the AppImage. Launch the tool and dismiss any "newer version available" prompts.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig01_version_popup.png" alt="VESC Tool new version available popup">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 01 — Version Warning Popup</div>
+              <div class="img-ph-desc">A dialog saying "A new version of VESC Tool is available" with an OK button. Click OK to dismiss — do not follow the upgrade link.</div>
+            </div>
+          </div>
+          <figcaption>
+            <span class="fig-label">Fig 01</span>
+            Version upgrade warning — click OK to dismiss; do not follow the upgrade link
+          </figcaption>
+        </figure>
+
+        <div class="callout tip"><div class="callout-icon">✓</div><div class="callout-body"><div class="callout-title">Dismiss Version Warnings</div><div class="callout-text">If you see a popup saying "A new version of VESC Tool is available", click OK to dismiss it. Do NOT click the link to download a newer version unless instructed by the TA.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §4 — Connect VESC -->
+<div class="section-anchor" id="s4"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">04</span>
+    <div class="sec-title-block">
+      <h2>Connect the VESC to Your Host PC</h2>
+      <div class="sec-subtitle">Power and USB setup before opening VESC Tool</div>
+    </div>
+  </div>
+
+  <div class="callout error">
+    <div class="callout-icon">🛑</div>
+    <div class="callout-body">
+      <div class="callout-title">Robot Must Be on the Stand</div>
+      <div class="callout-text">Place the robot on the class-provided stand. All wheels must be completely clear and able to spin freely. Keep your laptop and hands away from the wheel path at all times.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Disconnect the VESC from the Raspberry Pi</div>
+        <div class="step-desc">If the VESC is currently plugged into the SBC (Single Board Computer — the Raspberry Pi), unplug the USB cable from it. For this procedure, the VESC must connect directly to your host laptop, not the Raspberry Pi.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Connect the LiPO Battery Alarm</div>
+        <div class="step-desc">Plug the LiPO battery alarm into the battery's balance plug (the small multi-pin connector on the side of the battery) before connecting the battery to the VESC. This monitors each cell's voltage and protects the battery from being over-discharged during the motor detection spin cycle.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Connect the Battery to the VESC</div>
+        <div class="step-desc">Plug the RC car battery into the VESC's main power input. Use the same battery you plan to use during robot operation — the motor calibration values depend on supply voltage, so using a different power source will produce incorrect results.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Connect the VESC to Your Host PC via Micro-USB</div>
+        <div class="step-desc">Plug the micro-USB cable into the VESC and the other end into your laptop. Use a cable long enough that your laptop is kept well clear of the spinning wheels. Make sure the cable is a <strong>data cable</strong>, not a charge-only cable — charge-only cables will not be recognized by VESC Tool.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Open VESC Tool and Connect</div>
+        <div class="step-desc">Launch VESC Tool on your laptop. Click the connect icon (plug symbol) in the top-left toolbar, or open the Connection panel, click <strong>SCAN</strong>, then click <strong>CONNECT</strong> on the detected device.</div>
+
+        <div class="fig-row">
+          <figure>
+            <div class="fig-wrap">
+              <img src="images/vesc_fig02a_connect_icon.png" alt="VESC Tool connect icon in toolbar">
+              <div class="img-ph">
+                <div class="img-ph-icon">🖼</div>
+                <div class="img-ph-label">Fig 02a — Connect Icon</div>
+                <div class="img-ph-desc">The plug-shaped connect icon in the VESC Tool top-left toolbar. Click this to connect.</div>
+              </div>
+            </div>
+            <figcaption><span class="fig-label">Fig 02a</span> Connect icon in the toolbar</figcaption>
+          </figure>
+          <figure>
+            <div class="fig-wrap">
+              <img src="images/vesc_fig02b_connection_panel.png" alt="VESC Tool Connection panel with SCAN and CONNECT buttons">
+              <div class="img-ph">
+                <div class="img-ph-icon">🖼</div>
+                <div class="img-ph-label">Fig 02b — Connection Panel</div>
+                <div class="img-ph-desc">The Connection panel showing a detected VESC device with SCAN and CONNECT buttons.</div>
+              </div>
+            </div>
+            <figcaption><span class="fig-label">Fig 02b</span> Connection panel — click SCAN, then CONNECT</figcaption>
+          </figure>
+        </div>
+
+        <div class="cb"><div class="cb-header"><span class="cb-label">VESC Tool connection flow</span></div><pre><span class="c">1. Click the plug/connect icon  OR</span>
+<span class="c">2. Connection panel → SCAN → select your device → CONNECT</span>
+
+<span class="c"># Expected output in the status bar:</span>
+<span class="ok">Connected to VESC</span>   Fw: v6.00, Hw: EDU   <span class="c"># (example — your version may differ)</span></pre></div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig03_test_fw_warning.png" alt="VESC test firmware warning dialog">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 03 — Test Firmware Warning</div>
+              <div class="img-ph-desc">A warning dialog: "The connected VESC has test firmware, and this is not a test build of VESC Tool." Click OK to dismiss.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 03</span> Test firmware warning — click OK; VESC 6.x users proceed to update, VESC 4.x users do NOT update</figcaption>
+        </figure>
+
+        <div class="callout info"><div class="callout-icon">ℹ</div><div class="callout-body"><div class="callout-title">Firmware Version Warning at Connection</div><div class="callout-text">VESC Tool may display "The connected VESC has test firmware and this is not a test build of VESC Tool." This is expected and safe to dismiss. For VESC 6.x: dismiss and proceed to Section 5 to update. For VESC 4.x: dismiss and proceed to Section 6 — do NOT update from the standard firmware list.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §5 — Firmware VESC 6.x -->
+<div class="section-anchor" id="s5"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">05</span>
+    <div class="sec-title-block">
+      <h2>Firmware Update — VESC 6.x</h2>
+      <div class="sec-subtitle">Update to firmware v6.00 for all VESC 6.x hardware (EDU, original 6.x, FLIPSKY 6.6/6.7)</div>
+    </div>
+    <div class="sec-badges"><span class="badge badge-warn">VESC 6.x ONLY</span></div>
+  </div>
+
+  <p>After connecting, identify your hardware version in the Firmware panel. VESC 6.x devices (including VESC EDU) should be updated to firmware v6.00 using <code>VESC_default.bin</code>. This ensures your VESC runs the same software as all other robots in class.</p>
+
+  <h3>How to Identify Your Hardware Version</h3>
+  <p>When connected in VESC Tool, look at the bottom-left status area and the Firmware panel. You should see one of the following hardware identifiers:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Hardware Shows</th><th>Firmware File</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><code>Hw: EDU</code></td><td>VESC_default.bin (EDU row)</td><td>Update to v6.00</td></tr>
+      <tr><td><code>Hw: 60</code></td><td>VESC_default.bin (60 row)</td><td>Update to v6.00</td></tr>
+      <tr><td><code>Hw: 412</code></td><td>VESC_servoout.bin (v4.2)</td><td>Skip to Section 6 — do NOT update here</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Open the Firmware Panel</div>
+        <div class="step-desc">In the VESC Tool left navigation sidebar, click <strong>Firmware</strong>. You will see a list of hardware versions, each paired with a firmware file. Find your hardware version in the list (EDU or 60).</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig04_sidebar_firmware.png" alt="VESC Tool sidebar showing Firmware menu item highlighted">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 04 — Firmware in Sidebar</div>
+              <div class="img-ph-desc">VESC Tool left sidebar with the Firmware menu item highlighted in blue.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 04</span> Click Firmware in the left sidebar to open the firmware panel</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Select Your Hardware Row and Click Update</div>
+        <div class="step-desc">Select the row matching your hardware version (e.g., EDU → <code>VESC_default.bin</code>). Click the single download arrow button labeled "Update firmware on the connected VESC". Do not click "↓ All" — that flashes all connected VESCs and is not needed here.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig05_fw_hw60_row.png" alt="Firmware panel showing hardware version 60 row selected with VESC_default.bin">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 05 — Hardware Row Selected</div>
+              <div class="img-ph-desc">Firmware list with hardware version "60" highlighted and VESC_default.bin shown in the firmware column. Select your matching row.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 05</span> Select your hardware row (EDU or 60) — VESC_default.bin will be flashed</figcaption>
+        </figure>
+
+        <div class="fig-row">
+          <figure>
+            <div class="fig-wrap">
+              <img src="images/vesc_fig06_fw_toolbar_buttons.png" alt="VESC Tool firmware update toolbar buttons with Update firmware tooltip">
+              <div class="img-ph">
+                <div class="img-ph-icon">🖼</div>
+                <div class="img-ph-label">Fig 06 — Firmware Toolbar Buttons</div>
+                <div class="img-ph-desc">Toolbar with a single download arrow (↓) and a "↓ All" button. Use the single arrow only.</div>
+              </div>
+            </div>
+            <figcaption><span class="fig-label">Fig 06</span> Use the single ↓ arrow — not ↓ All</figcaption>
+          </figure>
+          <figure>
+            <div class="fig-wrap">
+              <img src="images/vesc_fig07_download_button.png" alt="Large download arrow button in VESC Tool">
+              <div class="img-ph">
+                <div class="img-ph-icon">🖼</div>
+                <div class="img-ph-label">Fig 07 — Download/Flash Button</div>
+                <div class="img-ph-desc">The large download arrow button used to start the firmware upload.</div>
+              </div>
+            </div>
+            <figcaption><span class="fig-label">Fig 07</span> Click the download button to begin the firmware upload</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Confirm the Firmware Overwrite Warning</div>
+        <div class="step-desc">A dialog appears: "Uploading new firmware will clear all settings in the VESC firmware and you have to do the configuration again. Do you want to continue?" Click <strong>YES</strong>. All settings will be cleared — this is expected. You will reconfigure everything during the motor detection steps that follow.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig08_overwrite_dialog.png" alt="Firmware overwrite confirmation dialog with No and Yes buttons">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 08 — Overwrite Confirmation</div>
+              <div class="img-ph-desc">Dialog asking to confirm firmware overwrite. Click YES to proceed.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 08</span> Firmware overwrite confirmation — click YES</figcaption>
+        </figure>
+
+        <div class="callout error"><div class="callout-icon">🛑</div><div class="callout-body"><div class="callout-title">DO NOT Disconnect During Upload</div><div class="callout-text">After clicking YES, do not disconnect power or the USB cable until you see "Upload done" in the status bar. The VESC will automatically reboot within 10 seconds after the upload completes. Do not touch anything until the reboot finishes.</div></div></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Verify the Successful Upload</div>
+        <div class="step-desc">After the VESC reboots, reconnect in VESC Tool. The status bar should show the new firmware version. For VESC EDU, you will see <code>Fw: v6.00, Hw: EDU</code>. For a standard VESC 6.x, you will see <code>Fw: v6.00, Hw: 60</code>.</div>
+
+        <div class="fig-row">
+          <figure>
+            <div class="fig-wrap">
+              <img src="images/vesc_fig09a_upload_done_dialog.png" alt="Firmware upload done dialog box">
+              <div class="img-ph">
+                <div class="img-ph-icon">🖼</div>
+                <div class="img-ph-label">Fig 09a — Upload Done Dialog</div>
+                <div class="img-ph-desc">Dialog: "The firmware upload is done. The device should reboot automatically within 10 seconds. Do NOT remove power before the reboot is done." Click OK.</div>
+              </div>
+            </div>
+            <figcaption><span class="fig-label">Fig 09a</span> Upload done dialog — do not remove power until reboot completes</figcaption>
+          </figure>
+          <figure>
+            <div class="fig-wrap">
+              <img src="images/vesc_fig09b_upload_done_statusbar.png" alt="VESC Tool status bar showing Upload done">
+              <div class="img-ph">
+                <div class="img-ph-icon">🖼</div>
+                <div class="img-ph-label">Fig 09b — Upload Done Status Bar</div>
+                <div class="img-ph-desc">VESC Tool bottom status bar showing "Upload done" text.</div>
+              </div>
+            </div>
+            <figcaption><span class="fig-label">Fig 09b</span> "Upload done" in the status bar — wait for the automatic reboot</figcaption>
+          </figure>
+        </div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig10_fw_update_success.png" alt="VESC Tool showing successful firmware update with Fw v6.00 Hw EDU status">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 10 — Successful Firmware Update</div>
+              <div class="img-ph-desc">Firmware panel after a successful update showing status: Fw: v6.00, Hw: EDU, Status: STABLE.</div>
+            </div>
+          </div>
+          <figcaption>
+            <span class="fig-label">Fig 10</span>
+            Successful update — status bar shows Fw: v6.00, Hw: EDU (or Hw: 60 for non-EDU boards)
+          </figcaption>
+        </figure>
+
+        <div class="cb"><div class="cb-header"><span class="cb-label">Expected status after a successful VESC 6.x firmware update</span></div><pre>Fw: v6.00, Hw: EDU
+Paired: false, Status: STABLE
+HW Type: VESC, Phase Filters: Yes
+NRF Name: No, Pin: No
+
+<span class="c"># Status bar shows: "Upload done" then VESC reboots automatically</span></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <div class="callout-icon">✓</div>
+    <div class="callout-body">
+      <div class="callout-title">Firmware Update Complete</div>
+      <div class="callout-text">Once you see "Upload done" and the VESC has rebooted (about 10 seconds), it is safe to proceed. The next section covers connecting the motor and servo cables before running motor detection.</div>
+    </div>
+  </div>
+</section>
+
+<!-- §6 — Firmware VESC 4.x Legacy -->
+<div class="section-anchor" id="s6"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">06</span>
+    <div class="sec-title-block">
+      <h2>Firmware Update — VESC 4.x Legacy</h2>
+      <div class="sec-subtitle">Special servo-out firmware for VESC 4.12 / FLIPSKY Mini FSESC4.2</div>
+    </div>
+    <div class="sec-badges"><span class="badge badge-new">LEGACY ONLY</span></div>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-icon">ℹ</div>
+    <div class="callout-body">
+      <div class="callout-title">VESC 6.x Users — Skip This Section</div>
+      <div class="callout-text">If you completed Section 5 (VESC 6.x firmware update), skip directly to Section 7 (Cable Connections). This section is only for robots still using VESC 4.x hardware.</div>
+    </div>
+  </div>
+
+  <p>VESC 4.x hardware requires a special firmware called <code>VESC_servoout.bin</code>. This firmware repurposes one of the VESC's PWM input pins to work as a PWM output, allowing the VESC to drive the steering servo motor. The latest versions of VESC Tool do not include this firmware file — you must use <strong>VESC Tool v2.03</strong>, which ships with firmware v4.2 containing <code>VESC_servoout.bin</code>.</p>
+
+  <div class="callout warn">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-body">
+      <div class="callout-title">DO NOT Upgrade VESC 4.x Firmware Beyond v4.2</div>
+      <div class="callout-text">For VESC 4.x hardware (e.g., V4.2, Hw: 412), do NOT flash any newer firmware. Later firmware versions for 4.x hardware do not include <code>VESC_servoout.bin</code>, which is required for servo steering. Use VESC Tool v2.03 and stay on firmware v4.2.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Download VESC Tool v2.03 (Required for 4.x)</div>
+        <div class="step-desc">Download the pre-built release from the repository link below. Do not use any other version — only v2.03 includes the <code>VESC_servoout.bin</code> firmware file for 4.x hardware.</div>
+        <div class="cb"><div class="cb-header"><span class="cb-label">VESC Tool v2.03 download</span><button class="copy-btn" onclick="doCopy(this)">COPY</button></div><pre>https://github.com/rpasichnyk/vesc_tool/releases/tag/v2.03</pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Flash VESC_servoout.bin Firmware</div>
+        <div class="step-desc">In VESC Tool v2.03, navigate to the Firmware panel. Find hardware version 4.12 in the list and select <code>VESC_servoout.bin</code> — do <strong>not</strong> select the default <code>VESC_default.bin</code>. Click the update button to flash the firmware. The servoout build enables the PWM output pin needed to drive the steering servo.</div>
+        <div class="callout error"><div class="callout-icon">🛑</div><div class="callout-body"><div class="callout-title">DO NOT Disconnect During Upload</div><div class="callout-text">The same rules apply as for VESC 6.x: never disconnect power or the USB cable during a firmware upload. Wait for "Upload done" and the automatic reboot before proceeding.</div></div></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Alternative Firmware Source (if needed)</div>
+        <div class="step-desc">If VESC Tool v2.03 does not include the servoout firmware for your specific 4.x hardware revision, the following repository contains archived v4.2 firmware files:</div>
+        <div class="cb"><div class="cb-header"><span class="cb-label">Backup firmware repository for VESC 4.x</span></div><pre>https://github.com/RacecarJ/vesc-firmware
+https://github.com/RacecarJ/vesc-firmware/tree/master/firm
+<span class="c"># Look for: VESC_servoout.bin targeting HW 4.12</span></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <p>After flashing <code>VESC_servoout.bin</code> on your VESC 4.x, continue with Section 7 (Cable Connections) and follow the same motor detection steps as VESC 6.x — the FOC wizard procedure is identical for both hardware versions.</p>
+</section>
+
+<!-- §7 — Cable Connections -->
+<div class="section-anchor" id="s7"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">07</span>
+    <div class="sec-title-block">
+      <h2>Cable Connections</h2>
+      <div class="sec-subtitle">Connect the motor, sensors, and servo before running motor detection</div>
+    </div>
+  </div>
+
+  <div class="callout error">
+    <div class="callout-icon">🛑</div>
+    <div class="callout-body">
+      <div class="callout-title">Disconnect Power Before Connecting Cables</div>
+      <div class="callout-text">Remove the battery from the VESC before connecting or disconnecting any motor or servo cables. Never plug or unplug motor phase wires while the VESC is powered — doing so creates large voltage spikes that can destroy the VESC's internal FETs (power transistors).</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Disconnect the Battery and USB</div>
+        <div class="step-desc">Before connecting any motor cables, remove the battery connector from the VESC. Also unplug the USB cable from the host PC. The VESC must be completely unpowered before you touch any motor wires.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Connect the BLDC Drive Motor (Phase Wires)</div>
+        <div class="step-desc">Connect the three motor phase wires from the BLDC motor to the three motor output terminals on the VESC. These are usually bullet connectors or wires labeled A, B, and C. The order does not need to be perfect right now — you can reverse the motor direction in software if the motor spins the wrong way after detection.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Connect the Motor Hall Sensor Cable</div>
+        <div class="step-desc">Connect the motor's hall sensor cable to the VESC's sensor input port. This is typically a 6-pin JST connector (a small, keyed locking wire connector common in RC electronics). It carries three hall sensor signals plus 5 V power and ground. These sensors tell the VESC exactly where the motor rotor is at any given moment, enabling smooth and precise low-speed control.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Connect the Steering Servo</div>
+        <div class="step-desc">Connect the servo motor's 3-pin connector (signal / power / ground) to the VESC's PWM servo output port. The signal wire is typically white or yellow. Consult your VESC variant's pinout diagram if you are unsure of the pin order.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Reconnect the LiPO Battery Alarm and Battery</div>
+        <div class="step-desc">Plug the LiPO alarm's balance plug connector back into the battery, then reconnect the main battery to the VESC.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <div class="step-title">Reconnect USB and Open VESC Tool</div>
+        <div class="step-desc">Plug the USB cable back into the host PC. Launch VESC Tool and reconnect to the VESC using the connect button or the Connection panel.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig11_reconnect_icon.png" alt="VESC Tool connect icon after cable connections">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 11 — Reconnect After Cabling</div>
+              <div class="img-ph-desc">The VESC Tool connect icon — click this to reconnect once all cables are in place.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 11</span> Reconnect VESC Tool after completing all cable connections</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Cable</th><th>From</th><th>To (VESC Port)</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>3× Motor Phase Wires</td><td>BLDC Motor (A, B, C)</td><td>Motor output terminals</td><td>Delivers power to the motor's three coil windings</td></tr>
+      <tr><td>6-pin Hall Sensor JST</td><td>Motor sensor port</td><td>VESC sensor input</td><td>Provides rotor position data for FOC control</td></tr>
+      <tr><td>3-pin PWM Servo</td><td>Steering servo motor</td><td>VESC servo/PWM output</td><td>Receives the steering PWM signal from the VESC</td></tr>
+      <tr><td>Battery Main Connector</td><td>LiPO/LiIon battery</td><td>VESC power input</td><td>Main power supply</td></tr>
+      <tr><td>Balance Plug</td><td>LiPO battery side connector</td><td>LiPO alarm monitor</td><td>Monitors individual cell voltages to prevent over-discharge</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- §8 — FOC Wizard Setup -->
+<div class="section-anchor" id="s8"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">08</span>
+    <div class="sec-title-block">
+      <h2>FOC Motor Detection Wizard</h2>
+      <div class="sec-subtitle">Use the Setup Motors FOC wizard to automatically detect motor parameters</div>
+    </div>
+  </div>
+
+  <div class="callout error">
+    <div class="callout-icon">🛑</div>
+    <div class="callout-body">
+      <div class="callout-title">Last Chance — Is the Robot on the Stand?</div>
+      <div class="callout-text">The motor detection process will spin the wheels. Confirm the robot is elevated on the class stand and all four wheels are completely clear of any contact before proceeding.</div>
+    </div>
+  </div>
+
+  <p>The <strong>FOC (Field-Oriented Control)</strong> wizard automatically measures your motor's resistance, inductance, and flux linkage, then configures the VESC with optimal control parameters. FOC provides smoother, more efficient motor control than older methods. Running this wizard replaces manual parameter entry and produces accurate, motor-specific calibration values.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Navigate to Welcome & Wizards → Setup Motors FOC</div>
+        <div class="step-desc">In the VESC Tool left sidebar, click <strong>Welcome &amp; Wizards</strong>. Then click the <strong>Setup Motors FOC</strong> button. A dialog will appear asking about loading default parameters.</div>
+
+        <div class="fig-row">
+          <figure>
+            <div class="fig-wrap">
+              <img src="images/vesc_fig12a_wizards_menu.png" alt="VESC Tool Welcome and Wizards menu item highlighted">
+              <div class="img-ph">
+                <div class="img-ph-icon">🖼</div>
+                <div class="img-ph-label">Fig 12a — Wizards Menu</div>
+                <div class="img-ph-desc">VESC Tool sidebar with "Welcome & Wizards" highlighted in blue.</div>
+              </div>
+            </div>
+            <figcaption><span class="fig-label">Fig 12a</span> Click Welcome & Wizards in the sidebar</figcaption>
+          </figure>
+          <figure>
+            <div class="fig-wrap">
+              <img src="images/vesc_fig12b_setup_motors_foc.png" alt="Setup Motors FOC button in VESC Tool wizard panel">
+              <div class="img-ph">
+                <div class="img-ph-icon">🖼</div>
+                <div class="img-ph-label">Fig 12b — Setup Motors FOC Button</div>
+                <div class="img-ph-desc">The large "Setup Motors FOC" button in the wizard panel.</div>
+              </div>
+            </div>
+            <figcaption><span class="fig-label">Fig 12b</span> Click Setup Motors FOC to launch the wizard</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Load Default Parameters — Click YES</div>
+        <div class="step-desc">A dialog appears: "Would you like to restore this VESC, and all VESCs on the CAN-bus (if any), to their default settings before proceeding?" Click <strong>YES</strong>. This ensures a clean starting state and prevents any old, misconfigured settings from interfering with the detection.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig13_load_defaults_dialog.png" alt="Load Default Parameters dialog with NO and YES buttons">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 13 — Load Default Parameters</div>
+              <div class="img-ph-desc">Dialog asking to restore default settings. Click YES.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 13</span> Load Default Parameters — click YES</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Select Motor Usage: Generic</div>
+        <div class="step-desc">On the USAGE tab, select <strong>Generic</strong>. Do not select a specific application profile — Generic applies appropriate FOC parameters for a wide range of BLDC motors without making assumptions about the load type.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig14_foc_usage_tab.png" alt="FOC wizard USAGE tab with Generic motor type selected">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 14 — USAGE Tab</div>
+              <div class="img-ph-desc">FOC wizard USAGE tab with the "Generic" option highlighted in blue.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 14</span> Select Generic on the USAGE tab</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Select Motor Type: Medium Inrunner (~750 g)</div>
+        <div class="step-desc">On the MOTOR tab, select <strong>Medium Inrunner (~750 g)</strong>. An inrunner motor has the spinning rotor on the inside (unlike an outrunner where the outer shell spins). This preset sets appropriate current limits and FOC tuning parameters for the class RC car motors (such as the XeRun 3660 G2 and similar sensored inrunner motors in the 700–800 g range).</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig15_foc_motor_tab.png" alt="FOC wizard Motor tab with Medium Inrunner 750g selected">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 15 — Motor Type Selection</div>
+              <div class="img-ph-desc">FOC wizard Motor tab with "Medium Inrunner (~750 g)" highlighted in blue.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 15</span> Select Medium Inrunner (~750 g) on the MOTOR tab</figcaption>
+        </figure>
+
+        <div class="callout info"><div class="callout-icon">ℹ</div><div class="callout-body"><div class="callout-title">Why Medium Inrunner?</div><div class="callout-text">Using the wrong motor size preset can cause jerky performance or trigger over-current faults. The Medium Inrunner preset matches the physical and electrical characteristics of the motors in this class. If you are unsure whether your motor qualifies, ask a TA to confirm before proceeding.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §9 — Battery Config -->
+<div class="section-anchor" id="s9"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">09</span>
+    <div class="sec-title-block">
+      <h2>Battery Configuration</h2>
+      <div class="sec-subtitle">Set the correct battery type, cell count, and capacity</div>
+    </div>
+  </div>
+
+  <p>Correct battery configuration is critical for safety. The VESC uses these settings to calculate low-voltage cutoff thresholds — the point at which it shuts down to protect the battery. Using the wrong cell count can result in either premature shutdowns (annoying but safe) or, more dangerously, allowing the LiPO/LiIon battery to over-discharge, which causes permanent cell damage and creates a fire risk.</p>
+
+  <div class="callout warn">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-body">
+      <div class="callout-title">Check Your Physical Battery Label</div>
+      <div class="callout-text">Look at the label on your battery before entering values. The cell count (marked as "S") and capacity (in Ah) are printed on the battery itself. Do not assume — getting this wrong can damage the battery. ECE/MAE 148 generally uses 3S 3 Ah batteries. DSC 178 and racing robots use 4S 4 Ah.</div>
+    </div>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Course / Robot</th><th>Battery Cells (Series)</th><th>Battery Capacity</th><th>Battery Type</th></tr></thead>
+    <tbody>
+      <tr><td><strong>ECE/MAE 148</strong></td><td>3 (3S)</td><td>3.000 Ah</td><td>BATTERY_TYPE_LIION_3_0__4_2</td></tr>
+      <tr><td><strong>DSC 178 / Racing</strong></td><td>4 (4S)</td><td>4.000 Ah</td><td>BATTERY_TYPE_LIION_3_0__4_2</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Set Battery Type, Cell Count, and Capacity</div>
+        <div class="step-desc">In the Battery tab of the FOC wizard, set Battery Type to <code>BATTERY_TYPE_LIION_3_0__4_2</code>. Set Battery Cells Series and Battery Capacity to match your physical battery (see the table above).</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig16_foc_battery_tab.png" alt="FOC wizard Battery tab showing BATTERY_TYPE_LIION_3_0_4_2 with 3 cells and 3.000 Ah">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 16 — Battery Tab</div>
+              <div class="img-ph-desc">FOC wizard Battery tab. Set Battery Type to BATTERY_TYPE_LIION_3_0__4_2 and enter your cell count and capacity from the battery label.</div>
+            </div>
+          </div>
+          <figcaption>
+            <span class="fig-label">Fig 16</span>
+            Battery tab — enter your cell count and capacity from the physical battery label
+          </figcaption>
+        </figure>
+
+        <div class="cb"><div class="cb-header"><span class="cb-label">Battery settings in the FOC wizard</span></div><pre>Battery Type:         BATTERY_TYPE_LIION_3_0__4_2
+
+<span class="c"># ECE/MAE 148:</span>
+Battery Cells Series: <span class="v">3</span>        <span class="c"># 3-cell LiIon/LiPO battery</span>
+Battery Capacity:     <span class="v">3.000 Ah</span>  <span class="c"># As printed on the battery label</span>
+
+<span class="c"># DSC 178 / Racing robots:</span>
+Battery Cells Series: <span class="v">4</span>        <span class="c"># 4-cell LiIon/LiPO battery</span>
+Battery Capacity:     <span class="v">4.000 Ah</span>  <span class="c"># As printed on the battery label</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Click Next to Continue</div>
+        <div class="step-desc">After setting the battery parameters, click <strong>Next</strong> to advance to the motor parameter configuration page.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §10 — Motor Parameters -->
+<div class="section-anchor" id="s10"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">10</span>
+    <div class="sec-title-block">
+      <h2>Motor Parameters</h2>
+      <div class="sec-subtitle">Set pole count, gear ratio, and wheel diameter</div>
+    </div>
+  </div>
+
+  <p>The VESC needs accurate motor parameters to calculate correct RPM readings and speed control. The most important value is the number of magnetic <strong>poles</strong> on your motor — this directly affects all speed calculations.</p>
+
+  <h3>Finding Your Motor's Pole Count</h3>
+  <p>You must look up the pole count for your specific motor model. The pole count refers to the number of magnetic poles on the rotor (the spinning part inside the motor). It is <strong>not</strong> the same as the number of stator slots (the stationary coil slots on the outside). For the class example motor:</p>
+  <div class="cb"><div class="cb-header"><span class="cb-label">Example: XeRun 3660 G2 Sensored Motor</span></div><pre><span class="c"># Motor part number: XeRun 3660 G2</span>
+<span class="c"># Manufacturer link:</span>
+https://www.hobbywingdirect.com/products/xerun-3660-g2-sensored-motor
+
+<span class="c"># Spec: "innovative 4-pole-8-magnet staggered pole rotor"</span>
+<span class="c"># Pole count to enter in the VESC wizard = 4</span>
+<span class="c"># (Always verify against YOUR motor's datasheet — do not guess)</span></pre></div>
+
+  <div class="callout info">
+    <div class="callout-icon">ℹ</div>
+    <div class="callout-body">
+      <div class="callout-title">How to Find Your Motor's Pole Count</div>
+      <div class="callout-text">Search the motor part number on the manufacturer's website or in its datasheet. Look for phrases like "X-pole rotor" or "X magnets". The number you enter in VESC Tool is the pole count only. Most small RC inrunner motors are 4-pole. If you cannot find the specification, ask a TA.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Set Gear Ratio: Direct Drive</div>
+        <div class="step-desc">In the wizard, select <strong>Direct Drive</strong> for gear ratio. The class RC cars use a direct-drive configuration where the motor connects to the drivetrain without an additional software-level gear ratio adjustment.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig17_foc_gear_ratio.png" alt="FOC wizard Gear Ratio section with Direct Drive checkbox selected">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 17 — Gear Ratio</div>
+              <div class="img-ph-desc">FOC wizard Gear Ratio section with "Direct Drive" selected (blue checkmark).</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 17</span> Select Direct Drive for the gear ratio</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Set Number of Motor Poles</div>
+        <div class="step-desc">Enter the pole count for your motor. For the XeRun 3660 G2 and most class motors, this is <strong>4</strong>. Always verify against your motor's datasheet before entering a value.</div>
+        <div class="cb"><div class="cb-header"><span class="cb-label">Motor pole count entry</span></div><pre>Motor Poles: <span class="v">4</span>   <span class="c"># Verify against YOUR motor's datasheet</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Set Wheel Diameter: 100.00 mm</div>
+        <div class="step-desc">Set the wheel diameter to <strong>100.00 mm</strong>. This is the standard wheel size used on the class RC car platform. Accurate wheel diameter ensures that speed readings in m/s are correct when using the Robocar software framework later.</div>
+        <div class="cb"><div class="cb-header"><span class="cb-label">Wheel diameter setting</span></div><pre>Wheel Diameter: <span class="v">100.00 mm</span>   <span class="c"># Standard class RC car wheel</span></pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §11 — Run Detection & Direction -->
+<div class="section-anchor" id="s11"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">11</span>
+    <div class="sec-title-block">
+      <h2>Run Detection & Motor Direction</h2>
+      <div class="sec-subtitle">Execute the FOC detection spin cycle and set the correct forward direction</div>
+    </div>
+  </div>
+
+  <div class="callout error">
+    <div class="callout-icon">🛑</div>
+    <div class="callout-body">
+      <div class="callout-title">Final Safety Check — Wheels Must Be Completely Clear</div>
+      <div class="callout-text">This step will physically spin the wheels. This is your last chance to verify the robot is elevated on the stand with all wheels free of any contact. Keep hands, cables, and your laptop away from the wheel path.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Click "Run Detection"</div>
+        <div class="step-desc">In the wizard, click <strong>Run Detection</strong>. The VESC will automatically measure resistance (R), inductance (L), and flux linkage (λ) by running controlled current pulses through the motor. The wheels will spin briefly forward, then backward during this process. Detection takes approximately 10–30 seconds.</div>
+        <div class="callout info"><div class="callout-icon">ℹ</div><div class="callout-body"><div class="callout-title">What Happens During Detection</div><div class="callout-text">The VESC sends precise current pulses into the motor and measures how it responds to calculate the motor's electrical properties (R, L, λ). These values are unique to your specific motor and wiring. The detected values shown in your wizard will differ from any example screenshots — that is completely normal and expected.</div></div></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Set Motor Direction (FWD or REV)</div>
+        <div class="step-desc">After detection, the wizard shows a Direction screen with <strong>FWD</strong> and <strong>REV</strong> buttons. Press FWD — if the drive wheels spin forward (in the direction the car would drive forward), you are done. If the wheels spin backward when you press FWD, enable the <strong>Inverted</strong> toggle or press <strong>REV</strong> to reverse the direction. Confirm that pressing FWD makes the wheels spin forward before continuing.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig18_foc_direction_tab.png" alt="FOC wizard DIRECTION tab with FWD and REV buttons and Inverted toggle">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 18 — Direction Tab</div>
+              <div class="img-ph-desc">FOC wizard DIRECTION tab showing FWD/REV buttons and an Inverted toggle. Press FWD and confirm the wheels spin forward.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 18</span> Direction tab — press FWD and verify the wheels spin forward; toggle Inverted if they spin backwards</figcaption>
+        </figure>
+
+        <div class="cb"><div class="cb-header"><span class="cb-label">Direction determination logic</span></div><pre><span class="c"># Press FWD in the wizard direction tab</span>
+
+<span class="c"># If wheels spin FORWARD:</span>
+<span class="ok"># → Leave direction as-is and continue</span>
+
+<span class="c"># If wheels spin BACKWARD:</span>
+<span class="er"># → Enable the "Inverted" toggle or press REV</span>
+<span class="c"># → Re-test with FWD to confirm correction</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Write Motor Configuration</div>
+        <div class="step-desc">Click the <strong>Write Motor Configuration</strong> button (the <strong>↓M</strong> icon in the toolbar). This saves all detected motor parameters to the VESC's non-volatile memory (NVRAM — storage that retains data even when powered off). Without this step, all settings will be lost on the next power cycle.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig19_write_motor_config.png" alt="Write Motor Configuration button showing the down-arrow M icon">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 19 — Write Motor Config (↓M)</div>
+              <div class="img-ph-desc">The Write Motor Configuration toolbar button (↓M icon). Always click this after detection or after changing any motor settings.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 19</span> Write Motor Configuration (↓M) — click after detection and after any motor setting change</figcaption>
+        </figure>
+
+        <div class="cb"><div class="cb-header"><span class="cb-label">Write motor configuration</span></div><pre><span class="c"># Click the ↓M button in the VESC Tool toolbar</span>
+<span class="c"># OR: Motor Settings → Write Motor Configuration</span>
+<span class="ok"># Confirmation: "Motor configuration written"</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Write App Configuration</div>
+        <div class="step-desc">Click the <strong>Write App Configuration</strong> button (the <strong>↓A</strong> icon in the toolbar). This saves the application-layer settings — such as UART communication and servo output mode — to the VESC's non-volatile memory. Always write both motor and app configurations after making changes.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig20_write_app_config.png" alt="Write App Configuration button showing the down-arrow A icon">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 20 — Write App Config (↓A)</div>
+              <div class="img-ph-desc">The Write App Configuration toolbar button (↓A icon). Click this to save app-layer settings.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 20</span> Write App Configuration (↓A) — saves app-layer settings to non-volatile memory</figcaption>
+        </figure>
+
+        <div class="cb"><div class="cb-header"><span class="cb-label">Write app configuration</span></div><pre><span class="c"># Click the ↓A button in the VESC Tool toolbar</span>
+<span class="c"># OR: App Settings → Write App Configuration</span>
+<span class="ok"># Confirmation: "App configuration written"</span></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <div class="callout-icon">✓</div>
+    <div class="callout-body">
+      <div class="callout-title">Front Wheels Not Turning?</div>
+      <div class="callout-text">If the front wheels do not move or steer at this stage, that is completely normal. Nothing is broken. The servo output needs to be enabled separately — this is covered in Section 13. Continue to Section 12 (Hall Sensor Detection) now.</div>
+    </div>
+  </div>
+</section>
+
+<!-- §12 — Hall Sensor Detection -->
+<div class="section-anchor" id="s12"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">12</span>
+    <div class="sec-title-block">
+      <h2>Hall Sensor Detection</h2>
+      <div class="sec-subtitle">Detect and map the hall sensor table for sensored FOC operation</div>
+    </div>
+  </div>
+
+  <p>The FOC motor detection wizard in the previous section measures motor parameters (R, L, λ) but does not configure the hall sensors — that is a separate step. Hall sensors are small magnetic sensors mounted inside the motor that tell the VESC exactly where the rotor is positioned at any given moment. This is especially important at low speeds where sensorless estimation is unreliable.</p>
+
+  <h3>Why Hall Sensor Detection Matters</h3>
+  <p>Without correct hall sensor calibration, the motor operates in sensorless mode below the <strong>Sensorless ERPM</strong> threshold (ERPM = Electrical RPM, which equals the motor's pole count multiplied by the mechanical RPM). Sensorless operation at low speeds produces stuttering and jerky starts. With hall sensors properly mapped, the VESC transitions smoothly from sensored (low-speed) to sensorless (high-speed) operation as the motor spins up.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Navigate to Motor Settings → FOC → Hall Sensors Tab</div>
+        <div class="step-desc">In the VESC Tool left sidebar, click <strong>Motor Settings → FOC</strong>. In the tab bar at the top of the FOC panel, click the <strong>Hall Sensors</strong> tab. You will see the Sensor Mode dropdown and the Hall Table entries.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig21_foc_motor_settings.png" alt="VESC Tool Motor Settings FOC panel showing RL measurement, flux linkage, and Apply button">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 21 — Motor Settings FOC Panel</div>
+              <div class="img-ph-desc">Motor Settings → FOC panel with tabs for General, Hall Sensors, and other options. Select the Hall Sensors tab.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 21</span> Motor Settings → FOC panel — select the Hall Sensors tab at the top</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Verify Sensor Mode is Set to "Hall Sensors"</div>
+        <div class="step-desc">The Sensor Mode dropdown should read <strong>Hall Sensors</strong>. If it shows Sensorless or Encoder, change it to Hall Sensors. This setting tells the VESC to use the connected hall sensor cable for rotor position feedback at low speeds.</div>
+
+        <div class="fig-row">
+          <figure>
+            <div class="fig-wrap">
+              <img src="images/vesc_fig22a_sensor_mode_hall.png" alt="Sensor Mode display showing Hall Sensors">
+              <div class="img-ph">
+                <div class="img-ph-icon">🖼</div>
+                <div class="img-ph-label">Fig 22a — Sensor Mode: Hall Sensors</div>
+                <div class="img-ph-desc">Large display showing "Sensor Mode" on the left and "Hall Sensors" on the right.</div>
+              </div>
+            </div>
+            <figcaption><span class="fig-label">Fig 22a</span> Sensor Mode set to Hall Sensors</figcaption>
+          </figure>
+          <figure>
+            <div class="fig-wrap">
+              <img src="images/vesc_fig22b_hall_sensors_button.png" alt="Hall Sensors button in VESC Tool">
+              <div class="img-ph">
+                <div class="img-ph-icon">🖼</div>
+                <div class="img-ph-label">Fig 22b — Hall Sensors Button</div>
+                <div class="img-ph-desc">The Hall Sensors selection button/badge.</div>
+              </div>
+            </div>
+            <figcaption><span class="fig-label">Fig 22b</span> Hall Sensors selection button</figcaption>
+          </figure>
+        </div>
+
+        <div class="cb"><div class="cb-header"><span class="cb-label">Sensor Mode setting</span></div><pre>Sensor Mode: <span class="v">Hall Sensors</span>   <span class="c"># Must be set to this value</span>
+<span class="c"># NOT: Sensorless</span>
+<span class="c"># NOT: Encoder</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Run Hall Sensor Detection</div>
+        <div class="step-desc">At the bottom of the Hall Sensors tab, find the <strong>Detect Hall Sensors</strong> section. Leave the detection current at the default (10.00 A is appropriate for class motors). Click <strong>Start Detection</strong>. The motor will spin slowly while the VESC reads and maps the hall sensor pattern for every rotor position.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig23_hall_table_255.png" alt="Full VESC Tool screenshot showing Hall Sensors tab with all 255 values before detection">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 23 — Hall Table Before Detection</div>
+              <div class="img-ph-desc">Hall Sensors tab before running detection — all Hall Table values show 255 (unconfigured). Click Start Detection to populate the table.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 23</span> Hall Table showing all 255 (unconfigured) before detection — click Start Detection</figcaption>
+        </figure>
+
+        <div class="callout warn"><div class="callout-icon">⚠</div><div class="callout-body"><div class="callout-title">Wheels Will Spin During Detection</div><div class="callout-text">The motor rotates during hall sensor detection. The robot must be on the stand with all wheels clear before clicking Start Detection.</div></div></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Verify Hall Table Values and Click Apply</div>
+        <div class="step-desc">After detection, the Hall Table entries (Hall Table [0] through [7]) will be populated with numbers. These values are unique to your motor and its wiring — they will differ from any examples shown here. Click <strong>Apply</strong> to accept the detected values. A value of 255 in a table slot means that state is unused; this is normal for slots [0] and [7].</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig24_hall_table_detected.png" alt="Hall sensor table values after detection showing example values">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 24 — Hall Table After Detection</div>
+              <div class="img-ph-desc">Hall sensor table after detection — Hall Table [1]–[6] are populated with unique values. Your values will differ from this example.</div>
+            </div>
+          </div>
+          <figcaption>
+            <span class="fig-label">Fig 24</span>
+            Hall table after detection — your values will differ; this is expected and correct
+          </figcaption>
+        </figure>
+
+        <div class="cb"><div class="cb-header"><span class="cb-label">Example hall sensor detection output (your values will differ)</span></div><pre><span class="c"># This is an EXAMPLE — do not manually enter these values</span>
+<span class="c"># Your detected values will be different, and that is correct</span>
+
+Sensorless ERPM:          4000.00
+Hall Interpolation ERPM:  500.00
+Hall Table [0]:           255
+Hall Table [1]:           115     <span class="c"># ← unique to your motor and wiring</span>
+Hall Table [2]:           49
+Hall Table [3]:           82
+Hall Table [4]:           182
+Hall Table [5]:           149
+Hall Table [6]:           15
+Hall Table [7]:           255
+Hall Sensor Extra Samples: 1</pre></div>
+        <div class="callout tip"><div class="callout-icon">✓</div><div class="callout-body"><div class="callout-title">What Do These Values Mean?</div><div class="callout-text">The Hall Table maps the six commutation states of the BLDC motor to the three hall sensor signals. Values 0–5 represent valid states; 255 means that state is unused. If all values remain 255 after detection, the hall sensor cable is not connected correctly — re-seat the connector and try again.</div></div></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Write Motor Configuration</div>
+        <div class="step-desc">After clicking Apply, save the hall table to non-volatile memory by clicking the <strong>↓M (Write Motor Configuration)</strong> button in the toolbar. Without this step, the hall sensor mapping will be lost the next time the VESC is powered off.</div>
+        <div class="cb"><div class="cb-header"><span class="cb-label">Save hall sensor configuration</span></div><pre><span class="c"># Apply the detected values, then click ↓M in the toolbar</span>
+<span class="ok"># Confirmation: "Motor configuration written" — hall table saved</span></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Troubleshooting Hall Sensor Detection</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Symptom</th><th>Likely Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>All Hall Table values = 255 after detection</td><td>Hall sensor cable not connected or loose</td><td>Re-seat the 6-pin JST hall sensor connector on both the motor and VESC ends. Run detection again.</td></tr>
+      <tr><td>Detection fails or motor stutters badly</td><td>Detection current too low, or motor phase wires in the wrong order</td><td>Try increasing the detection current to 15 A. If it still fails, swap any two of the three motor phase wire connections and re-run detection.</td></tr>
+      <tr><td>Some table values are 255, others are numbers</td><td>Intermittent hall sensor connection</td><td>Check for damaged or pinched wires in the hall sensor cable. Reconnect firmly and repeat detection.</td></tr>
+      <tr><td>Motor runs fine at speed but stutters at low RPM</td><td>Hall sensors not being used (sensorless mode active)</td><td>Verify Sensor Mode is "Hall Sensors" (not Sensorless) and that the Hall Table was written with ↓M.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- §13 — Enable Servo Steering -->
+<div class="section-anchor" id="s13"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">13</span>
+    <div class="sec-title-block">
+      <h2>Enable Servo Steering Output</h2>
+      <div class="sec-subtitle">Configure the VESC PWM output to drive the steering servo motor</div>
+    </div>
+  </div>
+
+  <p>By default, the VESC's PWM/servo pin is configured as an input (for receiving commands from an RC receiver). For the class robot, we need it as an <strong>output</strong> so that the VESC generates the PWM signal that drives the steering servo motor. This requires enabling "Servo Output" in the App Settings and writing the configuration.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Navigate to App Settings → General</div>
+        <div class="step-desc">In the VESC Tool left sidebar, click <strong>App Settings → General</strong>. Make sure you are in the <strong>APP</strong> section, not the MOTOR section — look for the APP badge next to the menu items.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig25_app_settings_sidebar.png" alt="VESC Tool sidebar App Settings General selected with APP badge">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 25 — App Settings Sidebar</div>
+              <div class="img-ph-desc">VESC Tool sidebar showing App Settings > General highlighted in blue with an APP badge.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 25</span> Navigate to App Settings → General (look for the APP badge)</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Enable Servo Output</div>
+        <div class="step-desc">Find the <strong>Enable Servo Output</strong> setting and change it from <code>False</code> to <code>True</code>. This repurposes the VESC's PWM servo pin from an input to an output, allowing the VESC to send steering commands to the servo motor.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig26_servo_output_true.png" alt="App Settings General showing Enable Servo Output set to True">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 26 — Enable Servo Output</div>
+              <div class="img-ph-desc">App Settings General panel with "Enable Servo Output" set to True.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 26</span> Set Enable Servo Output to True</figcaption>
+        </figure>
+
+        <div class="cb"><div class="cb-header"><span class="cb-label">App Settings → General — enable servo output</span></div><pre>Enable Servo Output:  <span class="v">True</span>    <span class="c"># ← Change this from False to True</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Write App Configuration</div>
+        <div class="step-desc">Click the <strong>↓A (Write App Configuration)</strong> button to save this change to non-volatile memory. Without writing, the Enable Servo Output setting reverts to False the next time the VESC is powered off.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig27_write_app_config_servo.png" alt="Write App Configuration button to save servo output enable">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 27 — Write App Config (↓A)</div>
+              <div class="img-ph-desc">The Write App Configuration (↓A) toolbar button. Click this to save the Enable Servo Output change.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 27</span> Write App Configuration (↓A) — saves the servo output setting</figcaption>
+        </figure>
+
+        <div class="cb"><div class="cb-header"><span class="cb-label">Save the servo output setting</span></div><pre><span class="c"># Click ↓A in the toolbar after enabling servo output</span>
+<span class="ok"># Confirmation: "App configuration written"</span></pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Test the Steering Servo</div>
+        <div class="step-desc">Navigate to <strong>App Settings → General → Controls tab</strong>. You will see a <strong>Servo Output</strong> slider. Drag the slider left and right — the front wheels should turn left and right accordingly. Use the <strong>Center</strong> button to return the servo to the neutral (straight) position.</div>
+
+        <figure>
+          <div class="fig-wrap">
+            <img src="images/vesc_fig28_servo_slider_test.png" alt="App Settings General Controls tab showing Servo Output slider and Center button">
+            <div class="img-ph">
+              <div class="img-ph-icon">🖼</div>
+              <div class="img-ph-label">Fig 28 — Servo Output Slider</div>
+              <div class="img-ph-desc">App Settings General Controls tab showing the Servo Output slider and Center button. Drag the slider to test steering.</div>
+            </div>
+          </div>
+          <figcaption><span class="fig-label">Fig 28</span> Controls tab — drag the Servo Output slider to test steering; the front wheels should follow</figcaption>
+        </figure>
+
+        <div class="callout warn"><div class="callout-icon">⚠</div><div class="callout-body"><div class="callout-title">Wheels Not Responding?</div><div class="callout-text">If the front wheels do not respond to the servo slider: verify the servo cable is connected to the VESC's PWM output port; confirm Enable Servo Output is True and the app configuration was written; and check that the servo motor is receiving 5 V power from the VESC's BEC (Battery Eliminator Circuit — a built-in voltage regulator that provides a steady 5 V output for the servo).</div></div></div>
+        <div class="callout tip"><div class="callout-icon">✓</div><div class="callout-body"><div class="callout-title">Setup Complete</div><div class="callout-text">When the servo slider produces smooth left/right front wheel steering, the VESC setup is fully complete. You can now move the USB cable from your laptop to the Raspberry Pi's USB port and proceed with the Robocar software setup.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §14 — Troubleshooting -->
+<div class="section-anchor" id="s14"></div>
+<section class="section">
+  <div class="sec-header">
+    <span class="sec-num">14</span>
+    <div class="sec-title-block">
+      <h2>Troubleshooting & Known Issues</h2>
+      <div class="sec-subtitle">Quick reference for common VESC setup failure modes</div>
+    </div>
+  </div>
+
+  <h3>Firmware & Connection</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Problem</th><th>Likely Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>VESC not detected by VESC Tool</td><td>Charge-only USB cable (no data lines), or wrong COM port</td><td>Try a different micro-USB cable that is confirmed to carry data. On Windows, check Device Manager for the COM port. On Linux, run <code>dmesg | grep usb</code> to see if the device was detected.</td></tr>
+      <tr><td>VESC Tool shows no device after SCAN</td><td>VESC not powered, or USB driver not installed</td><td>Confirm the battery is connected and the VESC LEDs are on. On Windows, install the STM32 Virtual COM Port driver if it is not already present.</td></tr>
+      <tr><td>Firmware update fails or hangs</td><td>USB cable issue or low battery voltage</td><td>Try a shorter, higher-quality USB cable. Ensure the battery is charged. If the VESC becomes unresponsive, it may require a hardware programmer (SWD/ST-Link) to recover — see a TA immediately.</td></tr>
+      <tr><td>VESC bricked after firmware update</td><td>Power or USB disconnected during upload</td><td>This requires an ST-Link or similar SWD programmer to reflash the bootloader. See a TA immediately.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Motor Detection</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Problem</th><th>Likely Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Motor does not spin during FOC detection</td><td>Motor phase cables not connected, or insufficient battery voltage</td><td>Check all three motor phase wire connections. Confirm battery voltage is adequate (the VESC needs at least a 2S battery). Verify the detection current is set to at least 10 A.</td></tr>
+      <tr><td>Motor stutters badly or detection fails</td><td>Wrong motor type selected, or phase wires in the wrong order</td><td>Re-run detection with Medium Inrunner selected. If it still fails, swap any two of the three motor phase wires and re-run detection.</td></tr>
+      <tr><td>Motor spins backward when pressing FWD</td><td>Phase wire polarity or hall sensor wiring</td><td>Toggle the Inverted switch in the Direction step of the wizard. If the direction is still wrong after writing the config, swap any two motor phase wires.</td></tr>
+      <tr><td>Detection values look unreasonable (R = 0 or very high)</td><td>A motor phase wire is not making contact</td><td>Check bullet connector crimps. Clean connectors with electrical contact cleaner if needed. Inspect wires for internal breaks.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Hall Sensors</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Problem</th><th>Likely Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Hall Table all 255 after detection</td><td>Hall sensor cable not connected</td><td>Re-seat the 6-pin JST hall sensor connector. Verify the connector's pin 1 orientation matches the VESC's sensor port pinout diagram.</td></tr>
+      <tr><td>Motor works at high speed but stutters at low RPM</td><td>Hall sensors disabled or Hall Table not written</td><td>Verify Sensor Mode = Hall Sensors. Re-run hall sensor detection and click ↓M to write the motor configuration afterward.</td></tr>
+      <tr><td>Hall detection completes but some values still show 255</td><td>Damaged wire in the hall sensor cable</td><td>Inspect the hall sensor cable for pinched or broken wires. Replace the cable if damaged.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Servo Steering</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Problem</th><th>Likely Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Servo slider in VESC Tool does nothing</td><td>Enable Servo Output = False, or app config not written</td><td>Go to App Settings → General, set Enable Servo Output to True, click ↓A to write the app configuration, then test again.</td></tr>
+      <tr><td>Servo moves in VESC Tool but not from ROS 2</td><td>VESC USB not connected to the Raspberry Pi</td><td>After completing VESC setup on your host PC, move the USB cable from your laptop to the Raspberry Pi's USB port. The Pi runs the actuator ROS 2 node that sends steering commands.</td></tr>
+      <tr><td>Servo only moves in one direction</td><td>PWM signal range not calibrated for this servo</td><td>The servo's PWM center, minimum, and maximum values may need adjustment in App Settings → General. Consult a TA for your specific servo's specifications.</td></tr>
+      <tr><td>Steering direction inverted in autonomous mode</td><td>Steering polarity in the Robocar configuration file</td><td>Set <code>steering_polarity: -1</code> in <code>car_config.yaml</code> and rebuild with <code>build_ros2</code>. This is a ROS 2-level fix, not a VESC setting.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Battery & Power</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Problem</th><th>Likely Cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>VESC immediately shuts down under load</td><td>Low-voltage cutoff triggered — battery too discharged, or wrong cell count configured</td><td>Charge the battery. Verify Battery Cells Series matches your actual battery (3S or 4S). Write motor configuration after any change.</td></tr>
+      <tr><td>LiPO alarm beeping continuously</td><td>Battery has discharged below 3.0 V per cell</td><td>Stop all tests immediately and charge the battery. Never discharge a LiPO below 3.0 V per cell — permanent cell damage occurs below this threshold.</td></tr>
+      <tr><td>VESC runs for a few seconds then cuts out</td><td>Motor current limit too high, or thermal protection has triggered</td><td>Allow the VESC to cool for 5 minutes before retrying. If the problem persists, reduce Motor Current Max in the FOC settings. The default values from motor detection should be within safe limits for class motors.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="divider"></div>
+  <p style="text-align:center; font-size:13px;">UCSD Jacobs School of Engineering — ECE/MAE 148 Intro to Autonomous Vehicles</p>
+</section>
+
+</div><!-- /content -->
+</div><!-- /main -->
+</main>
+
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+// ── COPY BUTTON ──────────────────────────────────────────────────
+function doCopy(btn) {
+  const pre = btn.closest('.cb').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'COPIED ✓';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('ok'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'COPIED ✓'; btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('ok'); }, 2000);
+  });
+}
+
+// ── BACK TO TOP ──────────────────────────────────────────────────
+const btt = document.getElementById('btt');
+window.addEventListener('scroll', () => {
+  btt.classList.toggle('show', window.scrollY > 500);
+});
+
+// ── READ PROGRESS ────────────────────────────────────────────────
+const progressFill = document.getElementById('read-progress-fill');
+const npFill = document.getElementById('np-fill');
+const npPct = document.getElementById('np-pct');
+window.addEventListener('scroll', () => {
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docH > 0 ? Math.min(100, Math.round((window.scrollY / docH) * 100)) : 0;
+  progressFill.style.width = pct + '%';
+  npFill.style.width = pct + '%';
+  npPct.textContent = pct + '%';
+});
+
+// ── ACTIVE NAV ───────────────────────────────────────────────────
+const anchors = document.querySelectorAll('.section-anchor[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+      if (a) { a.classList.add('active'); }
+    }
+  });
+}, { rootMargin: '-60px 0px -80% 0px' });
+anchors.forEach(a => io.observe(a));
+
+// ── NAV SEARCH ───────────────────────────────────────────────────
+function filterNav(q) {
+  const term = q.toLowerCase();
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.style.display = l.textContent.toLowerCase().includes(term) ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-group-label').forEach(g => {
+    let next = g.nextElementSibling;
+    let hasVisible = false;
+    while (next && !next.classList.contains('nav-group-label')) {
+      if (next.style.display !== 'none') hasVisible = true;
+      next = next.nextElementSibling;
+    }
+    g.style.display = hasVisible ? '' : 'none';
+  });
+}
+
+// ── MOBILE SIDEBAR CLOSE ON LINK CLICK ──────────────────────────
+document.querySelectorAll('.nav-link').forEach(l => {
+  l.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+
+// ── IMAGE PLACEHOLDER LOGIC (RACE-CONDITION FIX) ─────────────────
+// The script runs after the DOM is fully parsed, but images start loading
+// as soon as the browser encounters their <src> attributes. By the time
+// this script runs, some images may already be complete (loaded or failed).
+// The original code only attached addEventListener('error'/'load') and never
+// checked img.complete, so 404'd images that finished before the listener
+// was attached would show broken img icons instead of the styled placeholder.
+// Fix: after attaching listeners, check img.complete and handle synchronously.
+document.querySelectorAll('figure img').forEach(img => {
+  const showPlaceholder = () => {
+    img.style.display = 'none';
+    const ph = img.nextElementSibling;
+    if (ph && ph.classList.contains('img-ph')) ph.style.display = 'flex';
+  };
+  const showImage = () => {
+    img.style.display = 'block';
+    const ph = img.nextElementSibling;
+    if (ph && ph.classList.contains('img-ph')) ph.style.display = 'none';
+  };
+
+  // If src is blank or not set, show placeholder immediately and stop
+  if (!img.getAttribute('src') || img.getAttribute('src') === '' ||
+      img.src === window.location.href || img.src.endsWith('#')) {
+    showPlaceholder();
+    return;
+  }
+
+  // Attach future-event listeners (fires if image completes AFTER this script)
+  img.addEventListener('error', showPlaceholder);
+  img.addEventListener('load', showImage);
+
+  // ── RACE-CONDITION GUARD ──────────────────────────────────────
+  // If the image already finished loading (or failed) before this listener
+  // was attached, the events won't fire again. Check img.complete explicitly.
+  if (img.complete) {
+    // naturalWidth === 0 means the image failed (404 or broken src)
+    if (img.naturalWidth > 0) {
+      showImage();       // Image loaded successfully — ensure it is visible
+    } else {
+      showPlaceholder(); // Image failed — show the styled placeholder
+    }
+  }
+});
+</script>
+</body>
+</html>
