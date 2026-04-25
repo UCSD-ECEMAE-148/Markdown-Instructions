@@ -959,7 +959,7 @@ sys.path.insert(0, '/home/pi/env/lib/python3.11/site-packages')
 from donkeycar.parts.oak_d import OakD
 
 <span class="c"># Test RGB-only mode — this is the standard lane-following configuration</span>
-cam = OakD(enable_rgb=True, enable_depth=False, image_w=160, image_h=120)
+cam = OakD(enable_rgb=True, enable_depth=False)
 print("OakD RGB-only init: OK")
 cam.shutdown()
 EOF
